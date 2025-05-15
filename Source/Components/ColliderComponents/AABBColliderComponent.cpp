@@ -68,7 +68,7 @@ float AABBColliderComponent::DetectHorizontalCollision(RigidBodyComponent *rigid
             const float minHorizontalOverlap = GetMinHorizontalOverlap(collider);
 
             ResolveHorizontalCollisions(rigidBody, minHorizontalOverlap);
-            mOwner->OnHorizontalCollision(minHorizontalOverlap, collider);
+            mOwner->OnCollision(minHorizontalOverlap, collider);
 
             return minHorizontalOverlap;
         }
@@ -89,7 +89,7 @@ float AABBColliderComponent::DetectVerticalCollision(RigidBodyComponent *rigidBo
             const float minVerticalOverlap = GetMinVerticalOverlap(collider);
 
             ResolveVerticalCollisions(rigidBody, minVerticalOverlap);
-            mOwner->OnVerticalCollision(minVerticalOverlap, collider);
+            mOwner->OnCollision(minVerticalOverlap, collider);
 
             return minVerticalOverlap;
         }
@@ -106,6 +106,4 @@ void AABBColliderComponent::ResolveHorizontalCollisions(RigidBodyComponent *rigi
 void AABBColliderComponent::ResolveVerticalCollisions(RigidBodyComponent *rigidBody, const float minYOverlap) const {
     mOwner->SetPosition(mOwner->GetPosition() - Vector2(0, minYOverlap));
     rigidBody->SetVelocity(Vector2(rigidBody->GetVelocity().x, 0));
-
-    if (minYOverlap > 0) mOwner->SetOnGround();
 }
