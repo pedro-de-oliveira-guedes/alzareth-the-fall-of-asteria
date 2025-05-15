@@ -1,7 +1,6 @@
 #pragma once
+
 #include "../Component.h"
-#include "../../Math.h"
-#include <vector>
 #include <SDL.h>
 
 class DrawComponent : public Component {

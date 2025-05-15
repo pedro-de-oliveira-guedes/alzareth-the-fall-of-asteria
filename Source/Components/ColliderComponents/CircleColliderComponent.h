@@ -1,13 +1,13 @@
 #pragma once
 #include "../Component.h"
-#include "../../Math.h"
+#include "../../Utils/Math.h"
 #include <vector>
 
 class CircleColliderComponent : public Component {
     public:
-        CircleColliderComponent(class Actor *owner, float radius, int updateOrder = 10);
+        CircleColliderComponent(Actor *owner, float radius, int updateOrder = 10);
 
-        void SetRadius(float radius) { mRadius = radius; }
+        void SetRadius(const float radius) { mRadius = radius; }
         float GetRadius() const;
 
         const Vector2& GetCenter() const;

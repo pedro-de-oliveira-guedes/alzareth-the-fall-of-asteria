@@ -1,7 +1,7 @@
 #include "DrawAnimatedComponent.h"
 #include "../../Actors/Actor.h"
 #include "../../Game.h"
-#include "../../Json.h"
+#include "../../Utils/Json.h"
 #include <fstream>
 
 DrawAnimatedComponent::DrawAnimatedComponent(

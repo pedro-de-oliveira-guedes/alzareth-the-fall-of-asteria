@@ -2,6 +2,7 @@
 
 #include "DrawSpriteComponent.h"
 #include <unordered_map>
+#include <vector>
 
 class DrawAnimatedComponent : public DrawSpriteComponent {
     public:

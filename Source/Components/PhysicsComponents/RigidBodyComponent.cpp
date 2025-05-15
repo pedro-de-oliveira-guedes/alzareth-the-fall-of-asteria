@@ -1,8 +1,11 @@
-#include <SDL.h>
-#include "../Actors/Actor.h"
-#include "../Game.h"
 #include "RigidBodyComponent.h"
-#include "ColliderComponents/AABBColliderComponent.h"
+#include "../../Actors/Actor.h"
+#include "../../Game.h"
+#include "../ColliderComponents/AABBColliderComponent.h"
+
+constexpr float MAX_SPEED_X = 750.0f;
+constexpr float MAX_SPEED_Y = 750.0f;
+constexpr float GRAVITY = 2000.0f;
 
 RigidBodyComponent::RigidBodyComponent(
     Actor *owner,

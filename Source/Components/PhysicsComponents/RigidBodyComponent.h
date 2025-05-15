@@ -1,12 +1,9 @@
 #pragma once
-#include "Component.h"
-#include "../Math.h"
+
+#include "../Component.h"
+#include "../../Utils/Math.h"
 
 class RigidBodyComponent : public Component {
-    constexpr float MAX_SPEED_X = 750.0f;
-    constexpr float MAX_SPEED_Y = 750.0f;
-    constexpr float GRAVITY = 2000.0f;
-
     public:
         // Lower update order to update first
         RigidBodyComponent(

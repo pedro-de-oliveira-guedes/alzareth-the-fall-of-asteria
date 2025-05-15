@@ -1,9 +1,7 @@
 #pragma once
 #include "../Component.h"
-#include "../../Math.h"
-#include "../RigidBodyComponent.h"
-#include <vector>
-#include <set>
+#include "../../Utils/Math.h"
+#include "../PhysicsComponents/RigidBodyComponent.h"
 
 enum class ColliderLayer {
     Player,

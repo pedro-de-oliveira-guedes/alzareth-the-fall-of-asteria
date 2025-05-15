@@ -1,8 +1,8 @@
 #pragma once
+
 #include <vector>
 #include <SDL_stdinc.h>
-#include "../Math.h"
-#include "../Components/ColliderComponents/ColliderComponent.h"
+#include "../Components/ColliderComponents/AABBColliderComponent.h"
 
 enum class ActorState {
     Active,
@@ -54,7 +54,7 @@ class Actor {
         }
 
         // Any actor-specific collision code (overridable)
-        virtual void OnCollision(float minOverlap, ColliderComponent *other);
+        virtual void OnCollision(float minOverlap, AABBColliderComponent *other);
         virtual void Kill();
 
     protected:
