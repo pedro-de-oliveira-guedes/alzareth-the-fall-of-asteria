@@ -29,7 +29,7 @@ bool Game::Initialize() {
         return false;
     }
 
-    mWindow = SDL_CreateWindow("TP3: Super Mario Bros", 25, 25, mWindowWidth, mWindowHeight, 0);
+    mWindow = SDL_CreateWindow("Alzareth: The Fall of Asteria", 25, 25, mWindowWidth, mWindowHeight, 0);
     if (!mWindow) {
         SDL_Log("Failed to create window: %s", SDL_GetError());
         return false;
