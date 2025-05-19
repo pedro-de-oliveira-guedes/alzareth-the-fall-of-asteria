@@ -52,7 +52,7 @@ bool Game::Initialize() {
 }
 
 void Game::InitializeActors() {
-    LoadLevel("../Assets/Levels/SomeLevel.csv", LEVEL_WIDTH, LEVEL_HEIGHT);
+    LoadLevel("../Assets/Levels/Level-1/level_1.csv", LEVEL_WIDTH, LEVEL_HEIGHT);
 
     if (!mLevelData) {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to load level data");
@@ -65,12 +65,26 @@ void Game::InitializeActors() {
 void Game::BuildLevel(const int width, const int height) {
     for (int row = 0; row < height; row++) {
         for (int tile = 0; tile < width; tile++) {
+            std::string texturePath;
             if (mLevelData[row][tile] == 0) {
-                SDL_Log("Someday, hopefully, there will be something real here");
-            }
-            else {
+                texturePath = "../Assets/Textures/Border/border-0.png";
+            } else if (mLevelData[row][tile] == 1) {
+                texturePath = "../Assets/Textures/Finish/finish-0.png";
+            } else if (mLevelData[row][tile] == 2) {
+                if (Random::GetIntRange(0, 100) < 50) texturePath = "../Assets/Textures/Sand/sand-0.png";
+                else texturePath = "../Assets/Textures/Sand/sand-1.png";
+            } else if (mLevelData[row][tile] == 3) {
+                texturePath = "../Assets/Textures/Border/border-1.png";
+            } else if (mLevelData[row][tile] == 4) {
+                if (Random::GetIntRange(0, 100) < 50) texturePath = "../Assets/Textures/Sand/sand-0.png";
+                else texturePath = "../Assets/Textures/Sand/sand-1.png";
+            } else if (mLevelData[row][tile] == 6) {
+                texturePath = "../Assets/Textures/Finish/finish-1.png";
+            } else {
                 SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Unknown tile type: %d", mLevelData[row][tile]);
             }
+
+            new Texture(this, texturePath, Vector2(tile * TILE_SIZE, row * TILE_SIZE));
         }
     }
 }
