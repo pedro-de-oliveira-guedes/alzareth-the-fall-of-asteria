@@ -8,6 +8,7 @@
 #include "Utils/Random.h"
 #include "Game.h"
 #include "Actors/Actor.h"
+#include "Actors/Background/Texture.h"
 #include "Components/DrawComponents/DrawComponent.h"
 
 Game::Game(const int windowWidth, const int windowHeight) {
@@ -19,8 +20,6 @@ Game::Game(const int windowWidth, const int windowHeight) {
     mUpdatingActors = false;
     mWindowWidth = windowWidth;
     mWindowHeight = windowHeight;
-
-    mPlayer = new Actor(this);
 }
 
 bool Game::Initialize() {
@@ -60,6 +59,9 @@ void Game::InitializeActors() {
     }
 
     BuildLevel(LEVEL_WIDTH, LEVEL_HEIGHT);
+
+    mPlayer = new Player(this);
+    mPlayer->SetPosition(Vector2(200.f, 200.f));
 }
 
 void Game::BuildLevel(const int width, const int height) {
@@ -142,7 +144,6 @@ void Game::ProcessInput() {
     }
 
     const Uint8 *state = SDL_GetKeyboardState(nullptr);
-
     for (const auto actor : mActors) {
         actor->ProcessInput(state);
     }
