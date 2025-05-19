@@ -70,6 +70,14 @@ void Player::OnProcessInput(const Uint8 *keyState) {
         mIsWalking = false;
     }
     mRigidBodyComponent->ApplyForce(force_vector);
+
+    int mouseX, mouseY;
+    SDL_GetMouseState(&mouseX, &mouseY);
+    mouseX += mGame->GetCameraPos().x;
+    mouseY += mGame->GetCameraPos().y;
+
+    if (mouseX < GetPosition().x) SetRotation(Math::Pi);
+    else if (mouseX > GetPosition().x) SetRotation(0);
 }
 
 void Player::OnUpdate(const float deltaTime) {
