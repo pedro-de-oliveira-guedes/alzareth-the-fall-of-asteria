@@ -3,19 +3,16 @@
 #include "../../Game.h"
 #include "../ColliderComponents/AABBColliderComponent.h"
 
-constexpr float MAX_SPEED_X = 750.0f;
-constexpr float MAX_SPEED_Y = 750.0f;
-constexpr float GRAVITY = 2000.0f;
+constexpr float MAX_SPEED_X = 2500.0f;
+constexpr float MAX_SPEED_Y = 2500.0f;
 
 RigidBodyComponent::RigidBodyComponent(
     Actor *owner,
     const float mass,
     const float friction,
-    const bool applyGravity,
     const int updateOrder
 ) : Component(owner, updateOrder) {
     mMass = mass;
-    mApplyGravity = applyGravity;
     mFrictionCoefficient = friction;
     mVelocity = Vector2::Zero;
     mAcceleration = Vector2::Zero;
@@ -26,11 +23,6 @@ void RigidBodyComponent::ApplyForce(const Vector2 &force) {
 }
 
 void RigidBodyComponent::Update(float deltaTime) {
-    // Apply gravity acceleration
-    if(mApplyGravity) {
-        ApplyForce(Vector2::UnitY * GRAVITY);
-    }
-
     // Apply friction
     if(Math::Abs(mVelocity.x) > 0.05f) {
         ApplyForce(Vector2::UnitX * -mFrictionCoefficient * mVelocity.x);

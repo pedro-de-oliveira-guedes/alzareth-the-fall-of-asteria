@@ -7,10 +7,9 @@ class RigidBodyComponent : public Component {
     public:
         // Lower update order to update first
         RigidBodyComponent(
-            class Actor *owner,
+            Actor *owner,
             float mass = 1.0f,
             float friction = 0.0f,
-            bool applyGravity = true,
             int updateOrder = 10
         );
 
@@ -22,17 +21,13 @@ class RigidBodyComponent : public Component {
         const Vector2& GetAcceleration() const { return mAcceleration; }
         void SetAcceleration(const Vector2 &acceleration) { mAcceleration = acceleration; }
 
-        void SetApplyGravity(const bool applyGravity) { mApplyGravity = applyGravity; }
 
         void ApplyForce(const Vector2 &force);
 
     private:
-        bool mApplyGravity;
-
         // Physical properties
         float mFrictionCoefficient;
         float mMass;
-        float m;
 
         Vector2 mVelocity;
         Vector2 mAcceleration;
