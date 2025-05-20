@@ -35,6 +35,7 @@ class Player : public Actor {
         float mWalkSpeed;
         float mRunSpeed;
         float mDashSpeed;
+        float mDashTime;
 
         bool mIsWalking;
         bool mIsRunning;

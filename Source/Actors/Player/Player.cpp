@@ -37,6 +37,16 @@ Player::Player(Game *game, const float walkSpeed, const float runSpeed, const fl
 }
 
 void Player::OnProcessInput(const Uint8 *keyState) {
+    if (mIsDashing && mDashTime > 0.f) return;
+
+    int mouseX, mouseY;
+    SDL_GetMouseState(&mouseX, &mouseY);
+    mouseX += mGame->GetCameraPos().x;
+    mouseY += mGame->GetCameraPos().y;
+
+    if (mouseX < GetPosition().x) SetRotation(Math::Pi);
+    else if (mouseX > GetPosition().x) SetRotation(0);
+
     if (keyState[SDL_SCANCODE_LCTRL]) {
         mIsRunning = true;
     } else {
@@ -65,19 +75,26 @@ void Player::OnProcessInput(const Uint8 *keyState) {
             force_vector *= mWalkSpeed;
             mIsWalking = true;
         }
+        mRigidBodyComponent->ApplyForce(force_vector);
     } else {
         mIsRunning = false;
         mIsWalking = false;
     }
-    mRigidBodyComponent->ApplyForce(force_vector);
 
-    int mouseX, mouseY;
-    SDL_GetMouseState(&mouseX, &mouseY);
-    mouseX += mGame->GetCameraPos().x;
-    mouseY += mGame->GetCameraPos().y;
+    if (keyState[SDL_SCANCODE_SPACE]) {
+        mIsDashing = true;
+        mDashTime = mDrawComponent->GetAnimTime("dash");
 
-    if (mouseX < GetPosition().x) SetRotation(Math::Pi);
-    else if (mouseX > GetPosition().x) SetRotation(0);
+        mIsRunning = false;
+        mIsWalking = false;
+
+        mRigidBodyComponent->SetVelocity(force_vector * mDashSpeed);
+
+        if (force_vector.x < 0) SetRotation(Math::Pi);
+        else SetRotation(0);
+    } else {
+        mIsDashing = false;
+    }
 }
 
 void Player::OnUpdate(const float deltaTime) {
@@ -95,6 +112,8 @@ void Player::OnUpdate(const float deltaTime) {
         SetPosition(Vector2(GetPosition().x, Game::LEVEL_HEIGHT * Game::TILE_SIZE - Game::SPRITE_SIZE));
     }
 
+    if (mIsDashing) mDashTime -= deltaTime;
+
     ManageAnimations();
 }
 
@@ -103,6 +122,8 @@ void Player::ManageAnimations() const {
         mDrawComponent->SetAnimation("walking");
     } else if (mIsRunning) {
         mDrawComponent->SetAnimation("running");
+    } else if (mIsDashing) {
+        mDrawComponent->SetAnimation("dash");
     } else {
         mDrawComponent->SetAnimation("idle");
     }
