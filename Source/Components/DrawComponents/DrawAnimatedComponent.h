@@ -30,6 +30,11 @@ class DrawAnimatedComponent : public DrawSpriteComponent {
         // Add an animation of the corresponding name to the animation map
         void AddAnimation(const std::string &name, const std::vector<int> &images);
 
+        // Necessary time to play the animation completely
+        float GetAnimTime(const std::string &animName) const {
+            return (1.f / mAnimFPS) * static_cast<float>(mAnimations.at(animName).size());
+        }
+
     private:
         void LoadSpriteSheet(const std::string &texturePath, const std::string &dataPath);
 
