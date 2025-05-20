@@ -81,7 +81,7 @@ void Player::OnProcessInput(const Uint8 *keyState) {
         mIsWalking = false;
     }
 
-    if (keyState[SDL_SCANCODE_SPACE]) {
+    if (keyState[SDL_SCANCODE_SPACE] && std::abs(force_vector.Length()) > 0.f) {
         mIsDashing = true;
         mDashTime = mDrawComponent->GetAnimTime("dash");
 
