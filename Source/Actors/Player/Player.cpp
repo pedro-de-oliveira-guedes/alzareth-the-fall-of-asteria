@@ -4,6 +4,11 @@
 #include "../../Components/DrawComponents/DrawAnimatedComponent.h"
 #include "../../Components/ColliderComponents/AABBColliderComponent.h"
 
+const std::string DASH_ANIMATION = "dash";
+const std::string IDLE_ANIMATION = "idle";
+const std::string WALKING_ANIMATION = "walking";
+const std::string RUNNING_ANIMATION = "running";
+
 Player::Player(Game *game, const float walkSpeed, const float runSpeed, const float dashSpeed) : Actor(game) {
     mMaxHealth = 100.0f;
     mCurrentHealth = mMaxHealth;
@@ -28,11 +33,11 @@ Player::Player(Game *game, const float walkSpeed, const float runSpeed, const fl
         "../Assets/Sprites/00-Player/main_character.json",
         100
     );
-    mDrawComponent->AddAnimation("dash", {0, 1, 2, 3});
-    mDrawComponent->AddAnimation("idle", {4});
-    mDrawComponent->AddAnimation("walking", {8, 9, 10, 11});
-    mDrawComponent->AddAnimation("running", {5, 6, 7});
-    mDrawComponent->SetAnimation("idle");
+    mDrawComponent->AddAnimation(DASH_ANIMATION, {0, 1, 2, 3});
+    mDrawComponent->AddAnimation(IDLE_ANIMATION, {4});
+    mDrawComponent->AddAnimation(WALKING_ANIMATION, {8, 9, 10, 11});
+    mDrawComponent->AddAnimation(RUNNING_ANIMATION, {5, 6, 7});
+    mDrawComponent->SetAnimation(IDLE_ANIMATION);
     mDrawComponent->SetAnimFPS(10.f);
 }
 
@@ -89,7 +94,7 @@ void Player::ApplyBasicMovement(Vector2 force_vector) {
 void Player::HandleDash(const Uint8 *keyState, const Vector2 force_vector) {
     if (keyState[SDL_SCANCODE_SPACE] && std::abs(force_vector.Length()) > 0.f) {
         mIsDashing = true;
-        mDashTime = mDrawComponent->GetAnimTime("dash");
+        mDashTime = mDrawComponent->GetAnimTime(DASH_ANIMATION);
 
         mIsRunning = false;
         mIsWalking = false;
@@ -136,12 +141,12 @@ void Player::OnUpdate(const float deltaTime) {
 
 void Player::ManageAnimations() const {
     if (mIsWalking) {
-        mDrawComponent->SetAnimation("walking");
+        mDrawComponent->SetAnimation(WALKING_ANIMATION);
     } else if (mIsRunning) {
-        mDrawComponent->SetAnimation("running");
+        mDrawComponent->SetAnimation(RUNNING_ANIMATION);
     } else if (mIsDashing) {
-        mDrawComponent->SetAnimation("dash");
+        mDrawComponent->SetAnimation(DASH_ANIMATION);
     } else {
-        mDrawComponent->SetAnimation("idle");
+        mDrawComponent->SetAnimation(IDLE_ANIMATION);
     }
 }
