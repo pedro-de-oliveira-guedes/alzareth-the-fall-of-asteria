@@ -73,13 +73,11 @@ void Game::BuildLevel(const int width, const int height) {
             } else if (mLevelData[row][tile] == 1) {
                 texturePath = "../Assets/Textures/Finish/finish-0.png";
             } else if (mLevelData[row][tile] == 2) {
-                if (Random::GetIntRange(0, 100) < 50) texturePath = "../Assets/Textures/Sand/sand-0.png";
-                else texturePath = "../Assets/Textures/Sand/sand-1.png";
+                texturePath = "../Assets/Textures/Sand/sand-0.png";
             } else if (mLevelData[row][tile] == 3) {
                 texturePath = "../Assets/Textures/Border/border-1.png";
             } else if (mLevelData[row][tile] == 4) {
-                if (Random::GetIntRange(0, 100) < 50) texturePath = "../Assets/Textures/Sand/sand-0.png";
-                else texturePath = "../Assets/Textures/Sand/sand-1.png";
+                texturePath = "../Assets/Textures/Sand/sand-1.png";
             } else if (mLevelData[row][tile] == 6) {
                 texturePath = "../Assets/Textures/Finish/finish-1.png";
             } else {
