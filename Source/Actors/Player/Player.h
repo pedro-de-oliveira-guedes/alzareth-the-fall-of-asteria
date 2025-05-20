@@ -32,6 +32,10 @@ class Player : public Actor {
         void ApplyBasicMovement(Vector2 force_vector);
         void HandleDash(const Uint8 *keyState, Vector2 force_vector);
 
+        // Update handling
+        void HandleMapBoundaries();
+        void HandleEnergyAndCooldowns(float deltaTime);
+
         void ManageAnimations() const;
 
         float mMaxHealth;
