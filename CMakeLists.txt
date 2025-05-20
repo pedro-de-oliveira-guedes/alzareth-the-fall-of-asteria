@@ -39,6 +39,12 @@ add_executable(${PROJECT_NAME}
         Source/Main.cpp
         Source/Game.cpp
         Source/Game.h
+        Source/Actors/Player/Player.cpp
+        Source/Actors/Player/Player.h
+        Source/Actors/Background/Texture.cpp
+        Source/Actors/Background/Texture.h
+        Source/Components/UI/HUDComponent.cpp
+        Source/Components/UI/HUDComponent.h
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE SDL2::SDL2 SDL2_image::SDL2_image)

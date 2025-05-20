@@ -3,12 +3,14 @@
 #include <string>
 #include <vector>
 #include "Utils/Math.h"
+#include "Actors/Player/Player.h"
 
 class Game {
     public:
-        static const int LEVEL_WIDTH = 215;
-        static const int LEVEL_HEIGHT = 15;
+        static const int LEVEL_WIDTH = 150;
+        static const int LEVEL_HEIGHT = 40;
         static const int TILE_SIZE = 32;
+        static const int SPRITE_SIZE = 100;
 
         Game(int windowWidth, int windowHeight);
 
@@ -85,4 +87,5 @@ class Game {
 
         // Level data
         int **mLevelData;
+        std::unordered_map<std::string, SDL_Texture *> *mTextures;
 };

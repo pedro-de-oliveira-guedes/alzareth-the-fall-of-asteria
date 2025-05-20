@@ -3,19 +3,16 @@
 #include "../../Game.h"
 #include "../ColliderComponents/AABBColliderComponent.h"
 
-constexpr float MAX_SPEED_X = 750.0f;
-constexpr float MAX_SPEED_Y = 750.0f;
-constexpr float GRAVITY = 2000.0f;
+constexpr float MAX_SPEED_X = 2500.0f;
+constexpr float MAX_SPEED_Y = 2500.0f;
 
 RigidBodyComponent::RigidBodyComponent(
     Actor *owner,
     const float mass,
     const float friction,
-    const bool applyGravity,
     const int updateOrder
 ) : Component(owner, updateOrder) {
     mMass = mass;
-    mApplyGravity = applyGravity;
     mFrictionCoefficient = friction;
     mVelocity = Vector2::Zero;
     mAcceleration = Vector2::Zero;
@@ -26,14 +23,12 @@ void RigidBodyComponent::ApplyForce(const Vector2 &force) {
 }
 
 void RigidBodyComponent::Update(float deltaTime) {
-    // Apply gravity acceleration
-    if(mApplyGravity) {
-        ApplyForce(Vector2::UnitY * GRAVITY);
-    }
-
     // Apply friction
     if(Math::Abs(mVelocity.x) > 0.05f) {
         ApplyForce(Vector2::UnitX * -mFrictionCoefficient * mVelocity.x);
+    }
+    if (Math::Abs(mVelocity.y) > 0.05f) {
+        ApplyForce(Vector2::UnitY * -mFrictionCoefficient * mVelocity.y);
     }
 
     // Euler Integration
@@ -42,8 +37,11 @@ void RigidBodyComponent::Update(float deltaTime) {
     mVelocity.x = Math::Clamp<float>(mVelocity.x, -MAX_SPEED_X, MAX_SPEED_X);
     mVelocity.y = Math::Clamp<float>(mVelocity.y, -MAX_SPEED_Y, MAX_SPEED_Y);
 
-    if(Math::NearZero(mVelocity.x, 1.0f)) {
+    if (Math::NearZero(mVelocity.x, 1.0f)) {
         mVelocity.x = 0.f;
+    }
+    if (Math::NearZero(mVelocity.y, 1.0f)) {
+        mVelocity.y = 0.f;
     }
 
     const auto collider = mOwner->GetComponent<AABBColliderComponent>();
