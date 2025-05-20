@@ -36,17 +36,17 @@ Player::Player(Game *game, const float walkSpeed, const float runSpeed, const fl
     mDrawComponent->SetAnimFPS(10.f);
 }
 
-void Player::OnProcessInput(const Uint8 *keyState) {
-    if (mIsDashing && mDashTime > 0.f) return;
-
+void Player::HandleRotation() {
     int mouseX, mouseY;
     SDL_GetMouseState(&mouseX, &mouseY);
-    mouseX += mGame->GetCameraPos().x;
-    mouseY += mGame->GetCameraPos().y;
+    mouseX += static_cast<int>(mGame->GetCameraPos().x);
+    mouseY += static_cast<int>(mGame->GetCameraPos().y);
 
-    if (mouseX < GetPosition().x) SetRotation(Math::Pi);
-    else if (mouseX > GetPosition().x) SetRotation(0);
+    if (static_cast<float>(mouseX) < GetPosition().x) SetRotation(Math::Pi);
+    else if (static_cast<float>(mouseX) > GetPosition().x) SetRotation(0);
+}
 
+Vector2 Player::HandleBasicMovementInput(const Uint8 *keyState) {
     if (keyState[SDL_SCANCODE_LCTRL]) {
         mIsRunning = true;
     } else {
@@ -67,6 +67,10 @@ void Player::OnProcessInput(const Uint8 *keyState) {
         force_vector += Vector2(1.f, 0.f);
     }
 
+    return force_vector;
+}
+
+void Player::ApplyBasicMovement(Vector2 force_vector) {
     if (std::abs(force_vector.Length()) > 0.f) {
         if (mIsRunning) {
             force_vector *= mRunSpeed;
@@ -80,7 +84,9 @@ void Player::OnProcessInput(const Uint8 *keyState) {
         mIsRunning = false;
         mIsWalking = false;
     }
+}
 
+void Player::HandleDash(const Uint8 *keyState, const Vector2 force_vector) {
     if (keyState[SDL_SCANCODE_SPACE] && std::abs(force_vector.Length()) > 0.f) {
         mIsDashing = true;
         mDashTime = mDrawComponent->GetAnimTime("dash");
@@ -95,6 +101,17 @@ void Player::OnProcessInput(const Uint8 *keyState) {
     } else {
         mIsDashing = false;
     }
+}
+
+void Player::OnProcessInput(const Uint8 *keyState) {
+    if (mIsDashing && mDashTime > 0.f) return;
+
+    HandleRotation();
+
+    const auto force_vector = HandleBasicMovementInput(keyState);
+    ApplyBasicMovement(force_vector);
+
+    HandleDash(keyState, force_vector);
 }
 
 void Player::OnUpdate(const float deltaTime) {

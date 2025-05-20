@@ -25,6 +25,12 @@ class Player : public Actor {
         void OnUpdate(float deltaTime) override;
 
     private:
+        // Input handling
+        void HandleRotation();
+        Vector2 HandleBasicMovementInput(const Uint8 *keyState);
+        void ApplyBasicMovement(Vector2 force_vector);
+        void HandleDash(const Uint8 *keyState, Vector2 force_vector);
+
         void ManageAnimations() const;
 
         float mMaxHealth;
