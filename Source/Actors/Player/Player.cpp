@@ -9,6 +9,11 @@ const std::string IDLE_ANIMATION = "idle";
 const std::string WALKING_ANIMATION = "walking";
 const std::string RUNNING_ANIMATION = "running";
 
+constexpr float DASH_ENERGY_COST = 10.f;
+constexpr float RUNNING_ENERGY_COST = 5.f;
+constexpr float ENERGY_RECHARGE_RATE = 3.f;
+constexpr float ENERGY_RECHARGE_COOLDOWN = 1.f;
+
 Player::Player(Game *game, const float walkSpeed, const float runSpeed, const float dashSpeed) : Actor(game) {
     mMaxHealth = 100.0f;
     mCurrentHealth = mMaxHealth;
@@ -21,6 +26,7 @@ Player::Player(Game *game, const float walkSpeed, const float runSpeed, const fl
     mDashSpeed = dashSpeed;
 
     mDashCooldown = -1.f;
+    mEnergyRechargeCooldown = -1.f;
 
     mIsWalking = false;
     mIsRunning = false;
@@ -81,9 +87,10 @@ Vector2 Player::HandleBasicMovementInput(const Uint8 *keyState) {
 
 void Player::ApplyBasicMovement(Vector2 force_vector) {
     if (std::abs(force_vector.Length()) > 0.f) {
-        if (mIsRunning) {
+        if (mIsRunning && mCurrentEnergy > 0.05f * RUNNING_ENERGY_COST) {
             force_vector *= mRunSpeed;
             mIsWalking = false;
+            mEnergyRechargeCooldown = ENERGY_RECHARGE_COOLDOWN;
         } else {
             force_vector *= mWalkSpeed;
             mIsWalking = true;
@@ -101,7 +108,7 @@ void Player::HandleDash(const Uint8 *keyState, const Vector2 force_vector) {
         return;
     }
 
-    if (keyState[SDL_SCANCODE_SPACE] && std::abs(force_vector.Length()) > 0.f) {
+    if (keyState[SDL_SCANCODE_SPACE] && std::abs(force_vector.Length()) > 0.f && mCurrentEnergy >= DASH_ENERGY_COST) {
         mIsDashing = true;
         mDashTime = mDrawComponent->GetAnimTime(DASH_ANIMATION);
 
@@ -109,6 +116,7 @@ void Player::HandleDash(const Uint8 *keyState, const Vector2 force_vector) {
         mIsWalking = false;
 
         mRigidBodyComponent->SetVelocity(force_vector * mDashSpeed);
+        mCurrentEnergy -= DASH_ENERGY_COST;
 
         if (force_vector.x < 0) SetRotation(Math::Pi);
         else SetRotation(0);
@@ -143,11 +151,27 @@ void Player::OnUpdate(const float deltaTime) {
         SetPosition(Vector2(GetPosition().x, Game::LEVEL_HEIGHT * Game::TILE_SIZE - Game::SPRITE_SIZE));
     }
 
+    if (mIsRunning) {
+        mCurrentEnergy -= RUNNING_ENERGY_COST * deltaTime;
+    }
     if (mIsDashing) {
         mDashTime -= deltaTime;
         mDashCooldown = 1.f;
     }
-    if (mDashCooldown >= 0.f) mDashCooldown -= deltaTime;
+    if (mDashCooldown >= 0.f) {
+        mDashCooldown -= deltaTime;
+        mEnergyRechargeCooldown = ENERGY_RECHARGE_COOLDOWN;
+    }
+    if (mEnergyRechargeCooldown > 0.f) {
+        mEnergyRechargeCooldown -= deltaTime;
+    }
+    if (!mIsDashing && !mIsRunning && mCurrentEnergy < mMaxEnergy && mEnergyRechargeCooldown <= 0.f) {
+        mCurrentEnergy += ENERGY_RECHARGE_RATE * deltaTime;
+        mCurrentEnergy = std::min(mCurrentEnergy, mMaxEnergy);
+    }
+
+    mCurrentEnergy = std::max(mCurrentEnergy, 0.f);
+    mCurrentHealth = std::max(mCurrentHealth, 0.f);
 
     mHUDComponent->UpdateStats(mMaxHealth, mCurrentHealth, mMaxEnergy, mCurrentEnergy);
 
