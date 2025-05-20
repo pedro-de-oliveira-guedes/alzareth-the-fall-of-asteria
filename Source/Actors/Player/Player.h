@@ -1,6 +1,7 @@
 #pragma once
 #include "../Actor.h"
 #include "../../Components/DrawComponents/DrawAnimatedComponent.h"
+#include "../../Components/UI/HUDComponent.h"
 
 class Player : public Actor {
     public:
@@ -41,7 +42,10 @@ class Player : public Actor {
         float mWalkSpeed;
         float mRunSpeed;
         float mDashSpeed;
+
         float mDashTime;
+        float mDashCooldown;
+        float mEnergyRechargeCooldown;
 
         bool mIsWalking;
         bool mIsRunning;
@@ -50,4 +54,5 @@ class Player : public Actor {
         RigidBodyComponent *mRigidBodyComponent;
         AABBColliderComponent *mColliderComponent;
         DrawAnimatedComponent *mDrawComponent;
+        HUDComponent *mHUDComponent;
 };

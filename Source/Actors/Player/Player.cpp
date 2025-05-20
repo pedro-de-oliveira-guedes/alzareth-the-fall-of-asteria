@@ -20,6 +20,8 @@ Player::Player(Game *game, const float walkSpeed, const float runSpeed, const fl
     mRunSpeed = runSpeed;
     mDashSpeed = dashSpeed;
 
+    mDashCooldown = -1.f;
+
     mIsWalking = false;
     mIsRunning = false;
     mIsDashing = false;
@@ -39,6 +41,8 @@ Player::Player(Game *game, const float walkSpeed, const float runSpeed, const fl
     mDrawComponent->AddAnimation(RUNNING_ANIMATION, {5, 6, 7});
     mDrawComponent->SetAnimation(IDLE_ANIMATION);
     mDrawComponent->SetAnimFPS(10.f);
+
+    mHUDComponent = new HUDComponent(this, mMaxHealth, mMaxEnergy);
 }
 
 void Player::HandleRotation() {
@@ -92,6 +96,11 @@ void Player::ApplyBasicMovement(Vector2 force_vector) {
 }
 
 void Player::HandleDash(const Uint8 *keyState, const Vector2 force_vector) {
+    if (mDashCooldown > 0.f) {
+        mIsDashing = false;
+        return;
+    }
+
     if (keyState[SDL_SCANCODE_SPACE] && std::abs(force_vector.Length()) > 0.f) {
         mIsDashing = true;
         mDashTime = mDrawComponent->GetAnimTime(DASH_ANIMATION);
@@ -134,7 +143,13 @@ void Player::OnUpdate(const float deltaTime) {
         SetPosition(Vector2(GetPosition().x, Game::LEVEL_HEIGHT * Game::TILE_SIZE - Game::SPRITE_SIZE));
     }
 
-    if (mIsDashing) mDashTime -= deltaTime;
+    if (mIsDashing) {
+        mDashTime -= deltaTime;
+        mDashCooldown = 1.f;
+    }
+    if (mDashCooldown >= 0.f) mDashCooldown -= deltaTime;
+
+    mHUDComponent->UpdateStats(mMaxHealth, mCurrentHealth, mMaxEnergy, mCurrentEnergy);
 
     ManageAnimations();
 }
