@@ -20,9 +20,11 @@ Game::Game(const int windowWidth, const int windowHeight) {
     mUpdatingActors = false;
     mWindowWidth = windowWidth;
     mWindowHeight = windowHeight;
+    mTextures = new std::unordered_map<std::string, SDL_Texture*>();
 }
 
 bool Game::Initialize() {
+    auto start_time = SDL_GetTicks();
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         SDL_Log("Unable to initialize SDL: %s", SDL_GetError());
         return false;
@@ -261,6 +263,10 @@ void Game::GenerateOutput() const {
 }
 
 SDL_Texture* Game::LoadTexture(const std::string &texturePath) const {
+    if (mTextures->find(texturePath) != mTextures->end()) {
+        return mTextures->at(texturePath);
+    }
+
     SDL_Surface *surface = IMG_Load(texturePath.c_str());
     if (!surface) {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, SDL_GetError());
@@ -269,9 +275,9 @@ SDL_Texture* Game::LoadTexture(const std::string &texturePath) const {
 
     SDL_Texture *texture = SDL_CreateTextureFromSurface(mRenderer, surface);
     SDL_FreeSurface(surface);
-    if (texture) return texture;
+    mTextures->insert(std::make_pair(texturePath, texture));
 
-    return nullptr;
+    return texture;
 }
 
 void Game::Shutdown() const {

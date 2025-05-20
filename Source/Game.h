@@ -87,4 +87,5 @@ class Game {
 
         // Level data
         int **mLevelData;
+        std::unordered_map<std::string, SDL_Texture *> *mTextures;
 };
