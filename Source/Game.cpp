@@ -11,15 +11,15 @@
 #include "Actors/Background/Texture.h"
 #include "Components/DrawComponents/DrawComponent.h"
 
-Game::Game(const int windowWidth, const int windowHeight) {
+Game::Game() {
     mWindow = nullptr;
     mRenderer = nullptr;
     mLevelData = nullptr;
     mTicksCount = 0;
     mIsRunning = true;
     mUpdatingActors = false;
-    mWindowWidth = windowWidth;
-    mWindowHeight = windowHeight;
+    mWindowWidth = Game::SCREEN_WIDTH;
+    mWindowHeight = Game::SCREEN_HEIGHT;
     mTextures = new std::unordered_map<std::string, SDL_Texture*>();
 }
 

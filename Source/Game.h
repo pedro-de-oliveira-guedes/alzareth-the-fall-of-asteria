@@ -7,12 +7,20 @@
 
 class Game {
     public:
+        enum class GameState {
+            RUNNING,
+            QUITTING
+        };
+
+        static const int SCREEN_WIDTH = 1280;
+        static const int SCREEN_HEIGHT = 720;
+
         static const int LEVEL_WIDTH = 150;
         static const int LEVEL_HEIGHT = 40;
         static const int TILE_SIZE = 32;
         static const int SPRITE_SIZE = 100;
 
-        Game(int windowWidth, int windowHeight);
+        Game();
 
         bool Initialize();
         void RunLoop();
