@@ -25,7 +25,8 @@ class Game {
         bool Initialize();
         void RunLoop();
         void Shutdown() const;
-        void Quit() { mIsRunning = false; }
+        void Quit() { mGameState = GameState::QUITTING; }
+        GameState GetGameState() const { return mGameState; }
 
         // Actor functions
         void InitializeActors();
@@ -88,7 +89,7 @@ class Game {
         Uint32 mTicksCount;
 
         // Track if we're updating actors right now
-        bool mIsRunning;
+        GameState mGameState;
         bool mUpdatingActors;
 
         Vector2 mCameraPos;

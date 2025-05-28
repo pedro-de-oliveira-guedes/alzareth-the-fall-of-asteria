@@ -16,7 +16,7 @@ Game::Game() {
     mRenderer = nullptr;
     mLevelData = nullptr;
     mTicksCount = 0;
-    mIsRunning = true;
+    mGameState = GameState::RUNNING;
     mUpdatingActors = false;
     mWindowWidth = Game::SCREEN_WIDTH;
     mWindowHeight = Game::SCREEN_HEIGHT;
@@ -127,7 +127,7 @@ void Game::LoadLevel(const std::string &fileName, const int width, const int hei
 }
 
 void Game::RunLoop() {
-    while (mIsRunning) {
+    while (mGameState != GameState::QUITTING) {
         ProcessInput();
         UpdateGame();
         GenerateOutput();
