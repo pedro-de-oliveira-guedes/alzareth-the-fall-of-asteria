@@ -4,6 +4,7 @@
 #include <vector>
 #include "Utils/Math.h"
 #include "Actors/Player/Player.h"
+#include "Menus/BaseMenu.h"
 
 class Game {
     public:
@@ -35,8 +36,15 @@ class Game {
         void RemoveActor(const Actor *actor);
 
         // Draw functions
-        void AddDrawable(class DrawComponent *drawable);
+        void AddDrawable(DrawComponent *drawable);
         void RemoveDrawable(const DrawComponent *drawable);
+
+        // Menu functions
+        void InitializeMenus();
+        void UpdateMenus() const;
+        void AddMenu(BaseMenu *menu);
+        void RemoveMenu(const BaseMenu *menu);
+        BaseMenu* GetMenu(BaseMenu::MenuType menuType) const;
 
         // Collider functions
         void AddCollider(class AABBColliderComponent *collider);
@@ -76,6 +84,9 @@ class Game {
 
         // All the collision components
         std::vector<AABBColliderComponent*> mColliders;
+
+        // All the menus
+        std::vector<BaseMenu*> mMenus;
 
         // SDL stuff
         SDL_Window *mWindow;

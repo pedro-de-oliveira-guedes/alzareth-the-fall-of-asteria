@@ -10,6 +10,8 @@
 #include "Actors/Actor.h"
 #include "Actors/Background/Texture.h"
 #include "Components/DrawComponents/DrawComponent.h"
+#include "Menus/BaseMenu.h"
+#include "Menus/Pause/PauseMenu.h"
 
 Game::Game() {
     mWindow = nullptr;
@@ -47,8 +49,8 @@ bool Game::Initialize() {
 
     mTicksCount = SDL_GetTicks();
 
-    // Init all game actors
     InitializeActors();
+    InitializeMenus();
 
     return true;
 }
@@ -65,6 +67,10 @@ void Game::InitializeActors() {
 
     mPlayer = new Player(this);
     mPlayer->SetPosition(Vector2(200.f, 200.f));
+}
+
+void Game::InitializeMenus() {
+    new PauseMenu(this);
 }
 
 void Game::BuildLevel(const int width, const int height) {
@@ -141,6 +147,14 @@ void Game::ProcessInput() {
             case SDL_QUIT:
                 Quit();
                 break;
+            case SDL_KEYDOWN:
+                if (event.key.keysym.sym == SDLK_ESCAPE) {
+                    const auto menu = GetMenu(BaseMenu::PAUSE_MENU);
+                    menu->SetState(BaseMenu::RUNNING);
+                }
+                break;
+            default:
+                break;
         }
     }
 
@@ -159,11 +173,20 @@ void Game::UpdateGame() {
 
     mTicksCount = SDL_GetTicks();
 
+    // Update all menus
+    UpdateMenus();
+
     // Update all actors and pending actors
     UpdateActors(deltaTime);
 
     // Update camera position
     UpdateCamera();
+}
+
+void Game::UpdateMenus() const {
+    for (const auto &menu : mMenus) {
+        menu->MenuLoop(mRenderer);
+    }
 }
 
 void Game::UpdateCamera() {
@@ -247,6 +270,27 @@ void Game::RemoveCollider(const AABBColliderComponent *collider) {
     mColliders.erase(iter);
 }
 
+void Game::AddMenu(BaseMenu *menu) {
+    mMenus.emplace_back(menu);
+}
+
+void Game::RemoveMenu(const BaseMenu *menu) {
+    const auto iter = std::find(mMenus.begin(), mMenus.end(), menu);
+    if (iter != mMenus.end()) {
+        mMenus.erase(iter);
+    }
+}
+
+BaseMenu* Game::GetMenu(const BaseMenu::MenuType menuType) const {
+    for (const auto menu : mMenus) {
+        if (menu->GetType() == menuType)
+            return menu;
+    }
+
+    SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "The queried menu type was not found %d.", menuType);
+    return nullptr;
+}
+
 void Game::GenerateOutput() const {
     // Set draw color to black
     SDL_SetRenderDrawColor(mRenderer, 107, 140, 255, 255);
@@ -285,6 +329,9 @@ void Game::Shutdown() const {
     // Delete actors
     while (!mActors.empty())
         delete mActors.back();
+
+    while (!mMenus.empty())
+        delete mMenus.back();
 
     // Delete level data
     if (mLevelData != nullptr) {
