@@ -45,6 +45,10 @@ add_executable(${PROJECT_NAME}
         Source/Actors/Background/Texture.h
         Source/Components/UI/HUDComponent.cpp
         Source/Components/UI/HUDComponent.h
+        Source/Menus/BaseMenu.cpp
+        Source/Menus/BaseMenu.h
+        Source/Menus/Pause/PauseMenu.cpp
+        Source/Menus/Pause/PauseMenu.h
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE SDL2::SDL2 SDL2_image::SDL2_image)
