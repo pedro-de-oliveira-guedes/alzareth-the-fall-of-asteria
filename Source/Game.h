@@ -4,20 +4,30 @@
 #include <vector>
 #include "Utils/Math.h"
 #include "Actors/Player/Player.h"
+#include "Menus/BaseMenu.h"
 
 class Game {
     public:
+        enum class GameState {
+            RUNNING,
+            QUITTING
+        };
+
+        static const int SCREEN_WIDTH = 1280;
+        static const int SCREEN_HEIGHT = 720;
+
         static const int LEVEL_WIDTH = 150;
         static const int LEVEL_HEIGHT = 40;
         static const int TILE_SIZE = 32;
         static const int SPRITE_SIZE = 100;
 
-        Game(int windowWidth, int windowHeight);
+        Game();
 
         bool Initialize();
         void RunLoop();
         void Shutdown() const;
-        void Quit() { mIsRunning = false; }
+        void Quit() { mGameState = GameState::QUITTING; }
+        GameState GetGameState() const { return mGameState; }
 
         // Actor functions
         void InitializeActors();
@@ -26,8 +36,15 @@ class Game {
         void RemoveActor(const Actor *actor);
 
         // Draw functions
-        void AddDrawable(class DrawComponent *drawable);
+        void AddDrawable(DrawComponent *drawable);
         void RemoveDrawable(const DrawComponent *drawable);
+
+        // Menu functions
+        void InitializeMenus();
+        void UpdateMenus() const;
+        void AddMenu(BaseMenu *menu);
+        void RemoveMenu(const BaseMenu *menu);
+        BaseMenu* GetMenu(BaseMenu::MenuType menuType) const;
 
         // Collider functions
         void AddCollider(class AABBColliderComponent *collider);
@@ -68,6 +85,9 @@ class Game {
         // All the collision components
         std::vector<AABBColliderComponent*> mColliders;
 
+        // All the menus
+        std::vector<BaseMenu*> mMenus;
+
         // SDL stuff
         SDL_Window *mWindow;
         SDL_Renderer *mRenderer;
@@ -80,7 +100,7 @@ class Game {
         Uint32 mTicksCount;
 
         // Track if we're updating actors right now
-        bool mIsRunning;
+        GameState mGameState;
         bool mUpdatingActors;
 
         Vector2 mCameraPos;
