@@ -3,15 +3,18 @@
 #include <fstream>
 #include <map>
 #include <vector>
+#include <memory>
 #include <SDL_image.h>
 #include "Utils/CSV.h"
 #include "Utils/Random.h"
 #include "Game.h"
+#include "UIElements/UIScreen.h"
 #include "Actors/Actor.h"
 #include "Actors/Background/Texture.h"
 #include "Components/DrawComponents/DrawComponent.h"
 #include "Menus/BaseMenu.h"
 #include "Menus/Pause/PauseMenu.h"
+#include "Items/CollectibleItem.h"
 
 Game::Game() {
     mWindow = nullptr;
@@ -67,6 +70,18 @@ void Game::InitializeActors() {
 
     mPlayer = new Player(this);
     mPlayer->SetPosition(Vector2(200.f, 200.f));
+
+    Player* player = static_cast<Player*>(mPlayer);
+    player->AddItemToInventory(std::make_unique<CollectibleItem>(this, "Energy Potion", ItemType::Consumable,
+        "../Assets/Sprites/Items/initial/energy_potion_32.png", 2, Vector2(0.f, 0.f)));
+    player->AddItemToInventory(std::make_unique<CollectibleItem>(this, "Health Potion", ItemType::Consumable,
+        "../Assets/Sprites/Items/initial/health_potion_32.png", 1, Vector2(0.f, 0.f)));
+    player->AddItemToInventory(std::make_unique<CollectibleItem>(this, "Energy Potion", ItemType::Consumable,
+        "../Assets/Sprites/Items/initial/energy_potion_32.png", 1, Vector2(0.f, 0.f)));
+    player->AddItemToInventory(std::make_unique<CollectibleItem>(this, "Health Potion", ItemType::Consumable,
+        "../Assets/Sprites/Items/initial/health_potion_32.png", 1, Vector2(0.f, 0.f)));
+    player->AddItemToInventory(std::make_unique<CollectibleItem>(this, "Energy Potion", ItemType::Consumable,
+        "../Assets/Sprites/Items/initial/energy_potion_32.png", 1, Vector2(0.f, 0.f)));
 }
 
 void Game::InitializeMenus() {
@@ -79,17 +94,23 @@ void Game::BuildLevel(const int width, const int height) {
             std::string texturePath;
             if (mLevelData[row][tile] == 0) {
                 texturePath = "../Assets/Textures/Border/border-0.png";
-            } else if (mLevelData[row][tile] == 1) {
+            }
+            else if (mLevelData[row][tile] == 1) {
                 texturePath = "../Assets/Textures/Finish/finish-0.png";
-            } else if (mLevelData[row][tile] == 2) {
+            }
+            else if (mLevelData[row][tile] == 2) {
                 texturePath = "../Assets/Textures/Sand/sand-0.png";
-            } else if (mLevelData[row][tile] == 3) {
+            }
+            else if (mLevelData[row][tile] == 3) {
                 texturePath = "../Assets/Textures/Border/border-1.png";
-            } else if (mLevelData[row][tile] == 4) {
+            }
+            else if (mLevelData[row][tile] == 4) {
                 texturePath = "../Assets/Textures/Sand/sand-1.png";
-            } else if (mLevelData[row][tile] == 6) {
+            }
+            else if (mLevelData[row][tile] == 6) {
                 texturePath = "../Assets/Textures/Finish/finish-1.png";
-            } else {
+            }
+            else {
                 SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Unknown tile type: %d", mLevelData[row][tile]);
             }
 
@@ -98,14 +119,14 @@ void Game::BuildLevel(const int width, const int height) {
     }
 }
 
-void Game::LoadLevel(const std::string &fileName, const int width, const int height) {
+void Game::LoadLevel(const std::string& fileName, const int width, const int height) {
     std::ifstream file(fileName);
     if (!file.is_open()) {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to open level file: %s", fileName.c_str());
         return;
     }
 
-    mLevelData = new int*[height];
+    mLevelData = new int* [height];
     for (int i = 0; i < height; i++) mLevelData[i] = new int[width];
 
     int rowCount = 0;
@@ -124,7 +145,7 @@ void Game::LoadLevel(const std::string &fileName, const int width, const int hei
         }
 
         for (int block = 0; block < width; block++)
-            mLevelData[rowCount-1][block] = rowData[block];
+            mLevelData[rowCount - 1][block] = rowData[block];
     }
 
     if (rowCount != height) {
@@ -144,21 +165,21 @@ void Game::ProcessInput() {
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
         switch (event.type) {
-            case SDL_QUIT:
-                Quit();
-                break;
-            case SDL_KEYDOWN:
-                if (event.key.keysym.sym == SDLK_ESCAPE) {
-                    const auto menu = GetMenu(BaseMenu::PAUSE_MENU);
-                    menu->SetState(BaseMenu::RUNNING);
-                }
-                break;
-            default:
-                break;
+        case SDL_QUIT:
+            Quit();
+            break;
+        case SDL_KEYDOWN:
+            if (event.key.keysym.sym == SDLK_ESCAPE) {
+                const auto menu = GetMenu(BaseMenu::PAUSE_MENU);
+                menu->SetState(BaseMenu::RUNNING);
+            }
+            break;
+        default:
+            break;
         }
     }
 
-    const Uint8 *state = SDL_GetKeyboardState(nullptr);
+    const Uint8* state = SDL_GetKeyboardState(nullptr);
     for (const auto actor : mActors) {
         actor->ProcessInput(state);
     }
@@ -184,14 +205,14 @@ void Game::UpdateGame() {
 }
 
 void Game::UpdateMenus() const {
-    for (const auto &menu : mMenus) {
+    for (const auto& menu : mMenus) {
         menu->MenuLoop(mRenderer);
     }
 }
 
 void Game::UpdateCamera() {
     int cameraX = mPlayer->GetPosition().x - (mWindowWidth / 2);
-    cameraX = std::max({cameraX, 0}); // Locks camera to the left of the screen
+    cameraX = std::max({ cameraX, 0 }); // Locks camera to the left of the screen
     cameraX = std::min(cameraX, LEVEL_WIDTH * TILE_SIZE - mWindowWidth); // Locks camera to the right of the screen
 
     int cameraY = mPlayer->GetPosition().y - (mWindowHeight / 2);
@@ -225,14 +246,14 @@ void Game::UpdateActors(const float deltaTime) {
     }
 }
 
-void Game::AddActor(Actor *actor) {
+void Game::AddActor(Actor* actor) {
     if (mUpdatingActors)
         mPendingActors.emplace_back(actor);
     else
         mActors.emplace_back(actor);
 }
 
-void Game::RemoveActor(const Actor *actor) {
+void Game::RemoveActor(const Actor* actor) {
     auto iter = std::find(mPendingActors.begin(), mPendingActors.end(), actor);
     if (iter != mPendingActors.end()) {
         // Swap to end of vector and pop off (avoid erase copies)
@@ -248,33 +269,33 @@ void Game::RemoveActor(const Actor *actor) {
     }
 }
 
-void Game::AddDrawable(DrawComponent *drawable) {
+void Game::AddDrawable(DrawComponent* drawable) {
     mDrawables.emplace_back(drawable);
 
-    std::sort(mDrawables.begin(), mDrawables.end(),[](const DrawComponent* a, const DrawComponent* b) {
+    std::sort(mDrawables.begin(), mDrawables.end(), [](const DrawComponent* a, const DrawComponent* b) {
         return a->GetDrawOrder() < b->GetDrawOrder();
-    });
+        });
 }
 
-void Game::RemoveDrawable(const DrawComponent *drawable) {
+void Game::RemoveDrawable(const DrawComponent* drawable) {
     const auto iter = std::find(mDrawables.begin(), mDrawables.end(), drawable);
     mDrawables.erase(iter);
 }
 
-void Game::AddCollider(AABBColliderComponent *collider) {
+void Game::AddCollider(AABBColliderComponent* collider) {
     mColliders.emplace_back(collider);
 }
 
-void Game::RemoveCollider(const AABBColliderComponent *collider) {
+void Game::RemoveCollider(const AABBColliderComponent* collider) {
     const auto iter = std::find(mColliders.begin(), mColliders.end(), collider);
     mColliders.erase(iter);
 }
 
-void Game::AddMenu(BaseMenu *menu) {
+void Game::AddMenu(BaseMenu* menu) {
     mMenus.emplace_back(menu);
 }
 
-void Game::RemoveMenu(const BaseMenu *menu) {
+void Game::RemoveMenu(const BaseMenu* menu) {
     const auto iter = std::find(mMenus.begin(), mMenus.end(), menu);
     if (iter != mMenus.end()) {
         mMenus.erase(iter);
@@ -307,22 +328,42 @@ void Game::GenerateOutput() const {
     SDL_RenderPresent(mRenderer);
 }
 
-SDL_Texture* Game::LoadTexture(const std::string &texturePath) const {
+SDL_Texture* Game::LoadTexture(const std::string& texturePath) {
     if (mTextures->find(texturePath) != mTextures->end()) {
         return mTextures->at(texturePath);
     }
 
-    SDL_Surface *surface = IMG_Load(texturePath.c_str());
+    SDL_Surface* surface = IMG_Load(texturePath.c_str());
     if (!surface) {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, SDL_GetError());
         return nullptr;
     }
 
-    SDL_Texture *texture = SDL_CreateTextureFromSurface(mRenderer, surface);
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(mRenderer, surface);
     SDL_FreeSurface(surface);
     mTextures->insert(std::make_pair(texturePath, texture));
 
     return texture;
+}
+
+UIFont* Game::LoadFont(const std::string& fileName)
+{
+    if (mFonts.find(fileName) != mFonts.end())
+    {
+        return mFonts[fileName];
+    }
+    else {
+        UIFont* font = new UIFont(mRenderer);
+        if (font->Load(fileName)) {
+            mFonts[fileName] = font;
+            return font;
+        }
+        else {
+            font->Unload();
+            delete font;
+            return nullptr;
+        }
+    }
 }
 
 void Game::Shutdown() const {
@@ -346,3 +387,6 @@ void Game::Shutdown() const {
     SDL_DestroyWindow(mWindow);
     SDL_Quit();
 }
+
+
+
