@@ -6,8 +6,13 @@ set(CMAKE_CXX_STANDARD 17)
 set(PROJECT_NAME "alzareth-the-fall-of-asteria")
 project(${PROJECT_NAME})
 
+# Encontre os pacotes SDL2 e SDL2_image
+# Encontre os pacotes SDL2 e SDL2_image
+# Encontre os pacotes SDL2 e SDL2_image
 find_package(SDL2 2.32.2 EXACT REQUIRED)
 find_package(SDL2_image REQUIRED)
+# Encontre o pacote SDL2_ttf para fontes
+find_package(SDL2_ttf REQUIRED)
 
 add_executable(${PROJECT_NAME}
         Source/Main.cpp
@@ -36,8 +41,6 @@ add_executable(${PROJECT_NAME}
         Source/Components/PhysicsComponents/RigidBodyComponent.cpp
         Source/Components/PhysicsComponents/RigidBodyComponent.h
         Source/Game.cpp
-        Source/Main.cpp
-        Source/Game.cpp
         Source/Game.h
         Source/Actors/Player/Player.cpp
         Source/Actors/Player/Player.h
@@ -49,6 +52,25 @@ add_executable(${PROJECT_NAME}
         Source/Menus/BaseMenu.h
         Source/Menus/Pause/PauseMenu.cpp
         Source/Menus/Pause/PauseMenu.h
+        Source/Inventory/Inventory.cpp
+        Source/Inventory/Inventory.h
+        Source/Items/Item.cpp
+        Source/Items/Item.h
+        Source/Items/CollectibleItem.cpp
+        Source/Items/CollectibleItem.h
+        Source/UIElements/UIText.cpp
+        Source/UIElements/UIText.h
+        Source/UIElements/UIScreen.cpp
+        Source/UIElements/UIScreen.h
+        Source/UIElements/UIImage.cpp
+        Source/UIElements/UIImage.h
+        Source/UIElements/UIFont.cpp
+        Source/UIElements/UIFont.h
+        Source/UIElements/UIElement.cpp
+        Source/UIElements/UIElement.h
+        Source/UIElements/UIButton.cpp
+        Source/UIElements/UIButton.h
 )
 
-target_link_libraries(${PROJECT_NAME} PRIVATE SDL2::SDL2 SDL2_image::SDL2_image)
+# Linkar com as bibliotecas SDL2_ttf
+target_link_libraries(${PROJECT_NAME} PRIVATE SDL2::SDL2 SDL2_image::SDL2_image SDL2::SDL2main SDL2_ttf::SDL2_ttf)
