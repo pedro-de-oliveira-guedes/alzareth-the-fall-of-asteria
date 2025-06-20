@@ -198,3 +198,11 @@ void Player::ManageAnimations() const {
         mDrawComponent->SetAnimation(IDLE_ANIMATION);
     }
 }
+
+void Player::AddItemToInventory(std::unique_ptr<Item> item) {
+    mInventory.AddItem(std::move(item));
+}
+
+bool Player::RemoveItemFromInventory(const std::string& itemName, int quantity) {
+    return mInventory.RemoveItem(itemName, quantity);
+}

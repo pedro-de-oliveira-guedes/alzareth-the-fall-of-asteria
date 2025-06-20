@@ -2,6 +2,7 @@
 #include "../Actor.h"
 #include "../../Components/DrawComponents/DrawAnimatedComponent.h"
 #include "../../Components/UI/HUDComponent.h"
+#include "../../Inventory/Inventory.h"
 
 class Player : public Actor {
     public:
@@ -24,6 +25,10 @@ class Player : public Actor {
 
         void OnProcessInput(const Uint8 *keyState) override;
         void OnUpdate(float deltaTime) override;
+
+        void AddItemToInventory(std::unique_ptr<Item> item);
+        bool RemoveItemFromInventory(const std::string& itemName, int quantity = 1);
+        const Inventory& GetInventory() const { return mInventory; }
 
     private:
         // Input handling
@@ -54,6 +59,8 @@ class Player : public Actor {
         bool mIsWalking;
         bool mIsRunning;
         bool mIsDashing;
+
+        Inventory mInventory;
 
         RigidBodyComponent *mRigidBodyComponent;
         AABBColliderComponent *mColliderComponent;
