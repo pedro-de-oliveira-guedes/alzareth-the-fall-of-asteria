@@ -5,7 +5,7 @@ LDFLAGS := -L/opt/SDL2/lib -lSDL2 -L/opt/SDL2/lib -lSDL2_image -L/opt/SDL2/lib -
 SRCS := $(shell find Source -name "*.cpp")
 OBJS := $(patsubst Source/%.cpp, object/%.o, $(SRCS))
 
-OUT := tp3-smb
+OUT := game
 
 all: $(OUT)
 
