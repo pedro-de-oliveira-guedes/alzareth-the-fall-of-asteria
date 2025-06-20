@@ -17,6 +17,7 @@ void Inventory::AddItem(std::unique_ptr<Item> newItem){
 }
 
 bool Inventory::RemoveItem(const std::string& itemName, int quantity){
+  //TODO: Refactor this code
   for(auto it = mItems.begin(); it != mItems.end(); ++it){
     if((*it)->GetName() == itemName){ 
       if((*it)->GetQuantity() > quantity){ 

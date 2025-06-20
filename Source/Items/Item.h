@@ -2,7 +2,7 @@
 #include <string>
 #include <SDL.h> 
 
-#include "../Actors/Actor.h" // Incluir Actor.h
+#include "../Actors/Actor.h" 
 
 enum class ItemType {
     None,
@@ -29,5 +29,5 @@ class Item : public Actor {
     ItemType mType;             
     std::string mTexturePath;   
     int mQuantity; 
-    int mMaxQuantity = 5; // Limite máximo de quantidade do item             
+    int mMaxQuantity = 5;    
 };

@@ -71,6 +71,8 @@ void Game::InitializeActors() {
     mPlayer = new Player(this);
     mPlayer->SetPosition(Vector2(200.f, 200.f));
 
+    // TODO 1:
+    // Remove this hardcoded items initialization
     Player* player = static_cast<Player*>(mPlayer);
     player->AddItemToInventory(std::make_unique<CollectibleItem>(this, "Energy Potion", ItemType::Consumable,
         "../Assets/Sprites/Items/initial/energy_potion_32.png", 2, Vector2(0.f, 0.f)));
