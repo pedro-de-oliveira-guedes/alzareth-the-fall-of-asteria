@@ -8,7 +8,8 @@ enum class ColliderLayer {
     Enemy,
     Blocks,
     MeleeWeapon,
-    Bullet
+    Bullet,
+    Collectible,
 };
 
 class AABBColliderComponent : public Component {
