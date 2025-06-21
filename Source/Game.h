@@ -1,11 +1,12 @@
 #pragma once
-#include <SDL.h>
+#include <SDL2/SDL.h>
 #include <string>
 #include <vector>
 #include <unordered_map>
 
 #include "Utils/Math.h"
 #include "Actors/Player/Player.h"
+#include "Actors/Golem/Golem.h"
 #include "Menus/BaseMenu.h"
 
 class Game {
@@ -82,6 +83,8 @@ private:
 
     // Game-specific
     Actor* mPlayer;
+
+    Actor* mEnemy;
 
     // Load the level from a CSV file as a 2D array
     void LoadLevel(const std::string& fileName, int width, int height);

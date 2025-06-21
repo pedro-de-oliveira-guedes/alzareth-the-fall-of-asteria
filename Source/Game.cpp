@@ -4,7 +4,7 @@
 #include <map>
 #include <vector>
 #include <memory>
-#include <SDL_image.h>
+#include <SDL2/SDL_image.h>
 #include "Utils/CSV.h"
 #include "Utils/Random.h"
 #include "Game.h"
@@ -70,6 +70,11 @@ void Game::InitializeActors() {
 
     mPlayer = new Player(this);
     mPlayer->SetPosition(Vector2(200.f, 200.f));
+
+    mEnemy = new Golem(this);
+    mEnemy->SetPosition(Vector2(500.f, 500.f));
+
+    SDL_Log("Game actors initialized successfully in game\n");
 
     // TODO 1:
     // Remove this hardcoded items initialization
