@@ -26,9 +26,16 @@ class Player : public Actor {
         void OnProcessInput(const Uint8 *keyState) override;
         void OnUpdate(float deltaTime) override;
 
+        float GetWalkSpeed() const { return mWalkSpeed; }
+
         void AddItemToInventory(std::unique_ptr<Item> item);
         bool RemoveItemFromInventory(const std::string& itemName, int quantity = 1);
         const Inventory& GetInventory() const { return mInventory; }
+
+        void OnCollision(float minOverlap, AABBColliderComponent *other) override;
+        void Kill() override;
+
+        void TakeDamage(float damage);
 
     private:
         // Input handling

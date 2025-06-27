@@ -206,3 +206,35 @@ void Player::AddItemToInventory(std::unique_ptr<Item> item) {
 bool Player::RemoveItemFromInventory(const std::string& itemName, int quantity) {
     return mInventory.RemoveItem(itemName, quantity);
 }
+
+void Player::TakeDamage(float damage) {
+    mCurrentHealth -= damage;
+    mCurrentHealth = std::max(mCurrentHealth, 0.f);
+    mHUDComponent->UpdateStats(mMaxHealth, mCurrentHealth, mMaxEnergy, mCurrentEnergy);
+
+    if (mCurrentHealth <= 0.f) {
+        Kill();
+    }
+}
+
+void Player::OnCollision(float minOverlap, AABBColliderComponent *other) {
+    if (other->GetLayer() == ColliderLayer::Enemy) {
+        // get the enemy damage
+        auto enemy = dynamic_cast<Enemy*>(other->GetOwner());
+        if (!enemy) {
+            return;
+        }
+        float attackDamage = enemy->GetDamageAttack();
+
+        TakeDamage(attackDamage);
+    }
+}
+
+void Player::Kill() {
+    mState = ActorState::Destroy;
+    mRigidBodyComponent->SetVelocity(Vector2::Zero);
+    mDrawComponent->SetIsPaused(true);
+    SDL_Log("Player killed");
+
+    mGame->Quit();
+}

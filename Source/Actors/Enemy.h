@@ -1,0 +1,41 @@
+#pragma once
+#include "./Actor.h"
+#include "./../Components/DrawComponents/DrawAnimatedComponent.h"
+
+class Enemy : public Actor {
+    public:
+        explicit Enemy(
+            Game *game
+        );
+
+        float GetMaxHealth() const { return mMaxHealth; }
+        void SetMaxHealth(const float maxHealth) { mMaxHealth = maxHealth; }
+        float GetCurrentHealth() const { return mCurrentHealth; }
+        void SetCurrentHealth(const float currentHealth) { mCurrentHealth = currentHealth; }
+
+        virtual void OnUpdate(float deltaTime);
+        void OnCollision(float minOverlap, AABBColliderComponent *other) override;
+        void Kill() override;
+
+        virtual float GetDamageAttack();
+
+    protected:
+
+        virtual void ManageAnimations() const;
+
+        float mMaxHealth = 100.0f;
+        float mCurrentHealth;
+
+        float mWalkSpeed;
+        float mDamageAttack;
+
+        float mAttackCooldown;
+
+
+        bool mIsAttacking = false;
+        bool mIsWalking;
+
+        RigidBodyComponent *mRigidBodyComponent;
+        AABBColliderComponent *mColliderComponent;
+        DrawAnimatedComponent *mDrawComponent;
+};

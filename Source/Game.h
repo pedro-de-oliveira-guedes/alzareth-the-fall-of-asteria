@@ -84,7 +84,7 @@ private:
     // Game-specific
     Actor* mPlayer;
 
-    Actor* mEnemy;
+    std::vector<Actor*> mEnemy;
 
     // Load the level from a CSV file as a 2D array
     void LoadLevel(const std::string& fileName, int width, int height);

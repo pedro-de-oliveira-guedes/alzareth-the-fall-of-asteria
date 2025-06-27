@@ -71,8 +71,14 @@ void Game::InitializeActors() {
     mPlayer = new Player(this);
     mPlayer->SetPosition(Vector2(200.f, 200.f));
 
-    mEnemy = new Golem(this);
-    mEnemy->SetPosition(Vector2(500.f, 500.f));
+    mEnemy.push_back(new Golem(this));
+    mEnemy[0]->SetPosition(Vector2(400.f, 400.f));
+    mEnemy.push_back(new Golem(this));
+    mEnemy[1]->SetPosition(Vector2(411.f, 401.f));
+    mEnemy.push_back(new Golem(this));
+    mEnemy[2]->SetPosition(Vector2(422.f, 402.f));
+
+
 
     SDL_Log("Game actors initialized successfully in game\n");
 

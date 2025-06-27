@@ -1,36 +1,30 @@
 #pragma once
-#include "../Actor.h"
+#include "../Enemy.h"
 #include "../../Components/DrawComponents/DrawAnimatedComponent.h"
 
-class Golem : public Actor {
+class Golem : public Enemy {
     public:
         explicit Golem(
-            Game *game,
-            float walkSpeed = 500.0f
+            Game *game
         );
 
-        float GetMaxHealth() const { return mMaxHealth; }
-        void SetMaxHealth(const float maxHealth) { mMaxHealth = maxHealth; }
-        float GetCurrentHealth() const { return mCurrentHealth; }
-        void SetCurrentHealth(const float currentHealth) { mCurrentHealth = currentHealth; }
+
+        void Attack();
 
         void OnUpdate(float deltaTime) override;
 
+        void OnCollision(float minOverlap, AABBColliderComponent *other) override;
+
+        void Kill() override;
+        float GetDamageAttack() override { return mDamageAttack; }
+
+
     private:
-        // Input handling
-        void HandleRotation();
-        void ApplyBasicMovement(Vector2 force_vector);
 
         // Update handling
 
         void ManageAnimations() const;
-
-        float mMaxHealth;
-        float mCurrentHealth;
-
-        float mWalkSpeed;
-
-        bool mIsWalking;
+        
 
         RigidBodyComponent *mRigidBodyComponent;
         AABBColliderComponent *mColliderComponent;
