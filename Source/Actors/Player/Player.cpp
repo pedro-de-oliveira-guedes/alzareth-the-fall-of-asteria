@@ -138,6 +138,28 @@ void Player::OnProcessInput(const Uint8 *keyState) {
     HandleDash(keyState, force_vector);
 }
 
+void Player::Attack(const Uint8 *keyState) {
+
+    // if the mouse press the mouse button the player will attack
+    
+    // TODO: GASTAR ENERGIA RELACIONADA A CADA ARMA
+
+    if (keyState[SDL_SCANCODE_SPACE]) {
+        if (mIsDashing) {
+            SDL_Log("Player is dashing, cannot attack");
+            return;
+        }
+
+        mIsWalking = false;
+        mIsRunning = false;
+        mIsDashing = false;
+
+        // Attack logic here
+        SDL_Log("Player attacking");
+    }
+
+}
+
 void Player::HandleMapBoundaries() {
     if (GetPosition().x < GetGame()->GetCameraPos().x) {
         SetPosition(Vector2(0.f, GetPosition().y));
@@ -218,7 +240,7 @@ void Player::TakeDamage(float damage) {
 }
 
 void Player::OnCollision(float minOverlap, AABBColliderComponent *other) {
-    if (other->GetLayer() == ColliderLayer::Enemy) {
+    /* if (other->GetLayer() == ColliderLayer::Enemy) {
         // get the enemy damage
         auto enemy = dynamic_cast<Enemy*>(other->GetOwner());
         if (!enemy) {
@@ -227,7 +249,7 @@ void Player::OnCollision(float minOverlap, AABBColliderComponent *other) {
         float attackDamage = enemy->GetDamageAttack();
 
         TakeDamage(attackDamage);
-    }
+    } */
 }
 
 void Player::Kill() {

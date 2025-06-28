@@ -4,6 +4,8 @@
 #include "../../Components/DrawComponents/DrawAnimatedComponent.h"
 #include "../../Components/ColliderComponents/AABBColliderComponent.h"
 
+#include <random>
+
 const std::string IDLE_ANIMATION = "idle";
 const std::string WALKING_ANIMATION = "walking";
 const std::string ATTACK_ANIMATION = "attack";
@@ -40,6 +42,15 @@ Golem::Golem(Game *game) : Enemy(game) {
 
 void Golem::Attack() {
 
+    if (mAttackCooldown >= 0.0f) {
+        SDL_Log("Golem is on cooldown, cannot attack yet");
+        return; // can't attack yet
+    }
+
+    mIsWalking = false;
+    mIsAttacking = true;
+    SDL_Log("Golem attacking player");
+
     auto player = static_cast<Player*>(mGame->GetPlayer());
 
     player->TakeDamage(mDamageAttack);
@@ -55,6 +66,11 @@ void Golem::OnUpdate(float deltaTime) {
     }
     
     Vector2 EnemyPos  = GetPosition();
+
+    // add small random offset to the enemy position
+    EnemyPos.x += (std::rand() % 10 - 5) * 0.1f; // random offset between -0.5 and 0.5
+    EnemyPos.y += (std::rand() % 10 - 5) * 0.1f; // random offset between -0.5 and 0.5
+
     Vector2 playerPos = mGame->GetPlayer()->GetPosition();
     Vector2 toPlayer  = playerPos - EnemyPos;
 
@@ -72,13 +88,7 @@ void Golem::OnUpdate(float deltaTime) {
     
 
     if (distance < 100.0f) {
-        if (mAttackCooldown <= 0.0f) {
-            // attack the player
-            mIsWalking = false;
-            mIsAttacking = true;
             Attack();
-            SDL_Log("Golem attacking player");
-        }
     } else {
         mIsWalking = true;
         mIsAttacking = false;
@@ -109,8 +119,6 @@ void Golem::ManageAnimations() const {
 
 void Golem::OnCollision(float minOverlap, AABBColliderComponent *other) {
 
-    SDL_Log("Golem collided");
-
     if (other->GetLayer() == ColliderLayer::Player) {
         // get the player damage
         auto player = dynamic_cast<Player*>(other->GetOwner());
@@ -118,9 +126,8 @@ void Golem::OnCollision(float minOverlap, AABBColliderComponent *other) {
             return;
         }
 
-        player->TakeDamage(mDamageAttack);
         mIsAttacking = true;
-
+        Attack();
         ManageAnimations();
 
     }

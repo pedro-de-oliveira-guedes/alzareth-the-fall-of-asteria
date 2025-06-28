@@ -37,6 +37,8 @@ class Player : public Actor {
 
         void TakeDamage(float damage);
 
+        void Attack(const Uint8 *keyState);
+
     private:
         // Input handling
         void HandleRotation();

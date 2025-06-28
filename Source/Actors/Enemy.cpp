@@ -15,8 +15,6 @@ Enemy::Enemy(Game *game) : Actor(game) {
 void Enemy::OnUpdate(float deltaTime) {
 }
 
-
-
 void Enemy::ManageAnimations() const {}
 
 void Enemy::OnCollision(float minOverlap, AABBColliderComponent *other) {}
@@ -28,7 +26,5 @@ void Enemy::Kill() {
 
 
 float Enemy::GetDamageAttack() {}
-
-float Enemy::GetDamageCollision() {}
 
 
