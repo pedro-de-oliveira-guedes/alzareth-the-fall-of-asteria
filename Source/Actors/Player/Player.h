@@ -1,10 +1,13 @@
 #pragma once
+#include <array>
+
 #include "../Actor.h"
 #include "../../Components/DrawComponents/DrawAnimatedComponent.h"
 #include "../../Components/UI/HUDComponent.h"
 #include "../../Inventory/Inventory.h"
 #include <array>
 #include "../Items/Weapons/Melee/Sword.h"
+
 
 class Player : public Actor {
     public:
@@ -18,12 +21,16 @@ class Player : public Actor {
         float GetMaxHealth() const { return mMaxHealth; }
         void SetMaxHealth(const float maxHealth) { mMaxHealth = maxHealth; }
         float GetCurrentHealth() const { return mCurrentHealth; }
-        void SetCurrentHealth(const float currentHealth) { mCurrentHealth = currentHealth; }
+        void SetCurrentHealth(const float currentHealth) { mCurrentHealth = Math::Min(currentHealth, mMaxHealth); }
 
         float GetMaxEnergy() const { return mMaxEnergy; }
         void SetMaxEnergy(const float maxEnergy) { mMaxEnergy = maxEnergy; }
         float GetCurrentEnergy() const { return mCurrentEnergy; }
-        void SetCurrentEnergy(const float currentEnergy) { mCurrentEnergy = currentEnergy; }
+        void SetCurrentEnergy(const float currentEnergy) { mCurrentEnergy = Math::Min(currentEnergy, mMaxEnergy); }
+
+        bool IsInvulnerable() const { return mIsInvulnerable; }
+        void SetInvulnerable(bool invulnerable) { mIsInvulnerable = invulnerable; }
+        void SetInvulnerabilityTimer(float time) { mInvulnerabilityTime = time; }
 
         void OnProcessInput(const Uint8 *keyState) override;
         void OnUpdate(float deltaTime) override;
@@ -51,6 +58,7 @@ class Player : public Actor {
         void HandleDash(const Uint8 *keyState, Vector2 force_vector);
         void HandleItemInput(const Uint8 *keyState);
         void HandleUseItem(const Uint8 *keyState);
+        void HandleStatusEffects(float deltaTime);
 
         // Update handling
         void HandleMapBoundaries();
@@ -79,6 +87,9 @@ class Player : public Actor {
         std::array<bool, 5> mNumberKeysPressedLastFrame;
 
         Inventory mInventory;
+
+        bool mIsInvulnerable;
+        float mInvulnerabilityTime;
 
         RigidBodyComponent *mRigidBodyComponent;
         AABBColliderComponent *mColliderComponent;

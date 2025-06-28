@@ -3,14 +3,14 @@
 const std::string FLOATING_ANIMATION = "floating";
 
 CollectibleItem::CollectibleItem(Game* game, const std::string& name, ItemType type,
-                                 const std::string& textureSpritePath, const std::string& textureInventoryPath, const std::string& spriteSheetData, int quantity, const Vector2& position)
-    : Item(game, name, type, textureSpritePath, textureInventoryPath, spriteSheetData, quantity) { 
+    const std::string& textureSpritePath, const std::string& textureInventoryPath, const std::string& spriteSheetData, int quantity, const Vector2& position)
+    : Item(game, name, type, textureSpritePath, textureInventoryPath, spriteSheetData, quantity) {
     mPosition = position;
 
     mDrawComponent = new DrawAnimatedComponent(
         this,
         textureSpritePath,
-        spriteSheetData, 
+        spriteSheetData,
         100 // drawOrder
     );
 
@@ -19,7 +19,7 @@ CollectibleItem::CollectibleItem(Game* game, const std::string& name, ItemType t
     mDrawComponent->SetAnimFPS(10.0f);
     mDrawComponent->SetIsVisible(true);
 
-    mColliderComponent = new AABBColliderComponent(this, 0, 0, Game::TILE_SIZE/4, Game::TILE_SIZE/4, ColliderLayer::Collectible, false, true);
+    mColliderComponent = new AABBColliderComponent(this, 0, 0, Game::TILE_SIZE / 4, Game::TILE_SIZE / 4, ColliderLayer::Collectible, false, true);
     mColliderComponent->SetEnabled(true);
 }
 
@@ -28,11 +28,21 @@ CollectibleItem::~CollectibleItem()
 }
 
 void CollectibleItem::Use(Player* player) {
-    if (mName == "Energy Potion" && mType == ItemType::Consumable) {
-        player->SetCurrentEnergy(player->GetCurrentEnergy() + 20.0f); 
-        player->SetCurrentEnergy(Math::Min(player->GetCurrentEnergy(), player->GetMaxEnergy())); 
-        SDL_Log("Jogador usou %s. Energia atual: %f", mName.c_str(), player->GetCurrentEnergy());
-    } else {
-        SDL_Log("Item %s não possui um uso definido ou não é consumível.", mName.c_str());
+    if (mType == ItemType::Consumable) {
+        if (mName == "Energy_Potion") {
+            player->SetCurrentEnergy(player->GetCurrentEnergy() + 30.0f);
+            SDL_Log("Jogador usou %s. Energia atual: %f", mName.c_str(), player->GetCurrentEnergy());
+        }
+        else if (mName == "Health_Potion") {
+            player->SetCurrentHealth(player->GetCurrentHealth() + 30.0f);
+            SDL_Log("Jogador usou %s. Vida atual: %f", mName.c_str(), player->GetCurrentHealth());
+        }
+        else if (mName == "Invulnerability_Potion") {
+            player->SetInvulnerable(true);        
+            player->SetInvulnerabilityTimer(10.0f); 
+            SDL_Log("Jogador usou %s. Invulnerabilidade temporária ativada por %.1f segundos!", mName.c_str(), 5.0f);
+        }
+
     }
 }
+ 
