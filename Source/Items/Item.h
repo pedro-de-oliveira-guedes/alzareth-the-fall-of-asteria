@@ -28,7 +28,7 @@ class Item : public Actor {
     void RemoveQuantity(int quantity) { mQuantity -= quantity; if (mQuantity < 0) mQuantity = 0; }
     virtual void Use(class Player* player) = 0; 
 
-  private:
+  protected:
     std::string mName;
     ItemType mType;
     std::string mTexturePath;

@@ -6,7 +6,6 @@ CollectibleItem::CollectibleItem(Game* game, const std::string& name, ItemType t
                                  const std::string& textureSpritePath, const std::string& textureInventoryPath, const std::string& spriteSheetData, int quantity, const Vector2& position)
     : Item(game, name, type, textureSpritePath, textureInventoryPath, spriteSheetData, quantity) { 
     mPosition = position;
-    mName = name;
 
     mDrawComponent = new DrawAnimatedComponent(
         this,
