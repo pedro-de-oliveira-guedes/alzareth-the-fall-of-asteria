@@ -10,6 +10,17 @@ Inventory::~Inventory() {
   mItems.clear();
 }
 
+int Inventory::ReturnWeaponIndex() {
+  for (size_t i = 0; i < mItems.size(); ++i) {
+    if (mItems[i] != nullptr && mItems[i]->GetType() == ItemType::Weapon) {
+      //SDL_Log("Índice da arma encontrada: %zu", i + 1);
+      return i; // Retorna o índice da arma
+    }
+  }
+  //SDL_Log("Nenhuma arma encontrada no inventário.");
+  return -1; // Retorna -1 se nenhuma arma for encontrada
+}
+
 void Inventory::AddItem(Item* newItem) {
   if (newItem == nullptr) {
     return;

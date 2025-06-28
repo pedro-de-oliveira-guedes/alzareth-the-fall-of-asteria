@@ -19,6 +19,8 @@ class Enemy : public Actor {
 
         virtual float GetDamageAttack();
 
+        void TakeDamage(float damage);
+
     protected:
 
         virtual void ManageAnimations() const;

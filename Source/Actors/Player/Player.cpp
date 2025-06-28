@@ -1,6 +1,6 @@
 #include "Player.h"
 #include "../../Game.h"
-#include "../../Items/CollectibleItem.h"
+#include "../Items/Collectible/CollectibleItem.h"
 #include "../../Components/PhysicsComponents/RigidBodyComponent.h"
 #include "../../Components/DrawComponents/DrawAnimatedComponent.h"
 #include "../../Components/ColliderComponents/AABBColliderComponent.h"
@@ -193,6 +193,7 @@ void Player::OnProcessInput(const Uint8* keyState) {
     HandleRotation();
     HandleItemInput(keyState);
     HandleUseItem(keyState); 
+    Attack(keyState);
 
     const auto force_vector = HandleBasicMovementInput(keyState);
     ApplyBasicMovement(force_vector);
@@ -201,25 +202,67 @@ void Player::OnProcessInput(const Uint8* keyState) {
 }
 
 void Player::Attack(const Uint8 *keyState) {
-
-    // if the mouse press the mouse button the player will attack
-    
     // TODO: GASTAR ENERGIA RELACIONADA A CADA ARMA
 
-    if (keyState[SDL_SCANCODE_SPACE]) {
-        if (mIsDashing) {
-            SDL_Log("Player is dashing, cannot attack");
-            return;
-        }
-
-        mIsWalking = false;
-        mIsRunning = false;
-        mIsDashing = false;
-
-        // Attack logic here
-        SDL_Log("Player attacking");
+    // attack if the left mouse button is pressed
+    if (mIsDashing || mIsRunning || mIsWalking) {
+        return; // Não atacar enquanto está correndo, andando ou se esquivando
     }
 
+    
+    int mouseState = SDL_GetMouseState(nullptr, nullptr);
+    if (mouseState & SDL_BUTTON(SDL_BUTTON_LEFT)) {
+        // check if the inventory contains a weapon
+        int weaponIdx = mInventory.ReturnWeaponIndex();
+    
+        if (weaponIdx < 0) {
+            SDL_Log("No weapon in inventory to attack with");
+            return; // No weapon to attack with
+        }
+        
+        SDL_Log("Player attacking");
+
+        // Get the equipped weapon
+        Item* weaponItem = mInventory.GetItemAtIndex(weaponIdx);
+        if (weaponItem && weaponItem->GetType() == ItemType::Weapon) {
+            Sword* sword = dynamic_cast<Sword*>(weaponItem);
+            if (sword) {
+                // Define the attack region based on the weapon's range
+                Vector2 attackPosition = GetPosition();
+                float rangeX = sword->GetRangeX();
+                float rangeY = sword->GetRangeY();
+
+                // draw the weapon for the attack
+
+                // Position the weapon in front of the player
+                Vector2 forward = GetForward();
+                Vector2 weaponPosition = attackPosition + forward * (rangeX / 2);
+                sword->SetPosition(weaponPosition); 
+
+                sword->DrawForAttack();
+                
+
+
+                // Check for collisions with enemies in the attack region
+                const auto& colliders = GetGame()->GetColliders();
+                for (AABBColliderComponent* otherCollider : colliders) {
+                    if (otherCollider->GetLayer() == ColliderLayer::Enemy) {
+                        Vector2 otherPos = otherCollider->GetOwner()->GetPosition();
+                        if (std::abs(otherPos.x - attackPosition.x) <= rangeX &&
+                            std::abs(otherPos.y - attackPosition.y) <= rangeY) {
+                            SDL_Log("Enemy hit by sword");
+                            // Apply damage to the enemy
+                            Enemy* enemy = dynamic_cast<Enemy*>(otherCollider->GetOwner());
+                            if (enemy) {
+                                enemy->TakeDamage(sword->GetDamage());
+                            }
+                        }
+                    }
+                }
+
+            }
+        }
+    }
 }
 
 void Player::HandleMapBoundaries() {
@@ -315,6 +358,18 @@ void Player::OnCollision(float minOverlap, AABBColliderComponent *other) {
 
         TakeDamage(attackDamage);
     } */
+
+    // check if the player collided with a weapon
+    if (other->GetLayer() == ColliderLayer::MeleeWeapon) {
+        SDL_Log("Player collided with a weapon, using weapon");
+        // disable the weapon draw component
+        auto weapon = dynamic_cast<Sword*>(other->GetOwner());
+        if (!weapon) {
+            return;
+        }
+        weapon->Collect();
+        mInventory.AddItem(weapon);
+    }
 }
 
 void Player::Kill() {

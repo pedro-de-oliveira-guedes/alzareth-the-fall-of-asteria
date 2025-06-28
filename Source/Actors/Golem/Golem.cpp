@@ -13,7 +13,7 @@ const std::string ATTACK_ANIMATION = "attack";
 
 Golem::Golem(Game *game) : Enemy(game) {
 
-    mWalkSpeed =  100.0f;
+    mWalkSpeed =  1.0f;
 
     mRigidBodyComponent = new RigidBodyComponent(this, 1.0f, 5.0f);
     mColliderComponent = new AABBColliderComponent(this, 0, 0, Game::SPRITE_SIZE/3, Game::SPRITE_SIZE/3, ColliderLayer::Enemy);
@@ -54,6 +54,7 @@ void Golem::Attack() {
     auto player = static_cast<Player*>(mGame->GetPlayer());
 
     player->TakeDamage(mDamageAttack);
+    ManageAnimations();
 
     mAttackCooldown = 1.0f; // reset
 
@@ -104,7 +105,13 @@ void Golem::OnUpdate(float deltaTime) {
 void Golem::Kill() {
     mState = ActorState::Destroy;
     mGame->RemoveActor(this);
+
+    mDrawComponent->SetIsVisible(false);
+    mColliderComponent->SetEnabled(false);
+    mRigidBodyComponent->SetEnabled(false);
     SDL_Log("Golem killed");
+
+
 }
 
 void Golem::ManageAnimations() const {
@@ -126,9 +133,8 @@ void Golem::OnCollision(float minOverlap, AABBColliderComponent *other) {
             return;
         }
 
-        mIsAttacking = true;
         Attack();
-        ManageAnimations();
+        
 
     }
 

@@ -3,6 +3,8 @@
 #include "../../Components/DrawComponents/DrawAnimatedComponent.h"
 #include "../../Components/UI/HUDComponent.h"
 #include "../../Inventory/Inventory.h"
+#include <array>
+#include "../Items/Weapons/Melee/Sword.h"
 
 class Player : public Actor {
     public:
@@ -25,8 +27,6 @@ class Player : public Actor {
 
         void OnProcessInput(const Uint8 *keyState) override;
         void OnUpdate(float deltaTime) override;
-
-        float GetWalkSpeed() const { return mWalkSpeed; }
 
         float GetWalkSpeed() const { return mWalkSpeed; }
 

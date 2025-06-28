@@ -1,8 +1,8 @@
 #pragma once
-#include "Item.h"
-#include "../Components/ColliderComponents/AABBColliderComponent.h"
-#include "../Components/DrawComponents/DrawSpriteComponent.h"
-#include "../Game.h"
+#include "../Item.h"
+#include "../../../Components/ColliderComponents/AABBColliderComponent.h"
+#include "../../../Components/DrawComponents/DrawSpriteComponent.h"
+#include "../../../Game.h"
 
 class CollectibleItem : public Item {
 public:

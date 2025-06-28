@@ -20,11 +20,17 @@ void Enemy::ManageAnimations() const {}
 void Enemy::OnCollision(float minOverlap, AABBColliderComponent *other) {}
 
 void Enemy::Kill() {
-    mState = ActorState::Destroy;
-    mGame->RemoveActor(this);
+
 }
 
 
 float Enemy::GetDamageAttack() {}
+
+void Enemy::TakeDamage(float damage) {
+    mCurrentHealth -= damage;
+    if (mCurrentHealth <= 0.0f) {
+        Kill();
+    }
+}
 
 
