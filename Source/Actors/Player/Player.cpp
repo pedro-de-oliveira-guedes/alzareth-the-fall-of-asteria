@@ -19,7 +19,7 @@ constexpr float ENERGY_RECHARGE_COOLDOWN = 1.f;
 
 Player::Player(Game* game, const float walkSpeed, const float runSpeed, const float dashSpeed) : Actor(game) {
     mMaxHealth = 100.0f;
-    mCurrentHealth = mMaxHealth;
+    mCurrentHealth = 10.0f;
 
     mMaxEnergy = 100.0f;
     mCurrentEnergy = mMaxEnergy;
@@ -35,6 +35,9 @@ Player::Player(Game* game, const float walkSpeed, const float runSpeed, const fl
     mIsRunning = false;
     mIsDashing = false;
     mEPressedLastFrame = false;
+
+    mIsInvulnerable = false;      
+    mInvulnerabilityTime = 0.0f; 
 
     mNumberKeysPressedLastFrame.fill(false);
 
@@ -136,7 +139,7 @@ void Player::HandleDash(const Uint8* keyState, const Vector2 force_vector) {
 }
 
 void Player::HandleItemInput(const Uint8* keyState) {
-    bool currentEPressed = keyState[SDL_SCANCODE_E];
+    bool currentEPressed = keyState[SDL_SCANCODE_C];
 
     if (currentEPressed && !mEPressedLastFrame) {
         AABBColliderComponent* playerCollider = GetComponent<AABBColliderComponent>();
@@ -149,9 +152,15 @@ void Player::HandleItemInput(const Uint8* keyState) {
                         mInventory.AddItem(item);
                         item->SetState(ActorState::Destroy);
                         mGame->RemoveActor(item);
+
                         if (auto drawComp = item->GetComponent<DrawComponent>()) {
                             drawComp->SetIsVisible(false);
                         }
+
+                        if (auto colliderComp = item->GetComponent<AABBColliderComponent>()) {
+                            colliderComp->SetEnabled(false);
+                        }
+
                         SDL_Log("Collected item: %s", item->GetName().c_str());
                         break;
                     }
@@ -179,11 +188,21 @@ void Player::UseItemAtIndex(int index) {
     Item* itemToUse = mInventory.GetItemAtIndex(actualIndex);
 
     if (itemToUse) {
-        // Usa o item (a lógica de uso está na classe Item derivada, ex: CollectibleItem::Use)
-        // Item::Use() pode chamar Player::RemoveItemFromInventory() se for consumível.
         itemToUse->Use(this);
+        mInventory.RemoveItemAtIndex(actualIndex);
     } else {
         SDL_Log("Nenhum item na posição %d do inventário.", index + 1);
+    }
+}
+
+void Player::HandleStatusEffects(float deltaTime) { 
+    if (mIsInvulnerable) {
+        mInvulnerabilityTime -= deltaTime;
+        if (mInvulnerabilityTime <= 0.0f) {
+            mIsInvulnerable = false;
+            mInvulnerabilityTime = 0.0f; 
+            SDL_Log("Invulnerabilidade desativada!");
+        }
     }
 }
 

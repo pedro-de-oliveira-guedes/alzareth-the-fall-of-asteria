@@ -86,11 +86,17 @@ void Game::InitializeActors() {
     //     spawnX = Math::Clamp(spawnX, 0.0f, static_cast<float>(LEVEL_WIDTH * TILE_SIZE - TILE_SIZE));
     //     spawnY = Math::Clamp(spawnY, 0.0f, static_cast<float>(LEVEL_HEIGHT * TILE_SIZE - TILE_SIZE));
 
-    //     new CollectibleItem(this, "Energy Potion", ItemType::Consumable,
-    //         "../Assets/Sprites/Items/initial/Energy/energy_potion.png",
-    //         "../Assets/Sprites/Items/initial/Energy/energy_potion_inventory.png",
-    //         "../Assets/Sprites/Items/initial/Energy/energy_potion.json",
-    //         1, Vector2(spawnX, spawnY));
+    //     // new CollectibleItem(this, "Energy Potion", ItemType::Consumable,
+    //     //     "../Assets/Sprites/Items/Energy/energy_potion.png",
+    //     //     "../Assets/Sprites/Items/Energy/energy_potion_inventory.png",
+    //     //     "../Assets/Sprites/Items/Energy/energy_potion.json",
+    //     //     1, Vector2(spawnX, spawnY));
+
+    //     // new CollectibleItem(this, "Health_Potion", ItemType::Consumable,
+    //     //     "../Assets/Sprites/Items/Health/health_potion.png",
+    //     //     "../Assets/Sprites/Items/Health/health_potion_inventory.png",
+    //     //     "../Assets/Sprites/Items/Health/health_potion.json",
+    //     //     1, Vector2(spawnX, spawnY));
     // }
 }
 
