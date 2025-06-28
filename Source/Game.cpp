@@ -76,22 +76,22 @@ void Game::InitializeActors() {
     // TODO 1:
     // Remove this hardcoded items initialization
     Player* player = static_cast<Player*>(mPlayer);
-    for (int i = 0; i < 5; ++i) {
-        float offsetX = static_cast<float>(Random::GetIntRange(-500, 500));
-        float offsetY = static_cast<float>(Random::GetIntRange(-500, 500));
+    // for (int i = 0; i < 5; ++i) {
+    //     float offsetX = static_cast<float>(Random::GetIntRange(-500, 500));
+    //     float offsetY = static_cast<float>(Random::GetIntRange(-500, 500));
 
-        float spawnX = player->GetPosition().x + offsetX;
-        float spawnY = player->GetPosition().y + offsetY;
+    //     float spawnX = player->GetPosition().x + offsetX;
+    //     float spawnY = player->GetPosition().y + offsetY;
 
-        spawnX = Math::Clamp(spawnX, 0.0f, static_cast<float>(LEVEL_WIDTH * TILE_SIZE - TILE_SIZE));
-        spawnY = Math::Clamp(spawnY, 0.0f, static_cast<float>(LEVEL_HEIGHT * TILE_SIZE - TILE_SIZE));
+    //     spawnX = Math::Clamp(spawnX, 0.0f, static_cast<float>(LEVEL_WIDTH * TILE_SIZE - TILE_SIZE));
+    //     spawnY = Math::Clamp(spawnY, 0.0f, static_cast<float>(LEVEL_HEIGHT * TILE_SIZE - TILE_SIZE));
 
-        new CollectibleItem(this, "Energy Potion", ItemType::Consumable,
-            "../Assets/Sprites/Items/initial/Energy/energy_potion.png",
-            "../Assets/Sprites/Items/initial/Energy/energy_potion_inventory.png",
-            "../Assets/Sprites/Items/initial/Energy/energy_potion.json",
-            1, Vector2(spawnX, spawnY));
-    }
+    //     new CollectibleItem(this, "Energy Potion", ItemType::Consumable,
+    //         "../Assets/Sprites/Items/initial/Energy/energy_potion.png",
+    //         "../Assets/Sprites/Items/initial/Energy/energy_potion_inventory.png",
+    //         "../Assets/Sprites/Items/initial/Energy/energy_potion.json",
+    //         1, Vector2(spawnX, spawnY));
+    // }
 }
 
 void Game::InitializeMenus() {
