@@ -23,6 +23,7 @@ class AABBColliderComponent : public Component {
             int h,
             ColliderLayer layer,
             bool isStatic = false,
+            bool isTrigger = false,
             int updateOrder = 10
         );
         ~AABBColliderComponent() override;
@@ -47,6 +48,7 @@ class AABBColliderComponent : public Component {
         int mWidth;
         int mHeight;
         bool mIsStatic;
+        bool mIsTrigger;
 
         ColliderLayer mLayer;
 };

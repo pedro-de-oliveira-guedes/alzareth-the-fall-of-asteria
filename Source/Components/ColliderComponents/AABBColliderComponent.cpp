@@ -10,6 +10,7 @@ AABBColliderComponent::AABBColliderComponent(
     const int h,
     const ColliderLayer layer,
     const bool isStatic,
+    const bool isTrigger,
     const int updateOrder
 ) : Component(owner, updateOrder) {
     mOffset = Vector2(static_cast<float>(dx), static_cast<float>(dy));
@@ -17,6 +18,7 @@ AABBColliderComponent::AABBColliderComponent(
     mWidth = w;
     mHeight = h;
     mLayer = layer;
+    mIsTrigger = isTrigger;
 
     mOwner->GetGame()->AddCollider(this);
 }
@@ -64,6 +66,11 @@ float AABBColliderComponent::DetectHorizontalCollision(RigidBodyComponent *rigid
     for (const auto &collider : colliders) {
         if (!collider->IsEnabled() || collider == this || !Intersect(*collider)) continue;
 
+        if(mIsTrigger || collider->mIsTrigger){
+            mOwner->OnCollision(0.0f, collider);
+            return 0.0f;
+        }
+
         if (GetMax().x > collider->GetMin().x && GetMin().x < collider->GetMax().x) {
             const float minHorizontalOverlap = GetMinHorizontalOverlap(collider);
 
@@ -84,6 +91,11 @@ float AABBColliderComponent::DetectVerticalCollision(RigidBodyComponent *rigidBo
 
     for (const auto &collider : colliders) {
         if (!collider->IsEnabled() || collider == this || !Intersect(*collider)) continue;
+
+        if(mIsTrigger || collider->mIsTrigger){
+            mOwner->OnCollision(0.0f, collider);
+            return 0.0f;
+        }
 
         if (GetMax().y > collider->GetMin().y || GetMin().y < collider->GetMax().y) {
             const float minVerticalOverlap = GetMinVerticalOverlap(collider);
