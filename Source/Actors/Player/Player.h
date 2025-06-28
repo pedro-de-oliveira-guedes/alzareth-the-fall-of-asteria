@@ -26,9 +26,11 @@ class Player : public Actor {
         void OnProcessInput(const Uint8 *keyState) override;
         void OnUpdate(float deltaTime) override;
 
-        void AddItemToInventory(std::unique_ptr<Item> item);
-        bool RemoveItemFromInventory(const std::string& itemName, int quantity = 1);
+        void AddItemToInventory(Item* item); 
+        bool RemoveItemFromInventory(const std::string& itemName);
         const Inventory& GetInventory() const { return mInventory; }
+
+        void UseItemAtIndex(int index);
 
     private:
         // Input handling
@@ -36,6 +38,8 @@ class Player : public Actor {
         Vector2 HandleBasicMovementInput(const Uint8 *keyState);
         void ApplyBasicMovement(Vector2 force_vector);
         void HandleDash(const Uint8 *keyState, Vector2 force_vector);
+        void HandleItemInput(const Uint8 *keyState);
+        void HandleUseItem(const Uint8 *keyState);
 
         // Update handling
         void HandleMapBoundaries();
@@ -59,6 +63,9 @@ class Player : public Actor {
         bool mIsWalking;
         bool mIsRunning;
         bool mIsDashing;
+        bool mEPressedLastFrame;
+
+        std::array<bool, 5> mNumberKeysPressedLastFrame;
 
         Inventory mInventory;
 

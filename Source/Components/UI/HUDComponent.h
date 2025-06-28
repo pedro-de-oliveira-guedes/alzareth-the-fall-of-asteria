@@ -22,6 +22,7 @@ class HUDComponent : public DrawComponent {
         void DrawEnergyBar(SDL_Renderer *renderer);
         void DrawInventoryImage(SDL_Renderer *renderer); 
         void DrawInventory(SDL_Renderer *renderer);
+        void DrawHealthBarOutline(SDL_Renderer *renderer);
 
         float mMaxHealth;
         float mCurrentHealth;
@@ -36,5 +37,6 @@ class HUDComponent : public DrawComponent {
         SDL_Rect mEnergyBarBkg;
 
         UIImage* mInventoryImage;
+        UIImage* mHealthBarOutlineImage;; 
         std::vector<UIImage*> mInventoryItems; 
 };

@@ -1,15 +1,19 @@
 #include "Item.h"
 
-
-Item::Item(Game* game, const std::string& name, ItemType type, const std::string& texturePath, int quantity)
-    : Actor(game), 
+Item::Item(Game* game, const std::string& name, ItemType type, const std::string& texturePath,
+           const std::string& textureInventoryPath, const std::string& spriteSheetData, int quantity)
+    : Actor(game),
       mName(name),
       mType(type),
       mTexturePath(texturePath),
-      mQuantity(quantity)
+      mInventoryTexturePath(textureInventoryPath), 
+      mQuantity(quantity),
+      mSpriteSheetData(spriteSheetData)
 {}
 
 
-Item::~Item() {
-    
+Item::~Item() {}
+
+void Item::Use(Player* player) {
+    (void)player;
 }
