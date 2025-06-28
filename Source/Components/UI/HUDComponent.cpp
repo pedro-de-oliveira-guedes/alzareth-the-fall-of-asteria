@@ -24,11 +24,18 @@ HUDComponent::HUDComponent(
     mEnergyBarBkg = { 0, 0, 0, 0 };
 
     int windowHeight = mOwner->GetGame()->GetWindowHeight();
+    int windowWidth = mOwner->GetGame()->GetWindowWidth();
 
     mInventoryImage = new UIImage(
         "../Assets/Inventory/Inventory.png",
         Vector2(100.0f, static_cast<float>(windowHeight) - 144.0f - 40.0f),
         Vector2(300.0f, 244.0f));
+
+    mHealthBarOutlineImage = new UIImage(
+        "../Assets/Sprites/Bars/health_bar.png",
+        Vector2(static_cast<float>(windowWidth) * 0.1f, static_cast<float>(windowHeight) * 0.1f),
+        Vector2(static_cast<float>(windowWidth) * 0.30f, static_cast<float>(windowHeight) * 0.12f)
+    );
 }
 
 void HUDComponent::UpdateStats(
@@ -55,8 +62,8 @@ void HUDComponent::DrawHealthBar(SDL_Renderer* renderer) {
     mHealthBarBkg = {
         static_cast<int>(screenWidth * 0.05f),
         static_cast<int>(screenHeight * 0.05f),
-        static_cast<int>(screenWidth * 0.15f),
-        static_cast<int>(screenHeight * 0.02f)
+        static_cast<int>(screenWidth * 0.20f),
+        static_cast<int>(screenHeight * 0.025f)
     };
     SDL_RenderFillRect(renderer, &mHealthBarBkg);
 
@@ -68,6 +75,14 @@ void HUDComponent::DrawHealthBar(SDL_Renderer* renderer) {
         static_cast<int>(mHealthBarBkg.h - mHealthBarBkg.h * 0.01f)
     };
     SDL_RenderFillRect(renderer, &healthBarRect);
+
+    const float outlineOffsetX = 30.0f; // mais pra esquerda
+    const float outlineOffsetY = 30.0f; // mais pra cima
+
+    mHealthBarOutlineImage->SetPosition(Vector2(
+        static_cast<float>(mHealthBarBkg.x - outlineOffsetX),
+        static_cast<float>(mHealthBarBkg.y - outlineOffsetY)
+    ));
 }
 
 void HUDComponent::DrawEnergyBar(SDL_Renderer* renderer) {
@@ -105,44 +120,54 @@ void HUDComponent::DrawInventory(SDL_Renderer* renderer) {
     }
 }
 
+void HUDComponent::DrawHealthBarOutline(SDL_Renderer* renderer) {
+    if (mHealthBarOutlineImage) {
+        mHealthBarOutlineImage->Draw(renderer, Vector2::Zero);
+    }
+}
+
 void HUDComponent::Draw(SDL_Renderer* renderer) {
     DrawHealthBar(renderer);
     DrawEnergyBar(renderer);
     DrawInventoryImage(renderer);
     DrawInventory(renderer);
+    // DrawHealthBarOutline(renderer);
 }
 
 void HUDComponent::UpdateInventoryDisplay() {
     for (auto image : mInventoryItems) {
-        delete image;
+        if (image) { 
+            delete image;
+        }
     }
     mInventoryItems.clear();
-    
+
     const Inventory& playerInventory = static_cast<Player*>(mOwner->GetGame()->GetPlayer())->GetInventory();
-    
-    float itemDisplayY = mInventoryImage->GetPosition().y + 95.0f; 
 
-    // Espaçamento e tamanho dos itens
-    float initialPaddingX = 18.0f; 
-    float itemSpacingX = 10.5f; 
-    float itemImageSize = 44.0f; 
+    float itemDisplayY = mInventoryImage->GetPosition().y + 95.0f;
 
-    
+    float initialPaddingX = 18.0f;
+    float itemSpacingX = 10.5f;
+    float itemImageSize = 44.0f;
+
     float currentX = mInventoryImage->GetPosition().x + initialPaddingX;
-   
-    int item_count = 0;
-    for (const auto& item : playerInventory.GetItems()) { 
+    const auto& inventorySlots = playerInventory.GetItems(); 
 
-        Vector2 itemPos = Vector2(currentX, itemDisplayY);
-        Vector2 itemSize = Vector2(itemImageSize, itemImageSize);
+    for (const auto& item_ptr : inventorySlots) { 
+        if (item_ptr != nullptr) { 
+            Vector2 itemPos = Vector2(currentX, itemDisplayY);
+            Vector2 itemSize = Vector2(itemImageSize, itemImageSize);
 
-        UIImage* itemImage = new UIImage(item->GetTexturePath(),
-            itemPos,
-            itemSize);
-        mInventoryItems.push_back(itemImage);
+            UIImage* itemImage = new UIImage(
+                item_ptr->GetInventoryTexturePath(), 
+                itemPos,
+                itemSize
+            );
+            mInventoryItems.push_back(itemImage);
 
-        currentX += itemImageSize + itemSpacingX; 
-        
-        item_count++;
+            currentX += itemImageSize + itemSpacingX;
+        } else {
+            currentX += itemImageSize + itemSpacingX; 
+        }
     }
 }

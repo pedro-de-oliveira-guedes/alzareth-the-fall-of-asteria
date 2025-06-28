@@ -1,5 +1,6 @@
 #include "Player.h"
 #include "../../Game.h"
+#include "../../Items/CollectibleItem.h"
 #include "../../Components/PhysicsComponents/RigidBodyComponent.h"
 #include "../../Components/DrawComponents/DrawAnimatedComponent.h"
 #include "../../Components/ColliderComponents/AABBColliderComponent.h"
@@ -16,7 +17,7 @@ constexpr float ENERGY_RECHARGE_RATE = 3.f;
 constexpr float DASH_COOLDOWN = 1.f;
 constexpr float ENERGY_RECHARGE_COOLDOWN = 1.f;
 
-Player::Player(Game *game, const float walkSpeed, const float runSpeed, const float dashSpeed) : Actor(game) {
+Player::Player(Game* game, const float walkSpeed, const float runSpeed, const float dashSpeed) : Actor(game) {
     mMaxHealth = 100.0f;
     mCurrentHealth = mMaxHealth;
 
@@ -33,9 +34,12 @@ Player::Player(Game *game, const float walkSpeed, const float runSpeed, const fl
     mIsWalking = false;
     mIsRunning = false;
     mIsDashing = false;
+    mEPressedLastFrame = false;
+
+    mNumberKeysPressedLastFrame.fill(false);
 
     mRigidBodyComponent = new RigidBodyComponent(this, 1.0f, 5.0f);
-    mColliderComponent = new AABBColliderComponent(this, 0, 0,Game::SPRITE_SIZE, Game::SPRITE_SIZE, ColliderLayer::Player);
+    mColliderComponent = new AABBColliderComponent(this, 0, 0, Game::SPRITE_SIZE, Game::SPRITE_SIZE, ColliderLayer::Player);
 
     mDrawComponent = new DrawAnimatedComponent(
         this,
@@ -43,10 +47,10 @@ Player::Player(Game *game, const float walkSpeed, const float runSpeed, const fl
         "../Assets/Sprites/00-Player/main_character.json",
         100
     );
-    mDrawComponent->AddAnimation(DASH_ANIMATION, {0, 1, 2, 3});
-    mDrawComponent->AddAnimation(IDLE_ANIMATION, {4});
-    mDrawComponent->AddAnimation(WALKING_ANIMATION, {8, 9, 10, 11});
-    mDrawComponent->AddAnimation(RUNNING_ANIMATION, {5, 6, 7});
+    mDrawComponent->AddAnimation(DASH_ANIMATION, { 0, 1, 2, 3 });
+    mDrawComponent->AddAnimation(IDLE_ANIMATION, { 4 });
+    mDrawComponent->AddAnimation(WALKING_ANIMATION, { 8, 9, 10, 11 });
+    mDrawComponent->AddAnimation(RUNNING_ANIMATION, { 5, 6, 7 });
     mDrawComponent->SetAnimation(IDLE_ANIMATION);
     mDrawComponent->SetAnimFPS(10.f);
 
@@ -63,10 +67,11 @@ void Player::HandleRotation() {
     else if (static_cast<float>(mouseX) > GetPosition().x) SetRotation(0);
 }
 
-Vector2 Player::HandleBasicMovementInput(const Uint8 *keyState) {
+Vector2 Player::HandleBasicMovementInput(const Uint8* keyState) {
     if (keyState[SDL_SCANCODE_LCTRL]) {
         mIsRunning = true;
-    } else {
+    }
+    else {
         mIsRunning = false;
     }
 
@@ -93,18 +98,20 @@ void Player::ApplyBasicMovement(Vector2 force_vector) {
             force_vector *= mRunSpeed;
             mIsWalking = false;
             mEnergyRechargeCooldown = ENERGY_RECHARGE_COOLDOWN;
-        } else {
+        }
+        else {
             force_vector *= mWalkSpeed;
             mIsWalking = true;
         }
         mRigidBodyComponent->ApplyForce(force_vector);
-    } else {
+    }
+    else {
         mIsRunning = false;
         mIsWalking = false;
     }
 }
 
-void Player::HandleDash(const Uint8 *keyState, const Vector2 force_vector) {
+void Player::HandleDash(const Uint8* keyState, const Vector2 force_vector) {
     if (mDashCooldown > 0.f) {
         mIsDashing = false;
         return;
@@ -122,15 +129,70 @@ void Player::HandleDash(const Uint8 *keyState, const Vector2 force_vector) {
 
         if (force_vector.x < 0) SetRotation(Math::Pi);
         else SetRotation(0);
-    } else {
+    }
+    else {
         mIsDashing = false;
     }
 }
 
-void Player::OnProcessInput(const Uint8 *keyState) {
+void Player::HandleItemInput(const Uint8* keyState) {
+    bool currentEPressed = keyState[SDL_SCANCODE_E];
+
+    if (currentEPressed && !mEPressedLastFrame) {
+        AABBColliderComponent* playerCollider = GetComponent<AABBColliderComponent>();
+        if (playerCollider) {
+            const auto& colliders = mGame->GetColliders();
+            for (AABBColliderComponent* otherCollider : colliders) {
+                if (otherCollider->GetLayer() == ColliderLayer::Collectible && playerCollider->Intersect(*otherCollider) && otherCollider->IsEnabled()) {
+                    CollectibleItem* item = dynamic_cast<CollectibleItem*>(otherCollider->GetOwner());
+                    if (item) {
+                        mInventory.AddItem(item);
+                        item->SetState(ActorState::Destroy);
+                        mGame->RemoveActor(item);
+                        if (auto drawComp = item->GetComponent<DrawComponent>()) {
+                            drawComp->SetIsVisible(false);
+                        }
+                        SDL_Log("Collected item: %s", item->GetName().c_str());
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    mEPressedLastFrame = currentEPressed;
+}
+
+void Player::HandleUseItem(const Uint8* keyState) {
+    for (int i = 0; i < 5; ++i) {
+        SDL_Scancode key_scancode = static_cast<SDL_Scancode>(SDL_SCANCODE_1 + i);
+        bool currentKeyPressed = keyState[key_scancode];
+
+        if (currentKeyPressed && !mNumberKeysPressedLastFrame[i]) {
+            UseItemAtIndex(i);
+        }
+        mNumberKeysPressedLastFrame[i] = currentKeyPressed;
+    }
+}
+
+void Player::UseItemAtIndex(int index) {
+    size_t actualIndex = static_cast<size_t>(index);
+    Item* itemToUse = mInventory.GetItemAtIndex(actualIndex);
+
+    if (itemToUse) {
+        // Usa o item (a lógica de uso está na classe Item derivada, ex: CollectibleItem::Use)
+        // Item::Use() pode chamar Player::RemoveItemFromInventory() se for consumível.
+        itemToUse->Use(this);
+    } else {
+        SDL_Log("Nenhum item na posição %d do inventário.", index + 1);
+    }
+}
+
+void Player::OnProcessInput(const Uint8* keyState) {
     if (mIsDashing && mDashTime > 0.f) return;
 
     HandleRotation();
+    HandleItemInput(keyState);
+    HandleUseItem(keyState); 
 
     const auto force_vector = HandleBasicMovementInput(keyState);
     ApplyBasicMovement(force_vector);
@@ -212,21 +274,24 @@ void Player::OnUpdate(const float deltaTime) {
 void Player::ManageAnimations() const {
     if (mIsWalking) {
         mDrawComponent->SetAnimation(WALKING_ANIMATION);
-    } else if (mIsRunning) {
+    }
+    else if (mIsRunning) {
         mDrawComponent->SetAnimation(RUNNING_ANIMATION);
-    } else if (mIsDashing) {
+    }
+    else if (mIsDashing) {
         mDrawComponent->SetAnimation(DASH_ANIMATION);
-    } else {
+    }
+    else {
         mDrawComponent->SetAnimation(IDLE_ANIMATION);
     }
 }
 
-void Player::AddItemToInventory(std::unique_ptr<Item> item) {
+void Player::AddItemToInventory(Item* item) {
     mInventory.AddItem(std::move(item));
 }
 
-bool Player::RemoveItemFromInventory(const std::string& itemName, int quantity) {
-    return mInventory.RemoveItem(itemName, quantity);
+bool Player::RemoveItemFromInventory(const std::string& itemName) {
+    return mInventory.RemoveItem(itemName);
 }
 
 void Player::TakeDamage(float damage) {

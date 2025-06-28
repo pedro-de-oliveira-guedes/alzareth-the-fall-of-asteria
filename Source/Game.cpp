@@ -30,6 +30,8 @@ Game::Game() {
 
 bool Game::Initialize() {
     auto start_time = SDL_GetTicks();
+    SDL_SetRenderDrawBlendMode(mRenderer, SDL_BLENDMODE_BLEND);
+
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         SDL_Log("Unable to initialize SDL: %s", SDL_GetError());
         return false;
@@ -85,16 +87,22 @@ void Game::InitializeActors() {
     // TODO 1:
     // Remove this hardcoded items initialization
     Player* player = static_cast<Player*>(mPlayer);
-    player->AddItemToInventory(std::make_unique<CollectibleItem>(this, "Energy Potion", ItemType::Consumable,
-        "../Assets/Sprites/Items/initial/energy_potion_32.png", 2, Vector2(0.f, 0.f)));
-    player->AddItemToInventory(std::make_unique<CollectibleItem>(this, "Health Potion", ItemType::Consumable,
-        "../Assets/Sprites/Items/initial/health_potion_32.png", 1, Vector2(0.f, 0.f)));
-    player->AddItemToInventory(std::make_unique<CollectibleItem>(this, "Energy Potion", ItemType::Consumable,
-        "../Assets/Sprites/Items/initial/energy_potion_32.png", 1, Vector2(0.f, 0.f)));
-    player->AddItemToInventory(std::make_unique<CollectibleItem>(this, "Health Potion", ItemType::Consumable,
-        "../Assets/Sprites/Items/initial/health_potion_32.png", 1, Vector2(0.f, 0.f)));
-    player->AddItemToInventory(std::make_unique<CollectibleItem>(this, "Energy Potion", ItemType::Consumable,
-        "../Assets/Sprites/Items/initial/energy_potion_32.png", 1, Vector2(0.f, 0.f)));
+    // for (int i = 0; i < 5; ++i) {
+    //     float offsetX = static_cast<float>(Random::GetIntRange(-500, 500));
+    //     float offsetY = static_cast<float>(Random::GetIntRange(-500, 500));
+
+    //     float spawnX = player->GetPosition().x + offsetX;
+    //     float spawnY = player->GetPosition().y + offsetY;
+
+    //     spawnX = Math::Clamp(spawnX, 0.0f, static_cast<float>(LEVEL_WIDTH * TILE_SIZE - TILE_SIZE));
+    //     spawnY = Math::Clamp(spawnY, 0.0f, static_cast<float>(LEVEL_HEIGHT * TILE_SIZE - TILE_SIZE));
+
+    //     new CollectibleItem(this, "Energy Potion", ItemType::Consumable,
+    //         "../Assets/Sprites/Items/initial/Energy/energy_potion.png",
+    //         "../Assets/Sprites/Items/initial/Energy/energy_potion_inventory.png",
+    //         "../Assets/Sprites/Items/initial/Energy/energy_potion.json",
+    //         1, Vector2(spawnX, spawnY));
+    // }
 }
 
 void Game::InitializeMenus() {

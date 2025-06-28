@@ -28,8 +28,10 @@ class Player : public Actor {
 
         float GetWalkSpeed() const { return mWalkSpeed; }
 
-        void AddItemToInventory(std::unique_ptr<Item> item);
-        bool RemoveItemFromInventory(const std::string& itemName, int quantity = 1);
+        float GetWalkSpeed() const { return mWalkSpeed; }
+
+        void AddItemToInventory(Item* item); 
+        bool RemoveItemFromInventory(const std::string& itemName); 
         const Inventory& GetInventory() const { return mInventory; }
 
         void OnCollision(float minOverlap, AABBColliderComponent *other) override;
@@ -39,12 +41,16 @@ class Player : public Actor {
 
         void Attack(const Uint8 *keyState);
 
+        void UseItemAtIndex(int index);
+
     private:
         // Input handling
         void HandleRotation();
         Vector2 HandleBasicMovementInput(const Uint8 *keyState);
         void ApplyBasicMovement(Vector2 force_vector);
         void HandleDash(const Uint8 *keyState, Vector2 force_vector);
+        void HandleItemInput(const Uint8 *keyState);
+        void HandleUseItem(const Uint8 *keyState);
 
         // Update handling
         void HandleMapBoundaries();
@@ -68,6 +74,9 @@ class Player : public Actor {
         bool mIsWalking;
         bool mIsRunning;
         bool mIsDashing;
+        bool mEPressedLastFrame;
+
+        std::array<bool, 5> mNumberKeysPressedLastFrame;
 
         Inventory mInventory;
 
