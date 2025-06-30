@@ -38,23 +38,32 @@ UIScreen::~UIScreen()
     mImages.clear();
 }
 
-void UIScreen::Update(float deltaTime)
-{
-	
-}
+void UIScreen::Update(float deltaTime) { }
 
-void UIScreen::Draw(SDL_Renderer *renderer)
-{
-    for(auto text : mTexts){
-        text->Draw(renderer, mPos);
+void UIScreen::Draw(SDL_Renderer *renderer) {
+    std::vector<UIElement*> elements;
+
+    for(const auto text : mTexts) {
+        elements.push_back(text);
     }
 
-    for(auto button : mButtons){
-        button->Draw(renderer, mPos);
+    for(const auto button : mButtons) {
+        elements.push_back(button);
     }
 
-    for(auto image : mImages){
-        image->Draw(renderer, mPos);
+    for(const auto image : mImages) {
+        elements.push_back(image);
+    }
+
+    std::sort(
+        elements.begin(),
+        elements.end(),
+        [](const UIElement* a, const UIElement* b) {
+            return a->GetDrawOrder() < b->GetDrawOrder();
+        }
+    );
+    for (const auto element : elements) {
+        element->Draw(renderer, mPos);
     }
 }
 
