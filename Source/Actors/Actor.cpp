@@ -21,6 +21,11 @@ Actor::~Actor() {
     mComponents.clear();
 }
 
+void Actor::SetPosition(const Vector2 &pos) {
+    mPosition = pos;
+    mGame->ReinsertActor(this);
+}
+
 void Actor::Update(const float deltaTime) {
     if (mState == ActorState::Active) {
         for (auto comp : mComponents) {
