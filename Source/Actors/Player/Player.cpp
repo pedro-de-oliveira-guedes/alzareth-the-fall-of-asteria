@@ -1,6 +1,6 @@
 #include "Player.h"
 #include "../../Game.h"
-#include "../../Items/CollectibleItem.h"
+#include "../Items/Collectible/CollectibleItem.h"
 #include "../../Components/PhysicsComponents/RigidBodyComponent.h"
 #include "../../Components/DrawComponents/DrawAnimatedComponent.h"
 #include "../../Components/ColliderComponents/AABBColliderComponent.h"
@@ -19,7 +19,7 @@ constexpr float ENERGY_RECHARGE_COOLDOWN = 1.f;
 
 Player::Player(Game* game, const float walkSpeed, const float runSpeed, const float dashSpeed) : Actor(game) {
     mMaxHealth = 100.0f;
-    mCurrentHealth = 10.0f;
+    mCurrentHealth = 100.0f;
 
     mMaxEnergy = 100.0f;
     mCurrentEnergy = mMaxEnergy;
@@ -186,7 +186,7 @@ void Player::UseItemAtIndex(int index) {
     size_t actualIndex = static_cast<size_t>(index);
     Item* itemToUse = mInventory.GetItemAtIndex(actualIndex);
 
-    if (itemToUse) {
+    if (itemToUse && itemToUse->GetType() == ItemType::Consumable) {
         itemToUse->Use(this);
         mInventory.RemoveItemAtIndex(actualIndex);
     } else {
@@ -211,11 +211,72 @@ void Player::OnProcessInput(const Uint8* keyState) {
     HandleRotation();
     HandleItemInput(keyState);
     HandleUseItem(keyState); 
+    Attack(keyState);
 
     const auto force_vector = HandleBasicMovementInput(keyState);
     ApplyBasicMovement(force_vector);
 
     HandleDash(keyState, force_vector);
+}
+
+void Player::Attack(const Uint8 *keyState) {
+    // TODO: GASTAR ENERGIA RELACIONADA A CADA ARMA
+
+    // attack if the left mouse button is pressed
+    if (mIsDashing || mIsRunning || mIsWalking) {
+        return; // Não atacar enquanto está correndo, andando ou se esquivando
+    }
+
+    int mouseState = SDL_GetMouseState(nullptr, nullptr);
+    if (mouseState & SDL_BUTTON(SDL_BUTTON_LEFT)) {
+        // check if the inventory contains a weapon
+        int weaponIdx = mInventory.ReturnWeaponIndex();
+    
+        if (weaponIdx < 0) {
+            SDL_Log("No weapon in inventory to attack with");
+            return; // No weapon to attack with
+        }
+        
+        SDL_Log("Player attacking");
+
+        // Get the equipped weapon
+        Item* weaponItem = mInventory.GetItemAtIndex(weaponIdx);
+        if (weaponItem && weaponItem->GetType() == ItemType::Weapon) {
+            Sword* sword = dynamic_cast<Sword*>(weaponItem);
+            if (sword) {
+                int mouseX, mouseY;
+                SDL_GetMouseState(&mouseX, &mouseY);
+                Vector2 mousePos(mouseX + mGame->GetCameraPos().x, 
+                               mouseY + mGame->GetCameraPos().y);
+                
+                
+                sword->SetPlayerPos(GetPosition());
+                sword->SetMousePos(mousePos);
+                sword->DrawForAttack();
+
+                Vector2 attackPosition = GetPosition();
+                float rangeX = sword->GetRangeX();
+                float rangeY = sword->GetRangeY();
+
+                const auto& colliders = GetGame()->GetColliders();
+                for (AABBColliderComponent* otherCollider : colliders) {
+                    if (otherCollider->GetLayer() == ColliderLayer::Enemy) {
+                        Vector2 otherPos = otherCollider->GetOwner()->GetPosition();
+                        if (std::abs(otherPos.x - attackPosition.x) <= rangeX &&
+                            std::abs(otherPos.y - attackPosition.y) <= rangeY) {
+                            SDL_Log("Enemy hit by sword");
+                            // Apply damage to the enemy
+                            Enemy* enemy = dynamic_cast<Enemy*>(otherCollider->GetOwner());
+                            if (enemy) {
+                                enemy->TakeDamage(sword->GetDamage());
+                                sword->SetHasHitThisAttack(true);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 void Player::HandleMapBoundaries() {
@@ -288,4 +349,48 @@ void Player::AddItemToInventory(Item* item) {
 
 bool Player::RemoveItemFromInventory(const std::string& itemName) {
     return mInventory.RemoveItem(itemName);
+}
+
+void Player::TakeDamage(float damage) {
+    mCurrentHealth -= damage;
+    mCurrentHealth = std::max(mCurrentHealth, 0.f);
+    mHUDComponent->UpdateStats(mMaxHealth, mCurrentHealth, mMaxEnergy, mCurrentEnergy);
+
+    if (mCurrentHealth <= 0.f) {
+        Kill();
+    }
+}
+
+void Player::OnCollision(float minOverlap, AABBColliderComponent *other) {
+    /* if (other->GetLayer() == ColliderLayer::Enemy) {
+        // get the enemy damage
+        auto enemy = dynamic_cast<Enemy*>(other->GetOwner());
+        if (!enemy) {
+            return;
+        }
+        float attackDamage = enemy->GetDamageAttack();
+
+        TakeDamage(attackDamage);
+    } */
+
+    // check if the player collided with a weapon
+    if (other->GetLayer() == ColliderLayer::MeleeWeapon) {
+        SDL_Log("Player collided with a weapon, using weapon");
+        // disable the weapon draw component
+        auto weapon = dynamic_cast<Sword*>(other->GetOwner());
+        if (!weapon) {
+            return;
+        }
+        weapon->Collect();
+        mInventory.AddItem(weapon);
+    }
+}
+
+void Player::Kill() {
+    mState = ActorState::Destroy;
+    mRigidBodyComponent->SetVelocity(Vector2::Zero);
+    mDrawComponent->SetIsPaused(true);
+    SDL_Log("Player killed");
+
+    mGame->Quit();
 }

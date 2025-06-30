@@ -69,3 +69,6 @@ cmake-build-*/
 ##################### Resources #####################
 Assets/**/base
 #####################################################
+
+# executable
+alzareth-the-fall-of-asteria

@@ -44,7 +44,7 @@ public:
 
     bool Initialize();
     void RunLoop();
-    void Shutdown();
+    void Shutdown() const;
     void Quit() { mGameState = GameState::QUITTING; }
     GameState GetGameState() const { return mGameState; }
 
@@ -86,6 +86,8 @@ public:
     const Actor* GetPlayer() const { return mPlayer; }
     std::vector<Actor*> GetNearbyActors(const Vector2& position, int range = 1);
     std::vector<AABBColliderComponent*> GetNearbyColliders(const Vector2& position, int range = 2);
+
+    SDL_Renderer* GetRenderer() const { return mRenderer; }
 
 private:
     void ProcessInput();

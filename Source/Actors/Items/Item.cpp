@@ -1,4 +1,4 @@
-#include "Item.h"
+#include "./Item.h"
 
 Item::Item(Game* game, const std::string& name, ItemType type, const std::string& texturePath,
            const std::string& textureInventoryPath, const std::string& spriteSheetData, int quantity)
@@ -17,3 +17,5 @@ Item::~Item() {}
 void Item::Use(Player* player) {
     (void)player;
 }
+
+void Item::OnCollision(float minOverlap, AABBColliderComponent *other) {}
