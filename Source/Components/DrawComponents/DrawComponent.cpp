@@ -5,13 +5,9 @@
 DrawComponent::DrawComponent(Actor *owner, const int drawOrder) : Component(owner) {
     mDrawOrder = drawOrder;
     mIsVisible = true;
-
-    mOwner->GetGame()->AddDrawable(this);
 }
 
-DrawComponent::~DrawComponent() {
-    mOwner->GetGame()->RemoveDrawable(this);
-}
+DrawComponent::~DrawComponent() {}
 
 
 void DrawComponent::Draw(SDL_Renderer *renderer) {}
