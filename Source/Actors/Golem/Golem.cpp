@@ -19,11 +19,11 @@ Golem::Golem(Game *game, Vector2 position) : Enemy(game) {
     mMaxHealth = 100.0f;
     mCurrentHealth = mMaxHealth;
 
-    mWalkSpeed =  10.0f;
+    mWalkSpeed =  50.0f;
 
     mRigidBodyComponent = new RigidBodyComponent(this, 1.0f, 5.0f);
     int golemSize = 99;
-    int colliderSize = 60; // About 60% of sprite size
+    int colliderSize = 80; // About 60% of sprite size
     
     int offsetX = (golemSize - colliderSize) / 2;
     int offsetY = (golemSize - colliderSize) / 2;
@@ -34,7 +34,9 @@ Golem::Golem(Game *game, Vector2 position) : Enemy(game) {
         offsetY,           
         colliderSize,      
         colliderSize,      
-        ColliderLayer::Enemy
+        ColliderLayer::Enemy,
+        false,
+        true
     );
 
     mDamageAttack = 5.0f;
@@ -143,11 +145,24 @@ void Golem::Kill() {
     mRigidBodyComponent->SetEnabled(false);
     SDL_Log("Golem killed");
 
-    new CollectibleItem(mGame, "Energy_Potion", ItemType::Consumable,
-        "../Assets/Sprites/Items/Energy/energy_potion.png",
-        "../Assets/Sprites/Items/Energy/energy_potion_inventory.png",
-        "../Assets/Sprites/Items/Energy/energy_potion.json",
-        1, Vector2(GetPosition().x, GetPosition().y));
+    // get random int
+
+    int randomInt = std::rand() % 100;
+
+    if (randomInt < 20) {
+        new CollectibleItem(mGame, "Energy_Potion", ItemType::Consumable,
+            "../Assets/Sprites/Items/Energy/energy_potion.png",
+            "../Assets/Sprites/Items/Energy/energy_potion_inventory.png",
+            "../Assets/Sprites/Items/Energy/energy_potion.json",
+            1, Vector2(GetPosition().x, GetPosition().y));
+    } else if (randomInt >= 20 && randomInt < 50) {
+        new CollectibleItem(mGame, "Health_Potion", ItemType::Consumable,
+            "../Assets/Sprites/Items/Health/health_potion.png",
+            "../Assets/Sprites/Items/Health/health_potion_inventory.png",
+            "../Assets/Sprites/Items/Health/health_potion.json",
+            1, Vector2(GetPosition().x, GetPosition().y));
+    }
+    // TODO: Add more items to drop
 }
 
 void Golem::ManageAnimations() const {

@@ -75,6 +75,8 @@ public:
 
     int** GetLevelData() const { return mLevelData; }
 
+    SDL_Renderer* GetRenderer() const { return mRenderer; }
+
 private:
     void ProcessInput();
     void UpdateGame();
