@@ -17,10 +17,14 @@ public:
     const Vector3& GetColor() const { return mColor; }
     void SetColor(const Vector3 &color) { mColor = color; }
 
+    int GetDrawOrder() const { return mDrawOrder; }
+    void SetDrawOrder(const int order) { mDrawOrder = order; }
+
     virtual void Draw(SDL_Renderer* renderer, const Vector2 &screenPos) {};
 
 protected:
     Vector2 mPosition;
     Vector2 mSize;
     Vector3 mColor;
+    int mDrawOrder = 0;
 };
