@@ -223,9 +223,8 @@ void Player::OnProcessInput(const Uint8* keyState) {
 void Player::Attack(const Uint8 *keyState) {
     // TODO: GASTAR ENERGIA RELACIONADA A CADA ARMA
 
-    // attack if the left mouse button is pressed
     if (mIsDashing || mIsRunning || mIsWalking) {
-        return; // Não atacar enquanto está correndo, andando ou se esquivando
+        return; // dont attack while running, walking or dashing
     }
 
     int mouseState = SDL_GetMouseState(nullptr, nullptr);

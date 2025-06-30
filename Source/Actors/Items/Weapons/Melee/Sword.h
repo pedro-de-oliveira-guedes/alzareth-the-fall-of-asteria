@@ -50,7 +50,7 @@ protected:
 
     int mEnergyCost =10;
 
-    float mTimeAttack = 0.5f;
+    float mTimeAttack = 0.3f;
     bool mIsAttacking = false;
 
     Vector2 mPlayerPos;

@@ -74,7 +74,7 @@ void Game::InitializeActors() {
     mPlayer = new Player(this);
     mPlayer->SetPosition(Vector2(200.f, 200.f));
 
-    for (int i = 0; i < 25; i++) {
+    for (int i = 0; i < 5; i++) {
         float offsetX = static_cast<float>(Random::GetIntRange(250, 1600));
         float offsetY = static_cast<float>(Random::GetIntRange(250, 1600));
         new Golem(this, Vector2(offsetX, offsetY));
