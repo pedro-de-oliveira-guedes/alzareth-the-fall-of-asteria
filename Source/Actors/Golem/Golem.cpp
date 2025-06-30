@@ -3,6 +3,7 @@
 #include "../../Components/PhysicsComponents/RigidBodyComponent.h"
 #include "../../Components/DrawComponents/DrawAnimatedComponent.h"
 #include "../../Components/ColliderComponents/AABBColliderComponent.h"
+#include "../Items/Collectible/CollectibleItem.h"
 
 #include <random>
 
@@ -88,7 +89,6 @@ void Golem::OnUpdate(float deltaTime) {
 
     //DebugColliderPosition();
 
-    SDL_Log("Golem life: %f", mCurrentHealth);
 
     if (mAttackCooldown > 0.0f) {
         mAttackCooldown -= deltaTime;
@@ -131,6 +131,10 @@ void Golem::OnUpdate(float deltaTime) {
 }
 
 void Golem::Kill() {
+    if (mState == ActorState::Destroy) {
+        return; // Ensure Kill is executed only once
+    }
+
     mState = ActorState::Destroy;
     mGame->RemoveActor(this);
 
@@ -139,7 +143,11 @@ void Golem::Kill() {
     mRigidBodyComponent->SetEnabled(false);
     SDL_Log("Golem killed");
 
-
+    new CollectibleItem(mGame, "Energy_Potion", ItemType::Consumable,
+        "../Assets/Sprites/Items/Energy/energy_potion.png",
+        "../Assets/Sprites/Items/Energy/energy_potion_inventory.png",
+        "../Assets/Sprites/Items/Energy/energy_potion.json",
+        1, Vector2(GetPosition().x, GetPosition().y));
 }
 
 void Golem::ManageAnimations() const {
