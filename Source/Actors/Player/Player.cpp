@@ -64,7 +64,6 @@ void Player::HandleRotation() {
     int mouseX, mouseY;
     SDL_GetMouseState(&mouseX, &mouseY);
     mouseX += static_cast<int>(mGame->GetCameraPos().x);
-    mouseY += static_cast<int>(mGame->GetCameraPos().y);
 
     if (static_cast<float>(mouseX) < GetPosition().x) SetRotation(Math::Pi);
     else if (static_cast<float>(mouseX) > GetPosition().x) SetRotation(0);
@@ -144,10 +143,10 @@ void Player::HandleItemInput(const Uint8* keyState) {
     if (currentEPressed && !mEPressedLastFrame) {
         AABBColliderComponent* playerCollider = GetComponent<AABBColliderComponent>();
         if (playerCollider) {
-            const auto& colliders = mGame->GetColliders();
+            const auto& colliders = mGame->GetNearbyColliders(mPosition);
             for (AABBColliderComponent* otherCollider : colliders) {
                 if (otherCollider->GetLayer() == ColliderLayer::Collectible && playerCollider->Intersect(*otherCollider) && otherCollider->IsEnabled()) {
-                    CollectibleItem* item = dynamic_cast<CollectibleItem*>(otherCollider->GetOwner());
+                    auto* item = dynamic_cast<CollectibleItem*>(otherCollider->GetOwner());
                     if (item) {
                         mInventory.AddItem(item);
                         item->SetState(ActorState::Destroy);

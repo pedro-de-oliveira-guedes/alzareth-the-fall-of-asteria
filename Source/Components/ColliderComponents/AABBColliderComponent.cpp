@@ -19,12 +19,9 @@ AABBColliderComponent::AABBColliderComponent(
     mHeight = h;
     mLayer = layer;
     mIsTrigger = isTrigger;
-
-    mOwner->GetGame()->AddCollider(this);
 }
 
 AABBColliderComponent::~AABBColliderComponent() {
-    mOwner->GetGame()->RemoveCollider(this);
 }
 
 Vector2 AABBColliderComponent::GetMin() const {
@@ -61,7 +58,7 @@ float AABBColliderComponent::GetMinHorizontalOverlap(const AABBColliderComponent
 float AABBColliderComponent::DetectHorizontalCollision(RigidBodyComponent *rigidBody) const {
     if (mIsStatic) return false;
 
-    const auto colliders = mOwner->GetGame()->GetColliders();
+    const auto colliders = mOwner->GetGame()->GetNearbyColliders(mOwner->GetPosition());
 
     for (const auto &collider : colliders) {
         if (!collider->IsEnabled() || collider == this || !Intersect(*collider)) continue;
@@ -87,7 +84,7 @@ float AABBColliderComponent::DetectHorizontalCollision(RigidBodyComponent *rigid
 float AABBColliderComponent::DetectVerticalCollision(RigidBodyComponent *rigidBody) const {
     if (mIsStatic) return false;
 
-    const auto colliders = mOwner->GetGame()->GetColliders();
+    const auto colliders = mOwner->GetGame()->GetNearbyColliders(mOwner->GetPosition());
 
     for (const auto &collider : colliders) {
         if (!collider->IsEnabled() || collider == this || !Intersect(*collider)) continue;
