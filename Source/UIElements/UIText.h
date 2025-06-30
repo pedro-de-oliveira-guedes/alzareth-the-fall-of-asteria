@@ -12,8 +12,8 @@ public:
 
     ~UIText();
 
-    void SetText(const std::string& name);
-    void Draw(SDL_Renderer* renderer, const Vector2 &screenPos) override;
+    void SetText(const std::string& text);
+    void Draw(SDL_Renderer *renderer, const Vector2 &screenPos) override;
 
 protected:
     std::string mText;
