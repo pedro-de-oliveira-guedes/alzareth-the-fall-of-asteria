@@ -18,6 +18,8 @@ add_executable(${PROJECT_NAME}
         Source/Utils/Math.h
         Source/Utils/Random.cpp
         Source/Utils/Random.h
+        Source/Utils/SpatialHashing.cpp
+        Source/Utils/SpatialHashing.h
         Source/Actors/Actor.cpp
         Source/Actors/Actor.h
         Source/Components/Component.cpp
