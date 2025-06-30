@@ -19,7 +19,7 @@ constexpr float ENERGY_RECHARGE_COOLDOWN = 1.f;
 
 Player::Player(Game* game, const float walkSpeed, const float runSpeed, const float dashSpeed) : Actor(game) {
     mMaxHealth = 100.0f;
-    mCurrentHealth = 10.0f;
+    mCurrentHealth = 100.0f;
 
     mMaxEnergy = 100.0f;
     mCurrentEnergy = mMaxEnergy;
@@ -228,7 +228,6 @@ void Player::Attack(const Uint8 *keyState) {
         return; // Não atacar enquanto está correndo, andando ou se esquivando
     }
 
-    
     int mouseState = SDL_GetMouseState(nullptr, nullptr);
     if (mouseState & SDL_BUTTON(SDL_BUTTON_LEFT)) {
         // check if the inventory contains a weapon
@@ -246,23 +245,20 @@ void Player::Attack(const Uint8 *keyState) {
         if (weaponItem && weaponItem->GetType() == ItemType::Weapon) {
             Sword* sword = dynamic_cast<Sword*>(weaponItem);
             if (sword) {
-                // Define the attack region based on the weapon's range
+                int mouseX, mouseY;
+                SDL_GetMouseState(&mouseX, &mouseY);
+                Vector2 mousePos(mouseX + mGame->GetCameraPos().x, 
+                               mouseY + mGame->GetCameraPos().y);
+                
+                
+                sword->SetPlayerPos(GetPosition());
+                sword->SetMousePos(mousePos);
+                sword->DrawForAttack();
+
                 Vector2 attackPosition = GetPosition();
                 float rangeX = sword->GetRangeX();
                 float rangeY = sword->GetRangeY();
 
-                // draw the weapon for the attack
-
-                // Position the weapon in front of the player
-                Vector2 forward = GetForward();
-                Vector2 weaponPosition = attackPosition + forward * (rangeX / 2);
-                sword->SetPosition(weaponPosition); 
-
-                sword->DrawForAttack();
-                
-
-
-                // Check for collisions with enemies in the attack region
                 const auto& colliders = GetGame()->GetColliders();
                 for (AABBColliderComponent* otherCollider : colliders) {
                     if (otherCollider->GetLayer() == ColliderLayer::Enemy) {
@@ -278,7 +274,6 @@ void Player::Attack(const Uint8 *keyState) {
                         }
                     }
                 }
-
             }
         }
     }

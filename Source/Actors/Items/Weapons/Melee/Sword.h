@@ -32,16 +32,26 @@ public:
 
     void SetRotation(float angle) ;
 
+    void UpdateDirection();
+    void UpdateSwordPosition(const std::string& direction);
+
+    void SetPlayerPos(const Vector2& playerPos) { mPlayerPos = playerPos; }
+    void SetMousePos(const Vector2& mousePos) { mMousePos = mousePos; }
+
 
 protected:
     int mDamage;
     int mRangeY = 100;
     int mRangeX = 100;
+    std::string mCurrentDirection;
 
     int mEnergyCost =10;
 
     float mTimeAttack = 1.0f;
     bool mIsAttacking = false;
+
+    Vector2 mPlayerPos;
+    Vector2 mMousePos;
 
     DrawAnimatedComponent* mDrawComponent;
     AABBColliderComponent* mColliderComponent;  
