@@ -9,6 +9,7 @@ project(${PROJECT_NAME})
 find_package(SDL2 2.32.2 EXACT REQUIRED)
 find_package(SDL2_image REQUIRED)
 find_package(SDL2_ttf REQUIRED)
+find_package(SDL2_mixer REQUIRED)
 
 add_executable(${PROJECT_NAME}
         Source/Main.cpp
@@ -67,4 +68,4 @@ add_executable(${PROJECT_NAME}
 )
 
 # Linkar com as bibliotecas SDL2_ttf
-target_link_libraries(${PROJECT_NAME} PRIVATE SDL2::SDL2 SDL2_image::SDL2_image SDL2::SDL2main SDL2_ttf::SDL2_ttf)
+target_link_libraries(${PROJECT_NAME} PRIVATE SDL2::SDL2 SDL2_image::SDL2_image SDL2_ttf::SDL2_ttf SDL2_mixer::SDL2_mixer)
