@@ -108,20 +108,40 @@ void UIScreen::Close()
 	mState = UIState::Closing;
 }
 
-UIText* UIScreen::AddText(const std::string &name, const Vector2 &pos, const Vector2 &dims, const int pointSize, const int unsigned wrapLength)
-{
-    UIText* t = new UIText(name, mFont, pointSize, wrapLength, pos, dims, Color::White);
+UIText* UIScreen::AddText(
+    const std::string &name,
+    const Vector2 &pos,
+    const Vector2 &dims,
+    const int pointSize,
+    const int unsigned wrapLength
+) {
+    auto *t = new UIText(name, mFont, pointSize, wrapLength, pos, dims, Color::White);
     mTexts.push_back(t);
     return t;
 }
 
-UIButton* UIScreen::AddButton(const std::string& name, const Vector2 &pos, const Vector2& dims, std::function<void()> onClick)
-{
-    UIButton* b = new UIButton(name, mFont, onClick, pos, dims, Vector3(1.0f, 0.5f, 0.0f));
+UIButton* UIScreen::AddButton(
+    const std::string& text,
+    const Vector2 &pos,
+    const Vector2& dims,
+    const std::function<void()> &onClick
+) {
+    const auto textSize = Vector2(text.size() * 0.6f * 40, 40); // Approximate width based on character count and point size
+    auto *b = new UIButton(
+        text,
+        mFont,
+        onClick,
+        pos,
+        dims,
+        Vector3(1.0f, 0.5f, 0.0f),
+        40, // Default point size
+        dims.x,
+        pos + (dims - textSize) * 0.5f, // Center text in button
+        textSize
+    );
     mButtons.push_back(b);
 
-    if(mButtons.size() == 1)
-    {
+    if(mButtons.size() == 1) {
         mSelectedButtonIndex = 0;
         b->SetHighlighted(true);
     }
