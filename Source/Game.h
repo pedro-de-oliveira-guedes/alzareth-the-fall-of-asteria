@@ -6,13 +6,28 @@
 
 #include "Utils/Math.h"
 #include "Actors/Player/Player.h"
-#include "Menus/BaseMenu.h"
+#include "UIElements/UIScreen.h"
+#include "Utils/SpatialHashing.h"
 
 class Game {
 public:
     enum class GameState {
-        RUNNING,
+        PLAYING,
+        PAUSED,
         QUITTING
+    };
+
+    enum class SceneManagerState {
+        None,
+        Entering,
+        Active,
+        Exiting
+    };
+
+    enum class GameScene {
+        MainMenu,
+        Level1,
+        Level2
     };
 
     static const int SCREEN_WIDTH = 1280;
@@ -23,35 +38,33 @@ public:
     static const int TILE_SIZE = 32;
     static const int SPRITE_SIZE = 100;
 
+    static const int TRANSITION_TIME = 1; // seconds
+
     Game();
 
     bool Initialize();
     void RunLoop();
-    void Shutdown() const;
+    void Shutdown();
     void Quit() { mGameState = GameState::QUITTING; }
     GameState GetGameState() const { return mGameState; }
 
+    // Scene management
+    void SetGameScene(GameScene scene, float transitionTime = 0.0f);
+    void ResetGameScene(float transitionTime = 0.0f);
+    void UnloadScene();
+    void ChangeScene();
+    void BuildMainMenu();
+    UIScreen* BuildPauseMenu();
+    void BuildFirstLevel();
+
     // Actor functions
-    void InitializeActors();
     void UpdateActors(float deltaTime);
     void AddActor(class Actor* actor);
-    void RemoveActor(const Actor* actor);
+    void RemoveActor(Actor *actor);
+    void ReinsertActor(Actor* actor);
 
     // Draw functions
-    void AddDrawable(DrawComponent* drawable);
-    void RemoveDrawable(const DrawComponent* drawable);
-
-    // Menu functions
-    void InitializeMenus();
-    void UpdateMenus() const;
-    void AddMenu(BaseMenu* menu);
-    void RemoveMenu(const BaseMenu* menu);
-    BaseMenu* GetMenu(BaseMenu::MenuType menuType) const;
-
-    // Collider functions
-    void AddCollider(class AABBColliderComponent* collider);
-    void RemoveCollider(const AABBColliderComponent* collider);
-    std::vector<AABBColliderComponent*>& GetColliders() { return mColliders; }
+    void SetBackgroundImage(const std::string& texturePath, const Vector2& position, const Vector2& size);
 
     Vector2& GetCameraPos() { return mCameraPos; };
     void SetCameraPos(const Vector2& position) { mCameraPos = position; };
@@ -71,34 +84,36 @@ public:
     // Getters
     Actor* GetPlayer() { return mPlayer; }
     const Actor* GetPlayer() const { return mPlayer; }
-
-    int** GetLevelData() const { return mLevelData; }
+    std::vector<Actor*> GetNearbyActors(const Vector2& position, int range = 1);
+    std::vector<AABBColliderComponent*> GetNearbyColliders(const Vector2& position, int range = 2);
 
 private:
     void ProcessInput();
+    void TogglePause();
+    void HandleKeyPressActors(const int key, const bool isPressed);
+    void ProcessInputActors();
     void UpdateGame();
     void UpdateCamera();
     void GenerateOutput() const;
 
     // Game-specific
-    Actor* mPlayer;
-
-    // Load the level from a CSV file as a 2D array
-    void LoadLevel(const std::string& fileName, int width, int height);
-    void BuildLevel(int width, int height);
-
-    // All the actors in the game
-    std::vector<Actor*> mActors;
-    std::vector<Actor*> mPendingActors;
+    Player* mPlayer;
 
     // All the draw components
-    std::vector<DrawComponent*> mDrawables;
+    SDL_Texture *mBackgroundTexture;
+    Vector2 mBackgroundPosition;
+    Vector2 mBackgroundSize;
 
     // All the collision components
     std::vector<AABBColliderComponent*> mColliders;
 
-    // All the menus
-    std::vector<BaseMenu*> mMenus;
+    // Scenes related attributes
+    void UpdateSceneManager(float deltaTime);
+    SceneManagerState mSceneManagerState;
+    float mSceneManagerTimer;
+    float mSceneManagerTransitionTime;
+    GameScene mGameScene;
+    GameScene mNextScene;
 
     // SDL stuff
     SDL_Window* mWindow;
@@ -111,19 +126,16 @@ private:
     // Track elapsed time since game start
     Uint32 mTicksCount;
 
-    // Track if the game is running
-    bool mIsRunning;
-
     // Camera position
     Vector2 mCameraPos;
 
     // All the UI elements
+    UIScreen *mPauseMenu;
     std::vector<class UIScreen*> mUIStack;
     std::unordered_map<std::string, class UIFont*> mFonts;
 
     // Level data
-    int** mLevelData;
-    std::unordered_map<std::string, SDL_Texture*>* mTextures;
+    SpatialHashing *mSpatialHashing;
 
     // Window dimensions
     int mWindowWidth;
