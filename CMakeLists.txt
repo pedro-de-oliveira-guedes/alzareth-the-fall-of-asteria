@@ -6,12 +6,8 @@ set(CMAKE_CXX_STANDARD 17)
 set(PROJECT_NAME "alzareth-the-fall-of-asteria")
 project(${PROJECT_NAME})
 
-# Encontre os pacotes SDL2 e SDL2_image
-# Encontre os pacotes SDL2 e SDL2_image
-# Encontre os pacotes SDL2 e SDL2_image
 find_package(SDL2 2.32.2 EXACT REQUIRED)
 find_package(SDL2_image REQUIRED)
-# Encontre o pacote SDL2_ttf para fontes
 find_package(SDL2_ttf REQUIRED)
 
 add_executable(${PROJECT_NAME}
@@ -48,10 +44,6 @@ add_executable(${PROJECT_NAME}
         Source/Actors/Background/Texture.h
         Source/Components/UI/HUDComponent.cpp
         Source/Components/UI/HUDComponent.h
-        Source/Menus/BaseMenu.cpp
-        Source/Menus/BaseMenu.h
-        Source/Menus/Pause/PauseMenu.cpp
-        Source/Menus/Pause/PauseMenu.h
         Source/Inventory/Inventory.cpp
         Source/Inventory/Inventory.h
         Source/Items/Item.cpp
