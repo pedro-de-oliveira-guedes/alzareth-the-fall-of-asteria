@@ -13,6 +13,9 @@ const std::string ATTACK_ANIMATION = "attack";
 
 Golem::Golem(Game *game) : Enemy(game) {
 
+    mMaxHealth = 100.0f;
+    mCurrentHealth = mMaxHealth;
+
     mWalkSpeed =  1.0f;
 
     mRigidBodyComponent = new RigidBodyComponent(this, 1.0f, 5.0f);
@@ -58,14 +61,11 @@ void Golem::DebugColliderPosition() const {
     Vector2 colliderMin = mColliderComponent->GetMin();
     Vector2 colliderMax = mColliderComponent->GetMax();
     
-    SDL_Log("Golem Debug - Actor Pos: (%.2f, %.2f), Collider: (%.2f, %.2f) to (%.2f, %.2f)", 
-             actorPos.x, actorPos.y, colliderMin.x, colliderMin.y, colliderMax.x, colliderMax.y);
 }
 
 void Golem::Attack() {
 
     if (mAttackCooldown >= 0.0f) {
-        SDL_Log("Golem is on cooldown, cannot attack yet");
         return; // can't attack yet
     }
 
@@ -85,6 +85,8 @@ void Golem::Attack() {
 void Golem::OnUpdate(float deltaTime) {
 
     //DebugColliderPosition();
+
+    SDL_Log("Golem life: %f", mCurrentHealth);
 
     if (mAttackCooldown > 0.0f) {
         mAttackCooldown -= deltaTime;
@@ -158,8 +160,6 @@ void Golem::OnCollision(float minOverlap, AABBColliderComponent *other) {
         }
 
         Attack();
-        
-
     }
 
 }

@@ -14,9 +14,19 @@ Sword::Sword(Game* game, const std::string& name,
                const std::string& texturePath, const std::string& textureInventoryPath, const std::string& spriteSheetData, const Vector2& position, int quantity)
     : Item(game, name, ItemType::Weapon, texturePath, textureInventoryPath, spriteSheetData, quantity) {
 
+    mDamage = 10;
+
     mPosition = position;
+
+    int swordSpriteSize = 100;
     
-    mColliderComponent = new AABBColliderComponent(this, 0, 0, 1, 1, ColliderLayer::MeleeWeapon, false, true);
+    int colliderSize = 60; // About 60% of sprite size
+    
+    int offsetX = (swordSpriteSize - colliderSize) / 2;
+    int offsetY = (swordSpriteSize - colliderSize) / 2;
+
+    mColliderComponent = new AABBColliderComponent(this, offsetX, offsetY, colliderSize, colliderSize, ColliderLayer::MeleeWeapon, false, true);
+
 
     mDrawComponent = new DrawAnimatedComponent(
         this,
@@ -36,8 +46,6 @@ Sword::Sword(Game* game, const std::string& name,
     mDrawComponent->SetAnimation(SOUTH);
     mDrawComponent->SetAnimFPS(10.0f);
 
-    SDL_Log("Sword texture path: %s", texturePath.c_str());
-    SDL_Log("Sword sprite sheet data: %s", spriteSheetData.c_str());
     
 
 }
@@ -48,13 +56,28 @@ void Sword::Use(Player* player) {}
 
 void Sword::OnCollision(float minOverlap, AABBColliderComponent *other) {
 
-  SDL_Log("Sword collided with another actor");
+  /* SDL_Log("Sword collided with another actor");
 
   // check if player collided with a Sword
   if (other->GetLayer() == ColliderLayer::Player) {
     SDL_Log("Sword collided with player, using Sword");
     // Use the Sword on the player
-  }
+  } else if (other->GetLayer() == ColliderLayer::Enemy) {
+
+    
+    auto enemy = static_cast<Enemy*>(other->GetOwner());
+    enemy->TakeDamage(this->GetDamage());
+
+    SDL_Log("Sword hit enemy");
+
+  } */
+}
+
+int Sword::GetDamage() const {
+    if (mHasHitThisAttack) {
+        return 0;
+    }
+    return mDamage;
 }
 
 void Sword::OnUpdate(float deltaTime) {
@@ -78,6 +101,7 @@ void Sword::DrawForAttack() {
         mDrawComponent->SetIsVisible(false);
         mTimeAttack = 1.0f; // Reset the attack time
         mIsAttacking = false;
+        mHasHitThisAttack = false;
     }
     
 }
@@ -140,8 +164,8 @@ void Sword::UpdateDirection() {
         newDirection = NORTH_EAST;     // frame 5
     }
 
-    SDL_Log("Degrees: %f", degrees);
-    SDL_Log("New direction: %s", newDirection.c_str());
+    //SDL_Log("Degrees: %f", degrees);
+    //SDL_Log("New direction: %s", newDirection.c_str());
 
     mDrawComponent->SetAnimation(newDirection);
     
@@ -173,4 +197,5 @@ void Sword::UpdateSwordPosition(const std::string& direction) {
     
     mPosition = mPlayerPos + swordOffset;
     this->SetPosition(mPosition);
+
 }

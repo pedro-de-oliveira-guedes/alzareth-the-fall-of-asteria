@@ -270,6 +270,7 @@ void Player::Attack(const Uint8 *keyState) {
                             Enemy* enemy = dynamic_cast<Enemy*>(otherCollider->GetOwner());
                             if (enemy) {
                                 enemy->TakeDamage(sword->GetDamage());
+                                sword->SetHasHitThisAttack(true);
                             }
                         }
                     }

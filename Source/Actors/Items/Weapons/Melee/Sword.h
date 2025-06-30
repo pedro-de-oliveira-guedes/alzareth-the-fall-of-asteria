@@ -12,7 +12,7 @@ public:
            const std::string& texturePath, const std::string& textureInventoryPath, const std::string& spriteSheetData, const Vector2& position, int quantity = 1  );
     ~Sword() override;
 
-    int GetDamage() const { return mDamage; }
+    int GetDamage() const;
     void SetDamage(int damage) { mDamage = damage; }
 
     float GetRangeX() const { return mRangeX; }
@@ -38,16 +38,19 @@ public:
     void SetPlayerPos(const Vector2& playerPos) { mPlayerPos = playerPos; }
     void SetMousePos(const Vector2& mousePos) { mMousePos = mousePos; }
 
+    bool GetHasHitThisAttack() const { return mHasHitThisAttack; }
+    void SetHasHitThisAttack(bool hasHitThisAttack) { mHasHitThisAttack = hasHitThisAttack; }
+
 
 protected:
-    int mDamage;
+    int mDamage = 10;
     int mRangeY = 100;
     int mRangeX = 100;
     std::string mCurrentDirection;
 
     int mEnergyCost =10;
 
-    float mTimeAttack = 1.0f;
+    float mTimeAttack = 0.5f;
     bool mIsAttacking = false;
 
     Vector2 mPlayerPos;
@@ -55,4 +58,6 @@ protected:
 
     DrawAnimatedComponent* mDrawComponent;
     AABBColliderComponent* mColliderComponent;  
+
+    bool mHasHitThisAttack = false;
 };

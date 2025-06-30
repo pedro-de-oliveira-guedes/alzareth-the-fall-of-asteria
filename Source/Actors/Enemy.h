@@ -25,8 +25,8 @@ class Enemy : public Actor {
 
         virtual void ManageAnimations() const;
 
-        float mMaxHealth = 100.0f;
-        float mCurrentHealth;
+        float mMaxHealth = 0.0f;
+        float mCurrentHealth = 0.0f;
 
         float mWalkSpeed;
         float mDamageAttack;
