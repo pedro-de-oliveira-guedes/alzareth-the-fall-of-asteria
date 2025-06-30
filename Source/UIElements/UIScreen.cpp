@@ -2,14 +2,14 @@
 #include "../Game.h"
 #include "UIFont.h"
 
-UIScreen::UIScreen(Game* game, const std::string& fontName)
-	:mGame(game)
-	,mPos(0.f, 0.f)
-	,mSize(0.f, 0.f)
-	,mState(UIState::Active)
-    ,mSelectedButtonIndex(-1)
-{
+UIScreen::UIScreen(Game* game, const std::string& fontName) {
+	mGame = game;
     mGame->PushUI(this);
+
+	mPos = Vector2(0.f, 0.f);
+	mSize = Vector2(0.f, 0.f);
+	mState = UIState::Active;
+    mSelectedButtonIndex = -1;
 
     mFont = mGame->LoadFont(fontName);
     if (!mFont) {
@@ -17,24 +17,20 @@ UIScreen::UIScreen(Game* game, const std::string& fontName)
     }
 }
 
-UIScreen::~UIScreen()
-{
-    for(auto text : mTexts)
-    {
+UIScreen::~UIScreen() {
+    for(const auto text : mTexts) {
         delete text;
     }
     mTexts.clear();
 
-    for(auto button : mButtons)
-    {
+    for(const auto button : mButtons) {
         delete button;
     }
     mButtons.clear();
 
-    for(auto image : mImages)
-    {
+    for(const auto image : mImages) {
         delete image;
-    }  
+    }
     mImages.clear();
 }
 
@@ -67,44 +63,32 @@ void UIScreen::Draw(SDL_Renderer *renderer) {
     }
 }
 
-void UIScreen::ProcessInput(const uint8_t* keys)
-{
+void UIScreen::ProcessInput(const uint8_t* keys) { }
 
-}
-
-void UIScreen::HandleKeyPress(int key)
-{
-    if (key == SDLK_w)
-    {
+void UIScreen::HandleKeyPress(const int key) {
+    if (key == SDLK_w) {
         mSelectedButtonIndex--;
-        if (mSelectedButtonIndex < 0)
-        {
+        if (mSelectedButtonIndex < 0) {
             mSelectedButtonIndex = static_cast<int>(mButtons.size()) - 1;
         }
     }
-    else if (key == SDLK_s)
-    {
+    else if (key == SDLK_s) {
         mSelectedButtonIndex++;
-        if (mSelectedButtonIndex >= static_cast<int>(mButtons.size()))
-        {
+        if (mSelectedButtonIndex >= static_cast<int>(mButtons.size())) {
             mSelectedButtonIndex = 0;
         }
     }
-    else if (key == SDLK_RETURN)
-    {
-        if (mSelectedButtonIndex >= 0 && mSelectedButtonIndex < static_cast<int>(mButtons.size()))
-        {
+    else if (key == SDLK_RETURN) {
+        if (mSelectedButtonIndex >= 0 && mSelectedButtonIndex < static_cast<int>(mButtons.size())) {
             mButtons[mSelectedButtonIndex]->OnClick();
         }
     }
-    for (size_t i = 0; i < mButtons.size(); ++i)
-    {
+    for (size_t i = 0; i < mButtons.size(); ++i) {
         mButtons[i]->SetHighlighted(i == static_cast<size_t>(mSelectedButtonIndex));
     }
 }
 
-void UIScreen::Close()
-{
+void UIScreen::Close() {
 	mState = UIState::Closing;
 }
 
@@ -149,9 +133,13 @@ UIButton* UIScreen::AddButton(
     return b;
 }
 
-UIImage* UIScreen::AddImage(const std::string &imagePath, const Vector2 &pos, const Vector2 &dims, const Vector3 &color)
-{
-    UIImage* img = new UIImage(imagePath, pos, dims, color);
+UIImage* UIScreen::AddImage(
+    const std::string &imagePath,
+    const Vector2 &pos,
+    const Vector2 &dims,
+    const Vector3 &color
+) {
+    auto *img = new UIImage(imagePath, pos, dims, color);
     mImages.push_back(img);
     return img;
 }
