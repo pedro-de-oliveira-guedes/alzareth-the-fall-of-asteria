@@ -187,7 +187,7 @@ void Player::UseItemAtIndex(int index) {
     size_t actualIndex = static_cast<size_t>(index);
     Item* itemToUse = mInventory.GetItemAtIndex(actualIndex);
 
-    if (itemToUse) {
+    if (itemToUse && itemToUse->GetType() == ItemType::Consumable) {
         itemToUse->Use(this);
         mInventory.RemoveItemAtIndex(actualIndex);
     } else {
