@@ -227,10 +227,10 @@ void Player::HandleMapBoundaries() {
         SetPosition(Vector2(Game::LEVEL_WIDTH * Game::TILE_SIZE - Game::SPRITE_SIZE, GetPosition().y));
     }
 
-    if (GetPosition().y < GetGame()->GetCameraPos().y) {
+    if (GetPosition().y < 0) {
         SetPosition(Vector2(GetPosition().x, 0.f));
     }
-    else if (GetPosition().y + Game::SPRITE_SIZE > GetGame()->GetCameraPos().y + GetGame()->GetWindowHeight()) {
+    else if (GetPosition().y + Game::SPRITE_SIZE > Game::LEVEL_HEIGHT * Game::TILE_SIZE) {
         SetPosition(Vector2(GetPosition().x, Game::LEVEL_HEIGHT * Game::TILE_SIZE - Game::SPRITE_SIZE));
     }
 }
