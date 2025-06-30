@@ -11,12 +11,14 @@ const std::string WALKING_ANIMATION = "walking";
 const std::string ATTACK_ANIMATION = "attack";
 
 
-Golem::Golem(Game *game) : Enemy(game) {
+Golem::Golem(Game *game, Vector2 position) : Enemy(game) {
+
+    SetPosition(position);
 
     mMaxHealth = 100.0f;
     mCurrentHealth = mMaxHealth;
 
-    mWalkSpeed =  1.0f;
+    mWalkSpeed =  10.0f;
 
     mRigidBodyComponent = new RigidBodyComponent(this, 1.0f, 5.0f);
     int golemSize = 99;

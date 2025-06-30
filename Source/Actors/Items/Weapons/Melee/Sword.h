@@ -44,8 +44,8 @@ public:
 
 protected:
     int mDamage = 10;
-    int mRangeY = 100;
-    int mRangeX = 100;
+    int mRangeY = 150;
+    int mRangeX = 150;
     std::string mCurrentDirection;
 
     int mEnergyCost =10;

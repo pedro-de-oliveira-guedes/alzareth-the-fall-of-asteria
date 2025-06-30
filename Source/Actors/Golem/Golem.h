@@ -5,7 +5,8 @@
 class Golem : public Enemy {
     public:
         explicit Golem(
-            Game *game
+            Game *game,
+            Vector2 position
         );
 
 

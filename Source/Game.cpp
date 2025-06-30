@@ -74,9 +74,12 @@ void Game::InitializeActors() {
     mPlayer = new Player(this);
     mPlayer->SetPosition(Vector2(200.f, 200.f));
 
-    auto b = new Golem(this);
-    b->SetPosition(Vector2(400.f, 400.f));
-    /*mEnemy.push_back(new Golem(this));
+    for (int i = 0; i < 10; i++) {
+        float offsetX = static_cast<float>(Random::GetIntRange(250, 1600));
+        float offsetY = static_cast<float>(Random::GetIntRange(250, 1600));
+        new Golem(this, Vector2(offsetX, offsetY));
+    }
+    /*mEnemy.push_back(new Golem(this));    
     mEnemy[1]->SetPosition(Vector2(411.f, 401.f));
     mEnemy.push_back(new Golem(this));
     mEnemy[2]->SetPosition(Vector2(422.f, 402.f)); */
