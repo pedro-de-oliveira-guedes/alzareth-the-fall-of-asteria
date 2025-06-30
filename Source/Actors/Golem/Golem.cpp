@@ -16,7 +16,20 @@ Golem::Golem(Game *game) : Enemy(game) {
     mWalkSpeed =  1.0f;
 
     mRigidBodyComponent = new RigidBodyComponent(this, 1.0f, 5.0f);
-    mColliderComponent = new AABBColliderComponent(this, 0, 0, Game::SPRITE_SIZE/3, Game::SPRITE_SIZE/3, ColliderLayer::Enemy);
+    int golemSize = 99;
+    int colliderSize = 60; // About 60% of sprite size
+    
+    int offsetX = (golemSize - colliderSize) / 2;
+    int offsetY = (golemSize - colliderSize) / 2;
+    
+    mColliderComponent = new AABBColliderComponent(
+        this, 
+        offsetX,           
+        offsetY,           
+        colliderSize,      
+        colliderSize,      
+        ColliderLayer::Enemy
+    );
 
     mDamageAttack = 5.0f;
 
@@ -40,6 +53,15 @@ Golem::Golem(Game *game) : Enemy(game) {
 
 }
 
+void Golem::DebugColliderPosition() const {
+    Vector2 actorPos = GetPosition();
+    Vector2 colliderMin = mColliderComponent->GetMin();
+    Vector2 colliderMax = mColliderComponent->GetMax();
+    
+    SDL_Log("Golem Debug - Actor Pos: (%.2f, %.2f), Collider: (%.2f, %.2f) to (%.2f, %.2f)", 
+             actorPos.x, actorPos.y, colliderMin.x, colliderMin.y, colliderMax.x, colliderMax.y);
+}
+
 void Golem::Attack() {
 
     if (mAttackCooldown >= 0.0f) {
@@ -61,6 +83,8 @@ void Golem::Attack() {
 }
 
 void Golem::OnUpdate(float deltaTime) {
+
+    //DebugColliderPosition();
 
     if (mAttackCooldown > 0.0f) {
         mAttackCooldown -= deltaTime;
