@@ -24,9 +24,19 @@ void DrawAnimatedComponent::LoadSpriteSheet(const std::string &texturePath, cons
     // Load sprite sheet texture
     mSpriteSheetSurface = mOwner->GetGame()->LoadTexture(texturePath);
 
+    if (!mSpriteSheetSurface) {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to load sprite sheet texture: %s", texturePath.c_str());
+        return;
+    }
+
     // Load sprite sheet data
     std::ifstream spriteSheetFile(dataPath);
     nlohmann::json spriteSheetData = nlohmann::json::parse(spriteSheetFile);
+
+    if (spriteSheetData.is_null() || !spriteSheetData.contains("frames")) {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to parse sprite sheet data: %s", dataPath.c_str());
+        return;
+    }
 
     SDL_Rect *rect = nullptr;
     for(const auto &frame : spriteSheetData["frames"]) {

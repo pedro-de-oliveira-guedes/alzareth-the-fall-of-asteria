@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../Utils/Math.h"
-#include <SDL.h>
+#include <SDL2/SDL.h>
 
 class UIElement {
 public:

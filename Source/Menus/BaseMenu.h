@@ -1,8 +1,8 @@
 #pragma once
 
 #include <functional>
-#include <SDL_events.h>
-#include <SDL_render.h>
+#include <SDL2/SDL_events.h>
+#include <SDL2/SDL_render.h>
 #include <string>
 #include <vector>
 

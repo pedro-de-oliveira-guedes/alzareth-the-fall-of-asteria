@@ -1,8 +1,8 @@
 #pragma once
 #include <string>
-#include <SDL.h>
+#include <SDL2/SDL.h> 
 
-#include "../Actors/Actor.h"
+#include "../Actor.h"
 
 enum class ItemType {
     None,
@@ -27,6 +27,9 @@ class Item : public Actor {
     void AddQuantity(int quantity) { mQuantity += quantity;}
     void RemoveQuantity(int quantity) { mQuantity -= quantity; if (mQuantity < 0) mQuantity = 0; }
     virtual void Use(class Player* player) = 0; 
+
+    void OnCollision(float minOverlap, AABBColliderComponent *other) override;
+
 
   protected:
     std::string mName;

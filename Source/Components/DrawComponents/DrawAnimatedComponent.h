@@ -35,6 +35,8 @@ class DrawAnimatedComponent : public DrawSpriteComponent {
             return (1.f / mAnimFPS) * static_cast<float>(mAnimations.at(animName).size());
         }
 
+        void SetRotation(float angle) { mRotation = angle; }
+
     private:
         void LoadSpriteSheet(const std::string &texturePath, const std::string &dataPath);
 
@@ -55,4 +57,6 @@ class DrawAnimatedComponent : public DrawSpriteComponent {
 
         // Whether the animation is paused (defaults to false)
         bool mIsPaused = false;
+
+        float mRotation = 0.0f;
 };

@@ -5,6 +5,8 @@
 #include "../../Components/DrawComponents/DrawAnimatedComponent.h"
 #include "../../Components/UI/HUDComponent.h"
 #include "../../Inventory/Inventory.h"
+#include <array>
+#include "../Items/Weapons/Melee/Sword.h"
 
 
 class Player : public Actor {
@@ -33,9 +35,18 @@ class Player : public Actor {
         void OnProcessInput(const Uint8 *keyState) override;
         void OnUpdate(float deltaTime) override;
 
+        float GetWalkSpeed() const { return mWalkSpeed; }
+
         void AddItemToInventory(Item* item); 
-        bool RemoveItemFromInventory(const std::string& itemName);
+        bool RemoveItemFromInventory(const std::string& itemName); 
         const Inventory& GetInventory() const { return mInventory; }
+
+        void OnCollision(float minOverlap, AABBColliderComponent *other) override;
+        void Kill() override;
+
+        void TakeDamage(float damage);
+
+        void Attack(const Uint8 *keyState);
 
         void UseItemAtIndex(int index);
 

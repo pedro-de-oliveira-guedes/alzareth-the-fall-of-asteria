@@ -4,7 +4,7 @@
 #include <map>
 #include <vector>
 #include <memory>
-#include <SDL_image.h>
+#include <SDL2/SDL_image.h>
 #include "Utils/CSV.h"
 #include "Utils/Random.h"
 #include "Game.h"
@@ -14,7 +14,8 @@
 #include "Components/DrawComponents/DrawComponent.h"
 #include "Menus/BaseMenu.h"
 #include "Menus/Pause/PauseMenu.h"
-#include "Items/CollectibleItem.h"
+#include "Actors/Items/Collectible/CollectibleItem.h"
+#include "Actors/Items/Weapons/Melee/Sword.h"
 
 Game::Game() {
     mWindow = nullptr;
@@ -73,31 +74,54 @@ void Game::InitializeActors() {
     mPlayer = new Player(this);
     mPlayer->SetPosition(Vector2(200.f, 200.f));
 
+    for (int i = 0; i < 10; i++) {
+        float offsetX = static_cast<float>(Random::GetIntRange(250, 1600));
+        float offsetY = static_cast<float>(Random::GetIntRange(250, 1600));
+        new Golem(this, Vector2(offsetX, offsetY));
+    }
+    /*mEnemy.push_back(new Golem(this));    
+    mEnemy[1]->SetPosition(Vector2(411.f, 401.f));
+    mEnemy.push_back(new Golem(this));
+    mEnemy[2]->SetPosition(Vector2(422.f, 402.f)); */
+
+
+
+    SDL_Log("Game actors initialized successfully in game\n");
+
     // TODO 1:
     // Remove this hardcoded items initialization
     Player* player = static_cast<Player*>(mPlayer);
-    // for (int i = 0; i < 5; ++i) {
-    //     float offsetX = static_cast<float>(Random::GetIntRange(-500, 500));
-    //     float offsetY = static_cast<float>(Random::GetIntRange(-500, 500));
 
-    //     float spawnX = player->GetPosition().x + offsetX;
-    //     float spawnY = player->GetPosition().y + offsetY;
+    auto a = new Sword(this, "Sword",
+        "../Assets/Sprites/Weapons/Sword/sword.png",
+        "../Assets/Sprites/Weapons/Sword/sword_inv.png",
+        "../Assets/Sprites/Weapons/Sword/sword.json",
+        Vector2(300.0f, 300.0f) ,1);
 
-    //     spawnX = Math::Clamp(spawnX, 0.0f, static_cast<float>(LEVEL_WIDTH * TILE_SIZE - TILE_SIZE));
-    //     spawnY = Math::Clamp(spawnY, 0.0f, static_cast<float>(LEVEL_HEIGHT * TILE_SIZE - TILE_SIZE));
+    //mWeapons.push_back(a);
 
-    //     // new CollectibleItem(this, "Energy Potion", ItemType::Consumable,
-    //     //     "../Assets/Sprites/Items/Energy/energy_potion.png",
-    //     //     "../Assets/Sprites/Items/Energy/energy_potion_inventory.png",
-    //     //     "../Assets/Sprites/Items/Energy/energy_potion.json",
-    //     //     1, Vector2(spawnX, spawnY));
+     /* for (int i = 0; i < 5; ++i) {
+         float offsetX = static_cast<float>(Random::GetIntRange(-500, 500));
+         float offsetY = static_cast<float>(Random::GetIntRange(-500, 500));
 
-    //     // new CollectibleItem(this, "Health_Potion", ItemType::Consumable,
-    //     //     "../Assets/Sprites/Items/Health/health_potion.png",
-    //     //     "../Assets/Sprites/Items/Health/health_potion_inventory.png",
-    //     //     "../Assets/Sprites/Items/Health/health_potion.json",
-    //     //     1, Vector2(spawnX, spawnY));
-    // }
+         float spawnX = player->GetPosition().x + offsetX;
+         float spawnY = player->GetPosition().y + offsetY;
+
+         spawnX = Math::Clamp(spawnX, 0.0f, static_cast<float>(LEVEL_WIDTH * TILE_SIZE - TILE_SIZE));
+         spawnY = Math::Clamp(spawnY, 0.0f, static_cast<float>(LEVEL_HEIGHT * TILE_SIZE - TILE_SIZE));
+
+          new CollectibleItem(this, "Energy Potion", ItemType::Consumable,
+              "../Assets/Sprites/Items/Energy/energy_potion.png",
+              "../Assets/Sprites/Items/Energy/energy_potion_inventory.png",
+              "../Assets/Sprites/Items/Energy/energy_potion.json",
+              1, Vector2(spawnX, spawnY));
+
+          new CollectibleItem(this, "Health_Potion", ItemType::Consumable,
+              "../Assets/Sprites/Items/Health/health_potion.png",
+              "../Assets/Sprites/Items/Health/health_potion_inventory.png",
+              "../Assets/Sprites/Items/Health/health_potion.json",
+              1, Vector2(spawnX, spawnY));
+     } */
 }
 
 void Game::InitializeMenus() {

@@ -2,7 +2,7 @@
 #include <string>
 #include <vector>
 #include <memory> 
-#include "../Items/Item.h"
+#include "../Actors/Items/Item.h"
 
 class Item;
 class Inventory{
@@ -19,6 +19,8 @@ class Inventory{
 
     const std::vector<Item*>& GetItems() const { return mItems; }
     Item* GetItemAtIndex(size_t index) const;
+
+    int ReturnWeaponIndex();
 
   private:
     std::vector<Item*> mItems; 
