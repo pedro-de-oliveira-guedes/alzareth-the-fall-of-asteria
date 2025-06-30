@@ -52,6 +52,14 @@ void Actor::ProcessInput(const Uint8 *keyState) {
     }
 }
 
+void Actor::HandleKeyPress(const int key, const bool isPressed) {
+    if (mState == ActorState::Active) {
+        OnHandleKeyPress(key, isPressed);
+    }
+}
+
+void Actor::OnHandleKeyPress(const int key, const bool isPressed) { }
+
 void Actor::OnProcessInput(const Uint8 *keyState) {}
 
 void Actor::AddComponent(Component *c) {

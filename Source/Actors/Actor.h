@@ -19,10 +19,12 @@ class Actor {
         void Update(float deltaTime);
         // ProcessInput function called from Game (not overridable)
         void ProcessInput(const Uint8 *keyState);
+        void HandleKeyPress(const int key, const bool isPressed);
+        virtual void OnHandleKeyPress(const int key, const bool isPressed);
 
         // Position getter/setter
         const Vector2& GetPosition() const { return mPosition; }
-        void SetPosition(const Vector2& pos) { mPosition = pos; }
+        void SetPosition(const Vector2& pos);
 
         Vector2 GetForward() const { return Vector2(Math::Cos(mRotation), -Math::Sin(mRotation)); }
 
