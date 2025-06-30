@@ -1,50 +1,80 @@
 # alzareth-the-fall-of-asteria
-Game made in C++ with SDL2 for the digital games development classes took in UFMG 2025/01.
 
-How to play:
+### Jogo feito em C++ com SDL2 para as aulas de desenvolvimento de jogos digitais da UFMG 2025/01.
 
-- W, A, S, D to move
-- Left Click to attack
-- CTRL to run
-- SPACE to dash
-- C to grab item
-- 1, 2, 3, 4 and 5 to use items
-- ESC to pause
+### Título: 
 
-- And have fun! :)
+Alzareth - The Fall of Asteria
 
-Features:
+### Descrição: 
 
-- [x] Player moving 
-- [x] Enemie spawning and moving
-- [x] Player attacking
-- [x] Player taking damage
-- [x] Player grabbing items and weapons
-- [x] Player using items
-- [x] Player inventory
-- [x] Player health bar
-- [x] Player energy bar
-- [x] Player energy regeneration
-- [x] Items (potions)
-- [x] Sword weapon
-- [x] Enemies taking damage
-- [x] Enemies dropping items on death
-- [x] Enemies attacking
-- [x] Player can run and dash
-- [x] Menu
-- [x] Pause
-- [x] Player can die
+Jogo de ação e aventura em 2D em que o jogador controla um personagem que caiu em uma ilha deserta e precisa sobreviver enfrentando inimigos. O jogador pode coletar poções que melhoram seu desempenho além de armas que serão úteis para atacar os inimigos que correm em direção ao personagem. Além de sobreviver, o jogador deve prosseguir no mapa derrotando os inimigos para avançar no jogo.
 
-Todo:
+### Prints:
 
-- [ ] Fix collision
-- [ ] More enemies
-- [ ] Update map
-- [ ] New levels
-- [ ] New weapons
-- [ ] Boss
-- [ ] Update animations
-- [ ] Player sprite
-- [ ] Balance gameplay
-- [ ] Fix bugs
-- [ ] Grab weapon using C
+Inimigos e inventário:
+
+![inimigos e inventario](readme_images/enemies_inventory.png)
+
+Itens e armas:
+
+![itens e armas](readme_images/items_sword.png)
+
+Barra de vida e energia:
+
+Menu:
+
+
+### Como jogar:
+
+- W, A, S, D para mover
+- Clique esquerdo para atacar
+- CTRL para correr
+- ESPAÇO para correr
+- C para pegar itens
+- 1, 2, 3, 4 e 5 para usar itens
+- ESC para pausar
+
+- E divirta-se! :)
+
+### Funcionalidades implementadas que devem ser observadas:
+
+- [x] Jogador se movimentando
+- [x] Inimigos surgindo e se movimentando
+- [x] Jogador atacando
+- [x] Jogador sofrendo dano
+- [x] Jogador pegando itens e armas
+- [x] Jogador usando itens
+- [x] Inventário do jogador
+- [x] Barra de saúde e energia do jogador
+- [x] Regeneração de energia do jogador com o tempo
+- [x] Itens (poções) alterando status do jogador
+- [x] Espada se movimentando com o clique do mouse
+- [x] Inimigos sofrendo dano
+- [x] Inimigos derrubando itens ao morrer
+- [x] Inimigos atacando
+- [x] Jogador correndo e usando dash
+- [x] Sistema de Menu e de Pausa
+- [x] Jogador pode morrer
+
+### Tarefas pendentes:
+
+- [ ] Corrigir colisões
+- [ ] Mais inimigos
+- [ ] Atualizar mapa
+- [ ] Novos níveis
+- [ ] Novas armas
+- [ ] Chefe
+- [ ] Atualizar animações
+- [ ] Sprites do jogador
+- [ ] Balanceamento da jogabilidade
+- [ ] Corrigir bugs
+- [ ] Pegar a arma usando C
+- [ ] Música
+- [ ] Objetivo
+
+### Créditos:
+
+- Francisco - Implementação do golem, espada, ataque e definição dos elementos visuais
+- Gabriel - Implementação dos itens e sua lógica de utilização e coleta, além do inventário.
+- Pedro - Implementação de movimentação do jogador, menu, câmera e sistema de pausa.
