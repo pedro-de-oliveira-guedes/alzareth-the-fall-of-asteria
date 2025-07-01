@@ -334,15 +334,7 @@ void Player::ManageAnimations() const {
     }
 }
 
-void Player::AddItemToInventory(Item* item) {
-    mInventory.AddItem(std::move(item));
-}
-
-bool Player::RemoveItemFromInventory(const std::string& itemName) {
-    return mInventory.RemoveItem(itemName);
-}
-
-void Player::TakeDamage(float damage) {
+void Player::TakeDamage(const float damage) {
     mCurrentHealth -= damage;
     mCurrentHealth = std::max(mCurrentHealth, 0.f);
     mHUDComponent->UpdateStats(mMaxHealth, mCurrentHealth, mMaxEnergy, mCurrentEnergy);
