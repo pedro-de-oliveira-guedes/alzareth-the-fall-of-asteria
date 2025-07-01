@@ -50,6 +50,8 @@ class Player : public Actor {
 
         void UseItemAtIndex(int index);
 
+        bool GetIsDashing() const { return mIsDashing; }
+
     private:
         // Input handling
         void HandleRotation();

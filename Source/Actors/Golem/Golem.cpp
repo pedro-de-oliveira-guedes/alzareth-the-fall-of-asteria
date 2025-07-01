@@ -23,7 +23,7 @@ Golem::Golem(Game *game, Vector2 position) : Enemy(game) {
 
     mRigidBodyComponent = new RigidBodyComponent(this, 1.0f, 5.0f);
     int golemSize = 99;
-    int colliderSize = 80; // About 60% of sprite size
+    int colliderSize = 80;
     
     int offsetX = (golemSize - colliderSize) / 2;
     int offsetY = (golemSize - colliderSize) / 2;
@@ -41,7 +41,7 @@ Golem::Golem(Game *game, Vector2 position) : Enemy(game) {
 
     mDamageAttack = 5.0f;
 
-    mAttackCooldown = 1.0f;
+    mAttackCooldown = 1.5f;
 
     mDrawComponent = new DrawAnimatedComponent(
         this,
@@ -74,11 +74,16 @@ void Golem::Attack() {
         return; // can't attack yet
     }
 
+    auto player = static_cast<Player*>(mGame->GetPlayer());
+
+    if (!player || player->GetIsDashing()) {
+        return; // player is dashing, don't attack
+    }
+
     mIsWalking = false;
     mIsAttacking = true;
     SDL_Log("Golem attacking player");
 
-    auto player = static_cast<Player*>(mGame->GetPlayer());
 
     player->TakeDamage(mDamageAttack);
     ManageAnimations();
@@ -112,14 +117,12 @@ void Golem::OnUpdate(float deltaTime) {
         SetRotation(0.0f);
     }
 
-    float distance    = toPlayer.Length();
+    float distance = toPlayer.Length();
 
     if (distance > 0.0f) toPlayer *= 1/distance; // normalize
 
-    
-
-    if (distance < 100.0f) {
-            Attack();
+    if (distance < 50.0f) {
+        Attack();
     } else {
         mIsWalking = true;
         mIsAttacking = false;
@@ -134,7 +137,7 @@ void Golem::OnUpdate(float deltaTime) {
 
 void Golem::Kill() {
     if (mState == ActorState::Destroy) {
-        return; // Ensure Kill is executed only once
+        return; // ensure Kill is executed only once
     }
 
     mState = ActorState::Destroy;
