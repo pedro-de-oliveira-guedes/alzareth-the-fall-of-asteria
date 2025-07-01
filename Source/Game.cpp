@@ -455,10 +455,10 @@ void Game::UpdateCamera() {
 }
 
 void Game::UpdateActors(const float deltaTime) {
-    const std::vector<Actor*> actorsOnCamera = mSpatialHashing->QueryOnCamera(mCameraPos, mWindowWidth, mWindowHeight);
+    const std::vector<Actor*> allActors = mSpatialHashing->Query(mPlayer->GetPosition(), 1000);
 
     bool isPlayerOnCamera = false;
-    for (const auto actor : actorsOnCamera) {
+    for (const auto actor : allActors) {
         actor->Update(deltaTime);
         if (actor == mPlayer) {
             isPlayerOnCamera = true;
@@ -469,7 +469,7 @@ void Game::UpdateActors(const float deltaTime) {
         mPlayer->Update(deltaTime);
     }
 
-    for (const auto actor : actorsOnCamera) {
+    for (const auto actor : allActors) {
         if (actor->GetState() == ActorState::Destroy) {
             RemoveActor(actor);
             delete actor;
