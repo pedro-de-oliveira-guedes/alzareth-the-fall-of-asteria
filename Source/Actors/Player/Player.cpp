@@ -150,7 +150,7 @@ void Player::HandleItemInput(const Uint8* keyState) {
                 otherCollider->IsEnabled()
             ) {
                 auto* item = dynamic_cast<CollectibleItem*>(otherCollider->GetOwner());
-                if (item) {
+                if (item && !mInventory.InventoryFull()) {
                     mInventory.AddItem(item);
                     item->SetState(ActorState::Destroy);
 
