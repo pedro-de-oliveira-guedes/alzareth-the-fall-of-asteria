@@ -10,7 +10,7 @@
 class UIButton : public UIElement
 {
 public:
-    UIButton(const std::string& text, class UIFont* font, std::function<void()> onClick,
+    UIButton(const std::string& text, class UIFont* font, const std::function<void()> &onClick,
              const Vector2& pos, const Vector2& size, const Vector3& color = Vector3(30, 30, 30),
              int pointSize = 40, const unsigned wrapLength = 1024,
              const Vector2 &textPos = Vector2::Zero,

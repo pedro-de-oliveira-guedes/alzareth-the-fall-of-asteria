@@ -8,8 +8,15 @@
 
 class Sword : public Item {
 public:
-    Sword(class Game* game, const std::string& name,
-           const std::string& texturePath, const std::string& textureInventoryPath, const std::string& spriteSheetData, const Vector2& position, int quantity = 1  );
+    Sword(
+        class Game* game,
+        const std::string& name,
+        const std::string& texturePath,
+        const std::string& textureInventoryPath,
+        const std::string& spriteSheetData,
+        const Vector2& position,
+        int quantity = 1
+    );
     ~Sword() override;
 
     int GetDamage() const;
@@ -22,7 +29,7 @@ public:
 
     void OnCollision(float minOverlap, AABBColliderComponent *other) override;
 
-    void Collect();
+    void Collect() override;
 
     int GetEnergyCost() const { return mEnergyCost; }
 
@@ -50,7 +57,7 @@ protected:
 
     int mEnergyCost =10;
 
-    float mTimeAttack = 0.5f;
+    float mTimeAttack = 0.3f;
     bool mIsAttacking = false;
 
     Vector2 mPlayerPos;

@@ -5,14 +5,23 @@
 #include "../../../Game.h"
 
 class CollectibleItem : public Item {
-public:
-  CollectibleItem(Game* game, const std::string& name, ItemType type,
-                  const std::string& textureSpritePath, const std::string& textureInventoryPath, const std::string& spriteSheetData, int quantity, const Vector2& position);
-  ~CollectibleItem() override;
+    public:
+        CollectibleItem(
+            Game* game,
+            const std::string& name,
+            ItemType type,
+            const std::string& textureSpritePath,
+            const std::string& textureInventoryPath,
+            const std::string& spriteSheetData,
+            int quantity,
+            const Vector2& position
+        );
+        ~CollectibleItem() override;
 
-  void Use(class Player* player) override;
+        void Use(class Player* player) override;
+        void Collect() override;
 
-private:
-  DrawAnimatedComponent* mDrawComponent;
-  AABBColliderComponent* mColliderComponent;
+    private:
+      DrawAnimatedComponent* mDrawComponent;
+      AABBColliderComponent* mColliderComponent;
 };

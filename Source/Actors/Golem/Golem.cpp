@@ -18,12 +18,13 @@ Golem::Golem(Game *game, Vector2 position) : Enemy(game) {
 
     mMaxHealth = 100.0f;
     mCurrentHealth = mMaxHealth;
+    mIsDead = false;
 
     mWalkSpeed =  50.0f;
 
     mRigidBodyComponent = new RigidBodyComponent(this, 1.0f, 5.0f);
     int golemSize = 99;
-    int colliderSize = 80; // About 60% of sprite size
+    int colliderSize = 80;
     
     int offsetX = (golemSize - colliderSize) / 2;
     int offsetY = (golemSize - colliderSize) / 2;
@@ -41,7 +42,7 @@ Golem::Golem(Game *game, Vector2 position) : Enemy(game) {
 
     mDamageAttack = 5.0f;
 
-    mAttackCooldown = 1.0f;
+    mAttackCooldown = 1.5f;
 
     mDrawComponent = new DrawAnimatedComponent(
         this,
@@ -56,35 +57,26 @@ Golem::Golem(Game *game, Vector2 position) : Enemy(game) {
     mDrawComponent->SetAnimFPS(10.f);
 
     mDrawComponent->SetAnimation(IDLE_ANIMATION);
-
-    SDL_Log("Golem created");
-
-}
-
-void Golem::DebugColliderPosition() const {
-    Vector2 actorPos = GetPosition();
-    Vector2 colliderMin = mColliderComponent->GetMin();
-    Vector2 colliderMax = mColliderComponent->GetMax();
-    
 }
 
 void Golem::Attack() {
-
     if (mAttackCooldown >= 0.0f) {
-        return; // can't attack yet
+        return;
+    }
+
+    auto *player = mGame->GetPlayer();
+
+    if (!player || player->GetIsDashing()) {
+        return;
     }
 
     mIsWalking = false;
     mIsAttacking = true;
-    SDL_Log("Golem attacking player");
-
-    auto player = static_cast<Player*>(mGame->GetPlayer());
 
     player->TakeDamage(mDamageAttack);
     ManageAnimations();
 
     mAttackCooldown = 1.0f; // reset
-
 }
 
 void Golem::OnUpdate(float deltaTime) {
@@ -112,14 +104,12 @@ void Golem::OnUpdate(float deltaTime) {
         SetRotation(0.0f);
     }
 
-    float distance    = toPlayer.Length();
+    float distance = toPlayer.Length();
 
     if (distance > 0.0f) toPlayer *= 1/distance; // normalize
 
-    
-
-    if (distance < 100.0f) {
-            Attack();
+    if (distance < 50.0f) {
+        Attack();
     } else {
         mIsWalking = true;
         mIsAttacking = false;
@@ -134,33 +124,30 @@ void Golem::OnUpdate(float deltaTime) {
 
 void Golem::Kill() {
     if (mState == ActorState::Destroy) {
-        return; // Ensure Kill is executed only once
+        return; // ensure Kill is executed only once
     }
-
-    mState = ActorState::Destroy;
     mGame->RemoveActor(this);
 
     mDrawComponent->SetIsVisible(false);
     mColliderComponent->SetEnabled(false);
     mRigidBodyComponent->SetEnabled(false);
-    SDL_Log("Golem killed");
+    mIsDead = true;
 
     // get random int
-
     int randomInt = std::rand() % 100;
 
     if (randomInt < 20) {
-        new CollectibleItem(mGame, "Energy_Potion", ItemType::Consumable,
+        new CollectibleItem(mGame, "Energy_Potion", Item::ItemType::Consumable,
             "../Assets/Sprites/Items/Energy/energy_potion.png",
             "../Assets/Sprites/Items/Energy/energy_potion_inventory.png",
             "../Assets/Sprites/Items/Energy/energy_potion.json",
-            1, Vector2(GetPosition().x, GetPosition().y));
-    } else if (randomInt >= 20 && randomInt < 50) {
-        new CollectibleItem(mGame, "Health_Potion", ItemType::Consumable,
+            1, GetPosition());
+    } else if (randomInt < 50) {
+        new CollectibleItem(mGame, "Health_Potion", Item::ItemType::Consumable,
             "../Assets/Sprites/Items/Health/health_potion.png",
             "../Assets/Sprites/Items/Health/health_potion_inventory.png",
             "../Assets/Sprites/Items/Health/health_potion.json",
-            1, Vector2(GetPosition().x, GetPosition().y));
+            1, GetPosition());
     }
     // TODO: Add more items to drop
 }
