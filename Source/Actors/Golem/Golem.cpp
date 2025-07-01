@@ -153,13 +153,13 @@ void Golem::Kill() {
     int randomInt = std::rand() % 100;
 
     if (randomInt < 20) {
-        new CollectibleItem(mGame, "Energy_Potion", ItemType::Consumable,
+        new CollectibleItem(mGame, "Energy_Potion", Item::ItemType::Consumable,
             "../Assets/Sprites/Items/Energy/energy_potion.png",
             "../Assets/Sprites/Items/Energy/energy_potion_inventory.png",
             "../Assets/Sprites/Items/Energy/energy_potion.json",
             1, Vector2(GetPosition().x, GetPosition().y));
     } else if (randomInt >= 20 && randomInt < 50) {
-        new CollectibleItem(mGame, "Health_Potion", ItemType::Consumable,
+        new CollectibleItem(mGame, "Health_Potion", Item::ItemType::Consumable,
             "../Assets/Sprites/Items/Health/health_potion.png",
             "../Assets/Sprites/Items/Health/health_potion_inventory.png",
             "../Assets/Sprites/Items/Health/health_potion.json",

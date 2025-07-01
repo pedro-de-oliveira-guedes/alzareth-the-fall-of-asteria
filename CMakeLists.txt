@@ -6,24 +6,38 @@ set(CMAKE_CXX_STANDARD 17)
 set(PROJECT_NAME "alzareth-the-fall-of-asteria")
 project(${PROJECT_NAME})
 
-# Encontre os pacotes SDL2 e SDL2_image
-# Encontre os pacotes SDL2 e SDL2_image
-# Encontre os pacotes SDL2 e SDL2_image
 find_package(SDL2 2.32.2 EXACT REQUIRED)
 find_package(SDL2_image REQUIRED)
-# Encontre o pacote SDL2_ttf para fontes
 find_package(SDL2_ttf REQUIRED)
+find_package(SDL2_mixer REQUIRED)
 
 add_executable(${PROJECT_NAME}
         Source/Main.cpp
+        Source/Actors/Actor.cpp
+        Source/Actors/Actor.h
+        Source/Actors/Enemy.h
+        Source/Actors/Enemy.cpp
+        Source/Actors/Items/Item.h
+        Source/Actors/Items/Item.cpp
+        Source/Actors/Items/Weapons/Weapon.h
+        Source/Actors/Items/Weapons/Weapons.cpp
+        Source/Actors/Items/Weapons/Melee/Sword.h
+        Source/Actors/Items/Weapons/Melee/Sword.cpp
+        Source/Actors/Items/Collectible/CollectibleItem.cpp
+        Source/Actors/Items/Collectible/CollectibleItem.h
+        Source/Actors/Player/Player.cpp
+        Source/Actors/Player/Player.h
+        Source/Actors/Golem/Golem.h
+        Source/Actors/Golem/Golem.cpp
+
         Source/Utils/CSV.h
         Source/Utils/Json.h
         Source/Utils/Math.cpp
         Source/Utils/Math.h
         Source/Utils/Random.cpp
         Source/Utils/Random.h
-        Source/Actors/Actor.cpp
-        Source/Actors/Actor.h
+        Source/Utils/SpatialHashing.cpp
+        Source/Utils/SpatialHashing.h
         Source/Components/Component.cpp
         Source/Components/Component.h
         Source/Components/ColliderComponents/AABBColliderComponent.cpp
@@ -42,22 +56,10 @@ add_executable(${PROJECT_NAME}
         Source/Components/PhysicsComponents/RigidBodyComponent.h
         Source/Game.cpp
         Source/Game.h
-        Source/Actors/Player/Player.cpp
-        Source/Actors/Player/Player.h
-        Source/Actors/Background/Texture.cpp
-        Source/Actors/Background/Texture.h
         Source/Components/UI/HUDComponent.cpp
         Source/Components/UI/HUDComponent.h
-        Source/Menus/BaseMenu.cpp
-        Source/Menus/BaseMenu.h
-        Source/Menus/Pause/PauseMenu.cpp
-        Source/Menus/Pause/PauseMenu.h
         Source/Inventory/Inventory.cpp
         Source/Inventory/Inventory.h
-        Source/Items/Item.cpp
-        Source/Items/Item.h
-        Source/Items/CollectibleItem.cpp
-        Source/Items/CollectibleItem.h
         Source/UIElements/UIText.cpp
         Source/UIElements/UIText.h
         Source/UIElements/UIScreen.cpp
@@ -73,4 +75,4 @@ add_executable(${PROJECT_NAME}
 )
 
 # Linkar com as bibliotecas SDL2_ttf
-target_link_libraries(${PROJECT_NAME} PRIVATE SDL2::SDL2 SDL2_image::SDL2_image SDL2::SDL2main SDL2_ttf::SDL2_ttf)
+target_link_libraries(${PROJECT_NAME} PRIVATE SDL2::SDL2 SDL2_image::SDL2_image SDL2_ttf::SDL2_ttf SDL2_mixer::SDL2_mixer)

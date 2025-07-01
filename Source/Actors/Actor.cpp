@@ -21,6 +21,11 @@ Actor::~Actor() {
     mComponents.clear();
 }
 
+void Actor::SetPosition(const Vector2 &pos) {
+    mPosition = pos;
+    mGame->ReinsertActor(this);
+}
+
 void Actor::Update(const float deltaTime) {
     if (mState == ActorState::Active) {
         for (auto comp : mComponents) {
@@ -46,6 +51,14 @@ void Actor::ProcessInput(const Uint8 *keyState) {
         OnProcessInput(keyState);
     }
 }
+
+void Actor::HandleKeyPress(const int key, const bool isPressed) {
+    if (mState == ActorState::Active) {
+        OnHandleKeyPress(key, isPressed);
+    }
+}
+
+void Actor::OnHandleKeyPress(const int key, const bool isPressed) { }
 
 void Actor::OnProcessInput(const Uint8 *keyState) {}
 

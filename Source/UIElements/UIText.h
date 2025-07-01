@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include <SDL2/SDL.h>
+#include <SDL.h>
 #include "../Utils/Math.h"
 #include "UIElement.h"
 
@@ -12,8 +12,8 @@ public:
 
     ~UIText();
 
-    void SetText(const std::string& name);
-    void Draw(SDL_Renderer* renderer, const Vector2 &screenPos) override;
+    void SetText(const std::string& text);
+    void Draw(SDL_Renderer *renderer, const Vector2 &screenPos) override;
 
 protected:
     std::string mText;

@@ -5,12 +5,7 @@
 #include "./../Components/ColliderComponents/AABBColliderComponent.h"
 
 
-Enemy::Enemy(Game *game) : Actor(game) {
-
-
-    SDL_Log("Enemy created");
-
-}
+Enemy::Enemy(Game *game) : Actor(game) {}
 
 void Enemy::OnUpdate(float deltaTime) {
 }
@@ -22,9 +17,6 @@ void Enemy::OnCollision(float minOverlap, AABBColliderComponent *other) {}
 void Enemy::Kill() {
 
 }
-
-
-float Enemy::GetDamageAttack() {}
 
 void Enemy::TakeDamage(float damage) {
     mCurrentHealth -= damage;

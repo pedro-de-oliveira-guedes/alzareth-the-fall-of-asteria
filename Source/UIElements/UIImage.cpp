@@ -1,5 +1,7 @@
 #include "UIImage.h"
 
+#include <SDL_image.h>
+
 UIImage::UIImage(const std::string &imagePath, const Vector2 &pos, const Vector2 &size, const Vector3 &color)
     : UIElement(pos, size, color),
     mTexture(nullptr)

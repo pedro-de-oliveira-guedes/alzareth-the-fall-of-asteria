@@ -1,25 +1,26 @@
 #include "UIButton.h"
 
-UIButton::UIButton(const std::string& text, class UIFont* font, std::function<void()> onClick,
-                    const Vector2& pos, const Vector2& size, const Vector3& color,
-                    int pointSize , unsigned wrapLength,
-                    const Vector2 &textPos, const Vector2 &textSize, const Vector3& textColor)
-        :UIElement(pos, size, color)
-        ,mOnClick(onClick)
-        ,mHighlighted(false)
-        ,mText(text, font, pointSize, wrapLength, textPos, textSize, textColor)
-{
-
+UIButton::UIButton(
+    const std::string& text,
+    class UIFont* font,
+    const std::function<void()> &onClick,
+    const Vector2 &pos,
+    const Vector2 &size,
+    const Vector3 &color,
+    const int pointSize ,
+    const unsigned wrapLength,
+    const Vector2 &textPos,
+    const Vector2 &textSize,
+    const Vector3 &textColor
+) : UIElement(pos, size, color),
+    mText(text, font, pointSize, wrapLength, textPos, textSize, textColor) {
+    mOnClick = onClick;
+    mHighlighted = false;
 }
 
-UIButton::~UIButton()
-{
+UIButton::~UIButton() { }
 
-}
-
-
-void UIButton::Draw(SDL_Renderer *renderer, const Vector2 &screenPos)
-{
+void UIButton::Draw(SDL_Renderer *renderer, const Vector2 &screenPos) {
     SDL_Rect titleQuad;
     titleQuad.x = static_cast<int>(screenPos.x + mPosition.x);
     titleQuad.y = static_cast<int>(screenPos.y + mPosition.y);  
@@ -33,15 +34,11 @@ void UIButton::Draw(SDL_Renderer *renderer, const Vector2 &screenPos)
         SDL_SetRenderDrawColor(renderer, static_cast<Uint8>(mColor.x), static_cast<Uint8>(mColor.y), static_cast<Uint8>(mColor.z), 255);
     }
 
-    Vector2 textPos = screenPos + mPosition + (mSize * 0.5f) - (mText.GetSize() * 0.5f);
-    mText.Draw(renderer, textPos);
-    
+    mText.Draw(renderer, mPosition);
 }
 
-void UIButton::OnClick()
-{
-    if (mOnClick) 
-    {
+void UIButton::OnClick() {
+    if (mOnClick)  {
         mOnClick();
     }    
 }

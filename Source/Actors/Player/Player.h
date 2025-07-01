@@ -18,6 +18,8 @@ class Player : public Actor {
             float dashSpeed = 3000.0f
         );
 
+        HUDComponent* GetHUDComponent() const { return mHUDComponent; }
+
         float GetMaxHealth() const { return mMaxHealth; }
         void SetMaxHealth(const float maxHealth) { mMaxHealth = maxHealth; }
         float GetCurrentHealth() const { return mCurrentHealth; }
