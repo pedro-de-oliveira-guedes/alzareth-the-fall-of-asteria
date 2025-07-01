@@ -18,6 +18,7 @@ Golem::Golem(Game *game, Vector2 position) : Enemy(game) {
 
     mMaxHealth = 100.0f;
     mCurrentHealth = mMaxHealth;
+    mIsDead = false;
 
     mWalkSpeed =  50.0f;
 
@@ -125,16 +126,14 @@ void Golem::Kill() {
     if (mState == ActorState::Destroy) {
         return; // ensure Kill is executed only once
     }
-
-    mState = ActorState::Destroy;
     mGame->RemoveActor(this);
 
     mDrawComponent->SetIsVisible(false);
     mColliderComponent->SetEnabled(false);
     mRigidBodyComponent->SetEnabled(false);
+    mIsDead = true;
 
     // get random int
-
     int randomInt = std::rand() % 100;
 
     if (randomInt < 20) {
