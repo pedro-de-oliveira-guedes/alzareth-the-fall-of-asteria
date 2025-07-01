@@ -1,9 +1,10 @@
 #include "Player.h"
+#include "../Enemy.h"
+#include "../../Components/ColliderComponents/AABBColliderComponent.h"
+#include "../../Components/DrawComponents/DrawAnimatedComponent.h"
+#include "../../Components/PhysicsComponents/RigidBodyComponent.h"
 #include "../../Game.h"
 #include "../Items/Collectible/CollectibleItem.h"
-#include "../../Components/PhysicsComponents/RigidBodyComponent.h"
-#include "../../Components/DrawComponents/DrawAnimatedComponent.h"
-#include "../../Components/ColliderComponents/AABBColliderComponent.h"
 
 const std::string DASH_ANIMATION = "dash";
 const std::string IDLE_ANIMATION = "idle";
@@ -141,32 +142,25 @@ void Player::HandleItemInput(const Uint8* keyState) {
     bool currentEPressed = keyState[SDL_SCANCODE_C];
 
     if (currentEPressed && !mEPressedLastFrame) {
-        AABBColliderComponent* playerCollider = GetComponent<AABBColliderComponent>();
-        if (playerCollider) {
-            const auto& colliders = mGame->GetNearbyColliders(mPosition);
-            for (AABBColliderComponent* otherCollider : colliders) {
-                if (otherCollider->GetLayer() == ColliderLayer::Collectible && playerCollider->Intersect(*otherCollider) && otherCollider->IsEnabled()) {
-                    auto* item = dynamic_cast<CollectibleItem*>(otherCollider->GetOwner());
-                    if (item) {
-                        mInventory.AddItem(item);
-                        item->SetState(ActorState::Destroy);
-                        mGame->RemoveActor(item);
+        const auto& colliders = mGame->GetNearbyColliders(mPosition);
+        for (const AABBColliderComponent* otherCollider : colliders) {
+            if (
+                otherCollider->GetLayer() == ColliderLayer::Collectible &&
+                mColliderComponent->Intersect(*otherCollider) &&
+                otherCollider->IsEnabled()
+            ) {
+                auto* item = dynamic_cast<CollectibleItem*>(otherCollider->GetOwner());
+                if (item) {
+                    mInventory.AddItem(item);
+                    item->SetState(ActorState::Destroy);
 
-                        if (auto drawComp = item->GetComponent<DrawComponent>()) {
-                            drawComp->SetIsVisible(false);
-                        }
-
-                        if (auto colliderComp = item->GetComponent<AABBColliderComponent>()) {
-                            colliderComp->SetEnabled(false);
-                        }
-
-                        SDL_Log("Collected item: %s", item->GetName().c_str());
-                        break;
-                    }
+                    SDL_Log("Collected item: %s", item->GetName().c_str());
+                    break;
                 }
             }
         }
     }
+
     mEPressedLastFrame = currentEPressed;
 }
 
@@ -186,7 +180,7 @@ void Player::UseItemAtIndex(int index) {
     size_t actualIndex = static_cast<size_t>(index);
     Item* itemToUse = mInventory.GetItemAtIndex(actualIndex);
 
-    if (itemToUse && itemToUse->GetType() == ItemType::Consumable) {
+    if (itemToUse && itemToUse->GetType() == Item::ItemType::Consumable) {
         itemToUse->Use(this);
         mInventory.RemoveItemAtIndex(actualIndex);
     } else {
@@ -241,7 +235,7 @@ void Player::Attack(const Uint8 *keyState) {
 
         // Get the equipped weapon
         Item* weaponItem = mInventory.GetItemAtIndex(weaponIdx);
-        if (weaponItem && weaponItem->GetType() == ItemType::Weapon) {
+        if (weaponItem && weaponItem->GetType() == Item::ItemType::Weapon) {
             Sword* sword = dynamic_cast<Sword*>(weaponItem);
             if (sword) {
                 int mouseX, mouseY;
@@ -258,8 +252,8 @@ void Player::Attack(const Uint8 *keyState) {
                 float rangeX = sword->GetRangeX();
                 float rangeY = sword->GetRangeY();
 
-                const auto& colliders = GetGame()->GetColliders();
-                for (AABBColliderComponent* otherCollider : colliders) {
+                const auto& colliders = mGame->GetNearbyColliders(mPosition);
+                for (const AABBColliderComponent* otherCollider : colliders) {
                     if (otherCollider->GetLayer() == ColliderLayer::Enemy) {
                         Vector2 otherPos = otherCollider->GetOwner()->GetPosition();
                         if (std::abs(otherPos.x - attackPosition.x) <= rangeX &&

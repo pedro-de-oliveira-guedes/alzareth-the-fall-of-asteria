@@ -13,6 +13,23 @@ find_package(SDL2_mixer REQUIRED)
 
 add_executable(${PROJECT_NAME}
         Source/Main.cpp
+        Source/Actors/Actor.cpp
+        Source/Actors/Actor.h
+        Source/Actors/Enemy.h
+        Source/Actors/Enemy.cpp
+        Source/Actors/Items/Item.h
+        Source/Actors/Items/Item.cpp
+        Source/Actors/Items/Weapons/Weapon.h
+        Source/Actors/Items/Weapons/Weapons.cpp
+        Source/Actors/Items/Weapons/Melee/Sword.h
+        Source/Actors/Items/Weapons/Melee/Sword.cpp
+        Source/Actors/Items/Collectible/CollectibleItem.cpp
+        Source/Actors/Items/Collectible/CollectibleItem.h
+        Source/Actors/Player/Player.cpp
+        Source/Actors/Player/Player.h
+        Source/Actors/Golem/Golem.h
+        Source/Actors/Golem/Golem.cpp
+
         Source/Utils/CSV.h
         Source/Utils/Json.h
         Source/Utils/Math.cpp
@@ -21,8 +38,6 @@ add_executable(${PROJECT_NAME}
         Source/Utils/Random.h
         Source/Utils/SpatialHashing.cpp
         Source/Utils/SpatialHashing.h
-        Source/Actors/Actor.cpp
-        Source/Actors/Actor.h
         Source/Components/Component.cpp
         Source/Components/Component.h
         Source/Components/ColliderComponents/AABBColliderComponent.cpp
@@ -41,18 +56,10 @@ add_executable(${PROJECT_NAME}
         Source/Components/PhysicsComponents/RigidBodyComponent.h
         Source/Game.cpp
         Source/Game.h
-        Source/Actors/Player/Player.cpp
-        Source/Actors/Player/Player.h
-        Source/Actors/Background/Texture.cpp
-        Source/Actors/Background/Texture.h
         Source/Components/UI/HUDComponent.cpp
         Source/Components/UI/HUDComponent.h
         Source/Inventory/Inventory.cpp
         Source/Inventory/Inventory.h
-        Source/Items/Item.cpp
-        Source/Items/Item.h
-        Source/Items/CollectibleItem.cpp
-        Source/Items/CollectibleItem.h
         Source/UIElements/UIText.cpp
         Source/UIElements/UIText.h
         Source/UIElements/UIScreen.cpp

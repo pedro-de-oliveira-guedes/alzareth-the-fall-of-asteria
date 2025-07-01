@@ -11,7 +11,7 @@ Inventory::~Inventory() {
 
 int Inventory::ReturnWeaponIndex() {
   for (size_t i = 0; i < mItems.size(); ++i) {
-    if (mItems[i] != nullptr && mItems[i]->GetType() == ItemType::Weapon) {
+    if (mItems[i] != nullptr && mItems[i]->GetType() == Item::ItemType::Weapon) {
       //SDL_Log("Índice da arma encontrada: %zu", i + 1);
       return i; // Retorna o índice da arma
     }

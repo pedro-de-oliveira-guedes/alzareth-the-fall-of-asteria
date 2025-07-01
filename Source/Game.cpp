@@ -1,16 +1,19 @@
+#include "Game.h"
+#include "Actors/Items/Collectible/CollectibleItem.h"
+#include "Actors/Actor.h"
+#include "Actors/Golem//Golem.h"
+#include "Components/DrawComponents/DrawComponent.h"
+#include "UIElements/UIScreen.h"
+#include "Utils/Random.h"
+
 #include <algorithm>
-#include <iostream>
 #include <fstream>
-#include <vector>
+#include <iostream>
 #include <memory>
 #include <SDL_image.h>
 #include <SDL_mixer.h>
-#include "Utils/Random.h"
-#include "Game.h"
-#include "UIElements/UIScreen.h"
-#include "Actors/Actor.h"
-#include "Components/DrawComponents/DrawComponent.h"
-#include "Items/CollectibleItem.h"
+#include <SDL_ttf.h>
+#include <vector>
 
 Game::Game() {
     mWindow = nullptr;
@@ -178,6 +181,22 @@ void Game::BuildFirstLevel() {
     mPlayer = new Player(this);
     mPlayer->SetPosition(Vector2(200.f, 200.f));
 
+    for (int i = 0; i < 25; i++) {
+        const float offsetX = Random::GetFloatRange(250, 1600);
+        const float offsetY = Random::GetFloatRange(250, 1600);
+        new Golem(this, Vector2(offsetX, offsetY));
+    }
+
+    new Sword(
+        this,
+        "Sword",
+        "../Assets/Sprites/Weapons/Sword/sword.png",
+        "../Assets/Sprites/Weapons/Sword/sword_inv.png",
+        "../Assets/Sprites/Weapons/Sword/sword.json",
+        Vector2(300.0f, 300.0f) ,
+        1
+    );
+
     mPauseMenu = BuildPauseMenu();
 }
 
@@ -265,8 +284,7 @@ void Game::TogglePause() {
 void Game::ProcessInputActors() {
     if(mGameState == GameState::PLAYING) {
         // Get actors on camera
-        const std::vector<Actor*> actorsOnCamera =
-                mSpatialHashing->QueryOnCamera(mCameraPos,mWindowWidth,mWindowHeight);
+        const std::vector<Actor*> actorsOnCamera = mSpatialHashing->QueryOnCamera(mCameraPos,mWindowWidth,mWindowHeight);
 
         const Uint8* state = SDL_GetKeyboardState(nullptr);
 
@@ -294,7 +312,6 @@ void Game::ProcessInput() {
                 Quit();
                 break;
             case SDL_KEYDOWN:
-                // Handle key press for UI screens
                 if (!mUIStack.empty()) {
                     mUIStack.back()->HandleKeyPress(event.key.keysym.sym);
                 }
@@ -345,7 +362,7 @@ void Game::UpdateGame() {
     UpdateSceneManager(deltaTime);
 }
 
-void Game::UpdateSceneManager(float deltaTime) {
+void Game::UpdateSceneManager(const float deltaTime) {
     if (mSceneManagerState == SceneManagerState::Entering) {
         mSceneManagerTimer -= deltaTime;
         if (mSceneManagerTimer <= 0.0f) {
@@ -382,10 +399,10 @@ void Game::UpdateCamera() {
 }
 
 void Game::UpdateActors(const float deltaTime) {
-    std::vector<Actor*> actorsOnCamera = mSpatialHashing->QueryOnCamera(mCameraPos, mWindowWidth, mWindowHeight);
+    const std::vector<Actor*> actorsOnCamera = mSpatialHashing->QueryOnCamera(mCameraPos, mWindowWidth, mWindowHeight);
 
     bool isPlayerOnCamera = false;
-    for (auto actor : actorsOnCamera) {
+    for (const auto actor : actorsOnCamera) {
         actor->Update(deltaTime);
         if (actor == mPlayer) {
             isPlayerOnCamera = true;
@@ -398,6 +415,7 @@ void Game::UpdateActors(const float deltaTime) {
 
     for (const auto actor : actorsOnCamera) {
         if (actor->GetState() == ActorState::Destroy) {
+            RemoveActor(actor);
             delete actor;
             if (actor == mPlayer) {
                 mPlayer = nullptr;
@@ -508,7 +526,7 @@ UIFont* Game::LoadFont(const std::string& fileName) {
 void Game::Shutdown() {
     UnloadScene();
 
-    for (const auto font : mFonts) {
+    for (const auto &font : mFonts) {
         font.second->Unload();
         delete font.second;
     }

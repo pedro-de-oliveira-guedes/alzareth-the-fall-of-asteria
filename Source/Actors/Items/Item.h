@@ -1,42 +1,46 @@
 #pragma once
-#include <string>
-#include <SDL2/SDL.h> 
-
 #include "../Actor.h"
+#include <string>
 
-enum class ItemType {
-    None,
-    Weapon,
-    Consumable
-};
 
 class Item : public Actor {
-  public:
-    // NOVO: Adicionado textureInventoryPath
-    Item(class Game* game, const std::string &name = "Unknown", ItemType type = ItemType::None,
-         const std::string& texturePath = "", const std::string& textureInventoryPath = "", const std::string& spriteSheetData = "", int quantity = 1);
-    ~Item() override;
+    public:
+        enum class ItemType {
+            None,
+            Weapon,
+            Consumable
+        };
 
-    const std::string& GetName() const { return mName; }
-    ItemType GetType() const { return mType; }
-    const std::string& GetTexturePath() const { return mTexturePath; }
-    const std::string& GetInventoryTexturePath() const { return mInventoryTexturePath; }
-    int GetQuantity() const { return mQuantity; }
+        explicit Item(
+            Game* game,
+            const std::string &name = "Unknown",
+            ItemType type = ItemType::None,
+            const std::string& texturePath = "",
+            const std::string& textureInventoryPath = "",
+            const std::string& spriteSheetData = "",
+            int quantity = 1
+        );
+        ~Item() override;
 
-    void SetQuantity(int quantity) {mQuantity = quantity;}
-    void AddQuantity(int quantity) { mQuantity += quantity;}
-    void RemoveQuantity(int quantity) { mQuantity -= quantity; if (mQuantity < 0) mQuantity = 0; }
-    virtual void Use(class Player* player) = 0; 
+        const std::string& GetName() const { return mName; }
+        ItemType GetType() const { return mType; }
+        const std::string& GetTexturePath() const { return mTexturePath; }
+        const std::string& GetInventoryTexturePath() const { return mInventoryTexturePath; }
+        int GetQuantity() const { return mQuantity; }
 
-    void OnCollision(float minOverlap, AABBColliderComponent *other) override;
+        void SetQuantity(const int quantity) {mQuantity = quantity;}
+        void AddQuantity(const int quantity) { mQuantity += quantity;}
+        void RemoveQuantity(const int quantity) { mQuantity -= quantity; if (mQuantity < 0) mQuantity = 0; }
+        virtual void Use(class Player* player) = 0;
 
+        void OnCollision(float minOverlap, AABBColliderComponent *other) override;
 
-  protected:
-    std::string mName;
-    ItemType mType;
-    std::string mTexturePath;
-    std::string mInventoryTexturePath;
-    std::string mSpriteSheetData; 
-    int mQuantity;
-    int mMaxQuantity = 5;
+    protected:
+        std::string mName;
+        ItemType mType;
+        std::string mTexturePath;
+        std::string mInventoryTexturePath;
+        std::string mSpriteSheetData;
+        int mQuantity;
+        int mMaxQuantity = 5;
 };

@@ -19,7 +19,7 @@ SpatialHashing::~SpatialHashing() {
     for (auto& row : mGrid) {
         for (auto& cell : row) {
            while(!cell.empty()) {
-               delete cell.back();; // Assuming ownership of actors
+               delete cell.back(); // Assuming ownership of actors
            }
             cell.clear();
         }

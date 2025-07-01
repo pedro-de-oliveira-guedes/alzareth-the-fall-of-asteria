@@ -17,7 +17,7 @@ class Enemy : public Actor {
         void OnCollision(float minOverlap, AABBColliderComponent *other) override;
         void Kill() override;
 
-        virtual float GetDamageAttack();
+        float GetDamageAttack() const { return mDamageAttack; }
 
         void TakeDamage(float damage);
 

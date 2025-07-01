@@ -8,8 +8,15 @@
 
 class Sword : public Item {
 public:
-    Sword(class Game* game, const std::string& name,
-           const std::string& texturePath, const std::string& textureInventoryPath, const std::string& spriteSheetData, const Vector2& position, int quantity = 1  );
+    Sword(
+        class Game* game,
+        const std::string& name,
+        const std::string& texturePath,
+        const std::string& textureInventoryPath,
+        const std::string& spriteSheetData,
+        const Vector2& position,
+        int quantity = 1
+    );
     ~Sword() override;
 
     int GetDamage() const;
