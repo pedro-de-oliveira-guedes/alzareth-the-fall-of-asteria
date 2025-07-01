@@ -1,7 +1,7 @@
 #include "Game.h"
 #include "Actors/Items/Collectible/CollectibleItem.h"
 #include "Actors/Actor.h"
-#include "Actors/Golem//Golem.h"
+#include "Actors/Golem/Golem.h"
 #include "Components/DrawComponents/DrawComponent.h"
 #include "UIElements/UIScreen.h"
 #include "Utils/Random.h"
@@ -20,7 +20,6 @@ Game::Game() {
     mRenderer = nullptr;
     mTicksCount = 0;
     mGameState = GameState::PAUSED;
-    mUpdatingActors = false;
     mWindowWidth = Game::SCREEN_WIDTH;
     mWindowHeight = Game::SCREEN_HEIGHT;
     mBackgroundTexture = nullptr;
@@ -35,6 +34,7 @@ Game::Game() {
     mSceneManagerTransitionTime = 0.0f;
     mGameScene = GameScene::MainMenu;
     mNextScene = GameScene::MainMenu;
+    mEnemies.clear();
 }
 
 bool Game::Initialize() {
@@ -108,6 +108,11 @@ void Game::UnloadScene() {
         SDL_DestroyTexture(mBackgroundTexture);
         mBackgroundTexture = nullptr;
     }
+
+    for (const auto enemy : mEnemies) {
+        enemy->SetState(ActorState::Destroy);
+    }
+    mEnemies.clear();
 }
 
 void Game::ChangeScene() {
@@ -238,9 +243,9 @@ void Game::BuildFirstLevel() {
     mPlayer->SetPosition(Vector2(200.f, 200.f));
 
     for (int i = 0; i < 25; i++) {
-        const float offsetX = Random::GetFloatRange(250, 1600);
-        const float offsetY = Random::GetFloatRange(250, 1600);
-        new Golem(this, Vector2(offsetX, offsetY));
+        const float offsetX = Random::GetFloatRange(250, LEVEL_WIDTH * TILE_SIZE - 250);
+        const float offsetY = Random::GetFloatRange(250, LEVEL_HEIGHT * TILE_SIZE - 250);
+        mEnemies.push_back(new Golem(this, Vector2(offsetX, offsetY)));
     }
 
     new Sword(
@@ -455,6 +460,18 @@ void Game::UpdateCamera() {
 }
 
 void Game::UpdateActors(const float deltaTime) {
+    if (mEnemies.size() > 0) {
+        int defeatedEnemies = 0;
+        for (const auto enemy : mEnemies) {
+            if (!enemy->IsAlive()) {
+                defeatedEnemies++;
+            }
+        }
+        if (defeatedEnemies == mEnemies.size()) {
+            Win();
+        }
+    }
+
     const std::vector<Actor*> allActors = mSpatialHashing->Query(mPlayer->GetPosition(), 1000);
 
     bool isPlayerOnCamera = false;
