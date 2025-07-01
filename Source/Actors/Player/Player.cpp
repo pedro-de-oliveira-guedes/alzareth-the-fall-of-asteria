@@ -152,9 +152,7 @@ void Player::HandleItemInput(const Uint8* keyState) {
                 auto* item = dynamic_cast<CollectibleItem*>(otherCollider->GetOwner());
                 if (item && !mInventory.InventoryFull()) {
                     mInventory.AddItem(item);
-                    item->SetState(ActorState::Destroy);
-
-                    SDL_Log("Collected item: %s", item->GetName().c_str());
+                    item->Collect();
                     break;
                 }
             }
