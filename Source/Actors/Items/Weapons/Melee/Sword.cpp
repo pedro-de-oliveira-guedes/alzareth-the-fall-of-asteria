@@ -25,9 +25,16 @@ Sword::Sword(Game* game, const std::string& name,
     int offsetX = (swordSpriteSize - colliderSize) / 2;
     int offsetY = (swordSpriteSize - colliderSize) / 2;
 
-    mColliderComponent = new AABBColliderComponent(this, offsetX, offsetY, colliderSize, colliderSize, ColliderLayer::MeleeWeapon, false, true);
-
-
+    mColliderComponent = new AABBColliderComponent(
+        this,
+        offsetX,
+        offsetY,
+        colliderSize,
+        colliderSize,
+        ColliderLayer::MeleeWeapon,
+        false,
+        true
+    );
     mDrawComponent = new DrawAnimatedComponent(
         this,
         texturePath,

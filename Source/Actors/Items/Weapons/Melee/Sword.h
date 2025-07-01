@@ -29,7 +29,7 @@ public:
 
     void OnCollision(float minOverlap, AABBColliderComponent *other) override;
 
-    void Collect();
+    void Collect() override;
 
     int GetEnergyCost() const { return mEnergyCost; }
 

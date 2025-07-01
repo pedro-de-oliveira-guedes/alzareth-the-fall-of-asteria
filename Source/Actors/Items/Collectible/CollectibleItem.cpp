@@ -40,6 +40,7 @@ void CollectibleItem::Use(Player* player) {
     }
 }
 
-    }
+void CollectibleItem::Collect() {
+    mDrawComponent->SetIsVisible(false);
+    mColliderComponent->SetEnabled(false);
 }
- 
