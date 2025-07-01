@@ -168,7 +168,7 @@ void Game::BuildWinScreen() {
     const auto winScreen = new UIScreen(this, "../Assets/Fonts/PixelifySans.ttf");
 
     auto *button = winScreen->AddButton(
-        "Pressione Enter para voltar ao Menu Principal",
+        "Pressione Enter!",
         Vector2(mWindowWidth / 2.0f - 300.0f, mWindowHeight - 100.0f),
         Vector2(600.0f, 50.0f),
         [this]() { SetGameScene(GameScene::MainMenu, TRANSITION_TIME); }
@@ -192,7 +192,7 @@ void Game::BuildLoseScreen() {
     const auto loseScreen = new UIScreen(this, "../Assets/Fonts/PixelifySans.ttf");
 
     auto *button = loseScreen->AddButton(
-        "Pressione Enter para voltar ao Menu Principal",
+        "Pressione Enter!",
         Vector2(mWindowWidth / 2.0f - 300.0f, mWindowHeight - 100.0f),
         Vector2(600.0f, 50.0f),
         [this]() { SetGameScene(GameScene::MainMenu, TRANSITION_TIME); }
