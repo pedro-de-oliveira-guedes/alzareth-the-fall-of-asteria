@@ -450,7 +450,7 @@ void Game::GenerateOutput() const {
         SDL_RenderCopy(mRenderer, mBackgroundTexture, nullptr, &dstRect);
     }
 
-    if (mSpatialHashing) {
+    if (mSpatialHashing && mGameState != GameState::QUITTING) {
         std::vector<DrawComponent*> drawComponents;
 
         const std::vector<Actor*> actorsOnCamera = mSpatialHashing->QueryOnCamera(mCameraPos, mWindowWidth, mWindowHeight);

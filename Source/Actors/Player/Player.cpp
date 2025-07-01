@@ -381,9 +381,5 @@ void Player::OnCollision(float minOverlap, AABBColliderComponent *other) {
 
 void Player::Kill() {
     mState = ActorState::Destroy;
-    mRigidBodyComponent->SetVelocity(Vector2::Zero);
-    mDrawComponent->SetIsPaused(true);
-    SDL_Log("Player killed");
-
     mGame->Quit();
 }
