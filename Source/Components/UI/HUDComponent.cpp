@@ -29,6 +29,9 @@ HUDComponent::HUDComponent(
 
     mHealthBarOutlineImage = new UIImage("../Assets/Sprites/HUD/HealthBar.png", Vector2::Zero, Vector2::Zero);
     mEnergyBarOutlineImage = new UIImage("../Assets/Sprites/HUD/EnergyBar.png", Vector2::Zero, Vector2::Zero);
+
+    mEnemiesCountImage = new UIImage("../Assets/Sprites/Golem/BaseGolem.png", Vector2::Zero, Vector2::Zero);
+    mEnemiesBoardImage = new UIImage("../Assets/Sprites/HUD/EnemiesBoard.png", Vector2::Zero, Vector2::Zero);
 }
 
 void HUDComponent::UpdateStats(
@@ -47,7 +50,7 @@ void HUDComponent::Update(float deltaTime) {
     UpdateInventoryDisplay();
 }
 
-void HUDComponent::DrawHealthBar(SDL_Renderer* renderer) {
+void HUDComponent::DrawHealthBar(SDL_Renderer* renderer) const {
     const int screenWidth = mOwner->GetGame()->GetWindowWidth();
     const int screenHeight = mOwner->GetGame()->GetWindowHeight();
 
@@ -74,7 +77,7 @@ void HUDComponent::DrawHealthBar(SDL_Renderer* renderer) {
     SDL_RenderFillRect(renderer, &healthBarRect);
 }
 
-void HUDComponent::DrawEnergyBar(SDL_Renderer* renderer) {
+void HUDComponent::DrawEnergyBar(SDL_Renderer* renderer) const {
     const int healthBarBottom = mHealthBarOutlineImage->GetPosition().y + mHealthBarOutlineImage->GetSize().y;
 
     mEnergyBarOutlineImage->SetPosition(Vector2(
@@ -100,16 +103,48 @@ void HUDComponent::DrawEnergyBar(SDL_Renderer* renderer) {
     SDL_RenderFillRect(renderer, &energyBarRect);
 }
 
-void HUDComponent::DrawInventoryImage(SDL_Renderer* renderer) {
+void HUDComponent::DrawInventoryImage(SDL_Renderer* renderer) const {
     mInventoryImage->Draw(renderer, Vector2::Zero);
 }
 
-void HUDComponent::DrawInventory(SDL_Renderer* renderer) {
+void HUDComponent::DrawInventory(SDL_Renderer* renderer) const {
     for (const auto& image : mInventoryItems) {
         if (image) {
             image->Draw(renderer, Vector2::Zero);
         }
     }
+}
+
+void HUDComponent::DrawEnemiesCount(SDL_Renderer* renderer) const {
+    const int screenWidth = mOwner->GetGame()->GetWindowWidth();
+
+    mEnemiesBoardImage->SetPosition(Vector2(screenWidth - 180.0f, 20.0f));
+    mEnemiesBoardImage->SetSize(Vector2(175.0f, 60.0f));
+    mEnemiesBoardImage->Draw(renderer, Vector2::Zero);
+
+    mEnemiesCountImage->SetPosition(Vector2(screenWidth - 165.0f, 30.0f));
+    mEnemiesCountImage->SetSize(Vector2(Game::TILE_SIZE, Game::TILE_SIZE));
+    mEnemiesCountImage->Draw(renderer, Vector2::Zero);
+
+    const auto [defeated, total] = mOwner->GetGame()->GetEnemiesCount();
+    UIFont *font = mOwner->GetGame()->LoadFont("../Assets/Fonts/PixelifySans.ttf");
+
+    std::string text;
+    if (std::to_string(defeated).size() == std::to_string(total).size()) {
+        text = std::to_string(defeated) + " / " + std::to_string(total);
+    } else {
+        text = "0" + std::to_string(defeated) + " / " + std::to_string(total);
+    }
+
+    const auto enemiesCountText = new UIText(
+        text,
+        font,
+        24,
+        0,
+        Vector2(screenWidth - 165.0f + Game::TILE_SIZE + 10.0f, 35.0f),
+        Vector2(text.size() * 24.f * 0.6f, 24.f)
+    );
+    enemiesCountText->Draw(renderer, Vector2::Zero);
 }
 
 void HUDComponent::Draw(SDL_Renderer* renderer) {
@@ -118,6 +153,8 @@ void HUDComponent::Draw(SDL_Renderer* renderer) {
 
     DrawInventoryImage(renderer);
     DrawInventory(renderer);
+
+    DrawEnemiesCount(renderer);
 }
 
 void HUDComponent::UpdateInventoryDisplay() {

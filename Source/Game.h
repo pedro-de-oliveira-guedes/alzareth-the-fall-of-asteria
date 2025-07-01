@@ -52,6 +52,7 @@ public:
     void Win();
     void Lose();
     GameState GetGameState() const { return mGameState; }
+    std::pair<int, int> GetEnemiesCount() const;
 
     // Scene management
     void SetGameScene(GameScene scene, float transitionTime = 0.0f);

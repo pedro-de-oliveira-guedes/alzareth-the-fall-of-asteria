@@ -622,3 +622,14 @@ std::vector<Actor*> Game::GetNearbyActors(const Vector2& position, const int ran
 std::vector<AABBColliderComponent*> Game::GetNearbyColliders(const Vector2& position, const int range) {
     return mSpatialHashing->QueryColliders(position, range);
 }
+
+std::pair<int, int> Game::GetEnemiesCount() const {
+    int defeatedEnemies = 0;
+    for (const auto enemy : mEnemies) {
+        if (!enemy->IsAlive()) {
+            defeatedEnemies++;
+        }
+    }
+
+    return {defeatedEnemies, mEnemies.size()};
+}

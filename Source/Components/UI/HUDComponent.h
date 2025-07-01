@@ -18,10 +18,11 @@ class HUDComponent : public DrawComponent {
         void Draw(SDL_Renderer *renderer) override;
 
     protected:
-        void DrawHealthBar(SDL_Renderer *renderer);
-        void DrawEnergyBar(SDL_Renderer *renderer);
-        void DrawInventoryImage(SDL_Renderer *renderer); 
-        void DrawInventory(SDL_Renderer *renderer);
+        void DrawHealthBar(SDL_Renderer *renderer)const;
+        void DrawEnergyBar(SDL_Renderer *renderer)const;
+        void DrawInventoryImage(SDL_Renderer *renderer)const;
+        void DrawInventory(SDL_Renderer *renderer)const;
+        void DrawEnemiesCount(SDL_Renderer *renderer)const;
 
         float mMaxHealth;
         float mCurrentHealth;
@@ -36,4 +37,7 @@ class HUDComponent : public DrawComponent {
 
         UIImage* mInventoryImage;
         std::vector<UIImage*> mInventoryItems;
+
+        UIImage *mEnemiesCountImage;
+        UIImage *mEnemiesBoardImage;
 };
