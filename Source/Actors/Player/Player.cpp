@@ -354,6 +354,5 @@ void Player::OnCollision(float minOverlap, AABBColliderComponent *other) {
 }
 
 void Player::Kill() {
-    mState = ActorState::Destroy;
-    mGame->Quit();
+    mGame->Lose();
 }
