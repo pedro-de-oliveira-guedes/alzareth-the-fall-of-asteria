@@ -12,18 +12,37 @@ Jogo de ação e aventura em 2D em que o jogador controla um personagem que caiu
 
 ### Prints:
 
+Menu principal:
+
+![Menu Principal](https://github.com/user-attachments/assets/32f67da5-2dab-401d-9fb5-b55844b23fc5)
+
 Inimigos e inventário:
 
-![inimigos e inventario](readme_images/enemies_inventory.png)
+![Inimigos e Inventário](https://github.com/user-attachments/assets/19c08b17-d8a9-4378-b364-46f87e2f2c13)
 
 Itens e armas:
 
-![itens e armas](readme_images/items_sword.png)
+![itens e armas](https://github.com/user-attachments/assets/5f10d25e-7e68-438e-bacb-daa6e927fe91)
 
-Barra de vida e energia:
+Indicadores de energia e vida:
 
-Menu:
+![Barra de energia e vida](https://github.com/user-attachments/assets/c143175a-4332-4cb9-b021-0a48e9f21719)
 
+Indicador de objetivos:
+
+![Indicador de objetivos](https://github.com/user-attachments/assets/d1766965-9fba-4d6c-85a5-c2c46307a742)
+
+Menu de Pausa:
+
+![Menu de Pausa](https://github.com/user-attachments/assets/3c168d16-1865-4934-864f-19bb17ad2a1b)
+
+Tela de Derrota:
+
+![Tela de Derrota](https://github.com/user-attachments/assets/74ab9da7-8920-44de-bffa-78e3a47d8e7a)
+
+Tela de Vitória:
+
+![Tela de Vitória](https://github.com/user-attachments/assets/634bb7ae-98fd-4b20-bbf6-d74f06127a24)
 
 ### Como jogar:
 
@@ -77,4 +96,4 @@ Menu:
 
 - Francisco - Implementação do golem, espada, ataque e definição dos elementos visuais
 - Gabriel - Implementação dos itens e sua lógica de utilização e coleta, além do inventário.
-- Pedro - Implementação de movimentação do jogador, menu, câmera e sistema de pausa.
+- Pedro - Implementação de movimentação do jogador, menu, câmera, sistema de pausa e critérios de finalização do jogo.
