@@ -1,12 +1,13 @@
 #pragma once
 #include <SDL.h>
 #include <string>
-#include <vector>
 #include <unordered_map>
+#include <vector>
 
-#include "Utils/Math.h"
+#include "Actors/Enemy.h"
 #include "Actors/Player/Player.h"
 #include "UIElements/UIScreen.h"
+#include "Utils/Math.h"
 #include "Utils/SpatialHashing.h"
 
 class Game {
@@ -105,7 +106,9 @@ private:
     void GenerateOutput() const;
 
     // Game-specific
+    GameState mGameState;
     Player* mPlayer;
+    std::vector<Enemy*> mEnemies;
 
     // All the draw components
     SDL_Texture *mBackgroundTexture;
@@ -127,9 +130,6 @@ private:
     SDL_Window* mWindow;
     SDL_Renderer* mRenderer;
 
-    // Track if we're updating actors right now
-    GameState mGameState;
-    bool mUpdatingActors;
 
     // Track elapsed time since game start
     Uint32 mTicksCount;
