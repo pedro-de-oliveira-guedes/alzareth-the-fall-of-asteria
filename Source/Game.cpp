@@ -82,14 +82,10 @@ bool Game::Initialize() {
 
 void Game::SetGameScene(GameScene scene, const float transitionTime) {
     if (mSceneManagerState == SceneManagerState::None) {
-        if (scene == GameScene::MainMenu || scene == GameScene::Level1 || scene == GameScene::Level2) {
-            mNextScene = scene;
-            mSceneManagerState = SceneManagerState::Entering;
-            mSceneManagerTimer = transitionTime;
-            mSceneManagerTransitionTime = transitionTime;
-        } else {
-            SDL_Log("Invalid game scene: %d", static_cast<int>(scene));
-        }
+        mNextScene = scene;
+        mSceneManagerState = SceneManagerState::Entering;
+        mSceneManagerTimer = transitionTime;
+        mSceneManagerTransitionTime = transitionTime;
     } else {
         SDL_Log("Cannot change scene state while SceneManager is not in None state");
     }
@@ -125,6 +121,18 @@ void Game::ChangeScene() {
         BuildFirstLevel();
         mGameState = GameState::PLAYING;
     }
+    else if (mNextScene == GameScene::Win) {
+        BuildWinScreen();
+        mGameState = GameState::PAUSED;
+    }
+    else if (mNextScene == GameScene::Lose) {
+        BuildLoseScreen();
+        mGameState = GameState::PAUSED;
+    }
+    else {
+        SDL_Log("Invalid game scene: %d", static_cast<int>(mNextScene));
+        return;
+    }
 
     mGameScene = mNextScene;
 }
@@ -142,6 +150,54 @@ void Game::SetBackgroundImage(const std::string& texturePath, const Vector2& pos
 
     mBackgroundPosition.Set(position.x, position.y);
     mBackgroundSize.Set(size.x, size.y);
+}
+
+void Game::BuildWinScreen() {
+    SetCameraPos(Vector2::Zero);
+    SetBackgroundImage(
+        "../Assets/Sprites/Menus/WinScreenBkg.png",
+        Vector2::Zero,
+        Vector2(SCREEN_WIDTH, SCREEN_HEIGHT)
+    );
+
+    const auto winScreen = new UIScreen(this, "../Assets/Fonts/PixelifySans.ttf");
+
+    auto *button = winScreen->AddButton(
+        "Pressione Enter para voltar ao Menu Principal",
+        Vector2(mWindowWidth / 2.0f - 300.0f, mWindowHeight - 100.0f),
+        Vector2(600.0f, 50.0f),
+        [this]() { SetGameScene(GameScene::MainMenu, TRANSITION_TIME); }
+    );
+    button->SetHighlighted(false);
+}
+
+void Game::Win() {
+    SetGameScene(GameScene::Win, TRANSITION_TIME);
+    mGameState = GameState::PAUSED;
+}
+
+void Game::BuildLoseScreen() {
+    SetCameraPos(Vector2::Zero);
+    SetBackgroundImage(
+        "../Assets/Sprites/Menus/LoseScreenBkg.png",
+        Vector2::Zero,
+        Vector2(SCREEN_WIDTH, SCREEN_HEIGHT)
+    );
+
+    const auto loseScreen = new UIScreen(this, "../Assets/Fonts/PixelifySans.ttf");
+
+    auto *button = loseScreen->AddButton(
+        "Pressione Enter para voltar ao Menu Principal",
+        Vector2(mWindowWidth / 2.0f - 300.0f, mWindowHeight - 100.0f),
+        Vector2(600.0f, 50.0f),
+        [this]() { SetGameScene(GameScene::MainMenu, TRANSITION_TIME); }
+    );
+    button->SetHighlighted(false);
+}
+
+void Game::Lose() {
+    SetGameScene(GameScene::Lose, TRANSITION_TIME);
+    mGameState = GameState::PAUSED;
 }
 
 void Game::BuildMainMenu() {

@@ -27,7 +27,9 @@ public:
     enum class GameScene {
         MainMenu,
         Level1,
-        Level2
+        Level2,
+        Win,
+        Lose
     };
 
     static const int SCREEN_WIDTH = 1280;
@@ -46,6 +48,8 @@ public:
     void RunLoop();
     void Shutdown();
     void Quit() { mGameState = GameState::QUITTING; }
+    void Win();
+    void Lose();
     GameState GetGameState() const { return mGameState; }
 
     // Scene management
@@ -56,6 +60,8 @@ public:
     void BuildMainMenu();
     UIScreen* BuildPauseMenu();
     void BuildFirstLevel();
+    void BuildWinScreen();
+    void BuildLoseScreen();
 
     // Actor functions
     void UpdateActors(float deltaTime);
