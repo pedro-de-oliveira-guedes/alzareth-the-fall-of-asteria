@@ -23,25 +23,22 @@ CollectibleItem::CollectibleItem(Game* game, const std::string& name, ItemType t
     mColliderComponent->SetEnabled(true);
 }
 
-CollectibleItem::~CollectibleItem()
-{
-}
+CollectibleItem::~CollectibleItem() { }
 
 void CollectibleItem::Use(Player* player) {
     if (mType == ItemType::Consumable) {
         if (mName == "Energy_Potion") {
             player->SetCurrentEnergy(player->GetCurrentEnergy() + 30.0f);
-            SDL_Log("Jogador usou %s. Energia atual: %f", mName.c_str(), player->GetCurrentEnergy());
         }
         else if (mName == "Health_Potion") {
             player->SetCurrentHealth(player->GetCurrentHealth() + 30.0f);
-            SDL_Log("Jogador usou %s. Vida atual: %f", mName.c_str(), player->GetCurrentHealth());
         }
         else if (mName == "Invulnerability_Potion") {
             player->SetInvulnerable(true);        
-            player->SetInvulnerabilityTimer(10.0f); 
-            SDL_Log("Jogador usou %s. Invulnerabilidade temporária ativada por %.1f segundos!", mName.c_str(), 5.0f);
+            player->SetInvulnerabilityTimer(10.0f);
         }
+    }
+}
 
     }
 }

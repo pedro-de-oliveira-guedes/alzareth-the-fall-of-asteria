@@ -45,33 +45,13 @@ Sword::Sword(Game* game, const std::string& name,
     mDrawComponent->AddAnimation(WEST, {6});
     mDrawComponent->SetAnimation(SOUTH);
     mDrawComponent->SetAnimFPS(10.0f);
-
-    
-
 }
 
 Sword::~Sword() {}
 
 void Sword::Use(Player* player) {}
 
-void Sword::OnCollision(float minOverlap, AABBColliderComponent *other) {
-
-  /* SDL_Log("Sword collided with another actor");
-
-  // check if player collided with a Sword
-  if (other->GetLayer() == ColliderLayer::Player) {
-    SDL_Log("Sword collided with player, using Sword");
-    // Use the Sword on the player
-  } else if (other->GetLayer() == ColliderLayer::Enemy) {
-
-    
-    auto enemy = static_cast<Enemy*>(other->GetOwner());
-    enemy->TakeDamage(this->GetDamage());
-
-    SDL_Log("Sword hit enemy");
-
-  } */
-}
+void Sword::OnCollision(float minOverlap, AABBColliderComponent *other) { }
 
 int Sword::GetDamage() const {
     if (mHasHitThisAttack) {
@@ -107,10 +87,7 @@ void Sword::DrawForAttack() {
 }
 
 void Sword::Collect() {
-    SDL_Log("Sword collected");
-    
     mDrawComponent->SetIsVisible(false);
-    
     mColliderComponent->SetEnabled(false);
 }
 
@@ -135,16 +112,6 @@ void Sword::UpdateDirection() {
     }
     
     std::string newDirection;
-    
-    // Define angle ranges for each direction (0° is East, 90° is South)
-    // East: 337.5° to 22.5° (or -22.5° to 22.5°)
-    // Southeast: 22.5° to 67.5°
-    // South: 67.5° to 112.5°
-    // Southwest: 112.5° to 157.5°
-    // West: 157.5° to 202.5°
-    // Northwest: 202.5° to 247.5°
-    // North: 247.5° to 292.5°
-    // Northeast: 292.5° to 337.5°
     
     if (degrees >= 337.5f || degrees < 22.5f) {
         newDirection = EAST;           // frame 1

@@ -9,7 +9,6 @@ class Golem : public Enemy {
             Vector2 position
         );
 
-
         void Attack();
 
         void OnUpdate(float deltaTime) override;
@@ -17,14 +16,8 @@ class Golem : public Enemy {
         void OnCollision(float minOverlap, AABBColliderComponent *other) override;
 
         void Kill() override;
-
-        void DebugColliderPosition() const;
     private:
-
-        // Update handling
-
         void ManageAnimations() const;
-        
 
         RigidBodyComponent *mRigidBodyComponent;
         AABBColliderComponent *mColliderComponent;

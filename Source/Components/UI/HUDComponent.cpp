@@ -128,7 +128,7 @@ void HUDComponent::UpdateInventoryDisplay() {
     }
     mInventoryItems.clear();
 
-    const Inventory& playerInventory = static_cast<Player*>(mOwner->GetGame()->GetPlayer())->GetInventory();
+    const Inventory& playerInventory = mOwner->GetGame()->GetPlayer()->GetInventory();
 
     float itemDisplayY = mInventoryImage->GetPosition().y + 95.0f;
 
