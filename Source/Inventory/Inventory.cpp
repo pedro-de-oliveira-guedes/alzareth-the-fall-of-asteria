@@ -54,6 +54,15 @@ bool Inventory::RemoveItemAtIndex(size_t index) {
     return true;
 }
 
+bool Inventory::InventoryFull() const {
+    for (const auto& item_ptr : mItems) {
+        if (item_ptr == nullptr) {
+            return false;
+        }
+    }
+    return true;
+}
+
 Item* Inventory::GetItem(const std::string& itemName) const {
     for (Item* item : mItems) {
         if (item != nullptr && item->GetName() == itemName) {
