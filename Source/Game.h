@@ -1,12 +1,13 @@
 #pragma once
 #include <SDL.h>
 #include <string>
-#include <vector>
 #include <unordered_map>
+#include <vector>
 
-#include "Utils/Math.h"
+#include "Actors/Enemy.h"
 #include "Actors/Player/Player.h"
 #include "UIElements/UIScreen.h"
+#include "Utils/Math.h"
 #include "Utils/SpatialHashing.h"
 
 class Game {
@@ -27,7 +28,9 @@ public:
     enum class GameScene {
         MainMenu,
         Level1,
-        Level2
+        Level2,
+        Win,
+        Lose
     };
 
     static const int SCREEN_WIDTH = 1280;
@@ -46,7 +49,10 @@ public:
     void RunLoop();
     void Shutdown();
     void Quit() { mGameState = GameState::QUITTING; }
+    void Win();
+    void Lose();
     GameState GetGameState() const { return mGameState; }
+    std::pair<int, int> GetEnemiesCount() const;
 
     // Scene management
     void SetGameScene(GameScene scene, float transitionTime = 0.0f);
@@ -56,6 +62,8 @@ public:
     void BuildMainMenu();
     UIScreen* BuildPauseMenu();
     void BuildFirstLevel();
+    void BuildWinScreen();
+    void BuildLoseScreen();
 
     // Actor functions
     void UpdateActors(float deltaTime);
@@ -99,7 +107,9 @@ private:
     void GenerateOutput() const;
 
     // Game-specific
+    GameState mGameState;
     Player* mPlayer;
+    std::vector<Enemy*> mEnemies;
 
     // All the draw components
     SDL_Texture *mBackgroundTexture;
@@ -121,9 +131,6 @@ private:
     SDL_Window* mWindow;
     SDL_Renderer* mRenderer;
 
-    // Track if we're updating actors right now
-    GameState mGameState;
-    bool mUpdatingActors;
 
     // Track elapsed time since game start
     Uint32 mTicksCount;

@@ -1,7 +1,7 @@
 #include "Game.h"
 #include "Actors/Items/Collectible/CollectibleItem.h"
 #include "Actors/Actor.h"
-#include "Actors/Golem//Golem.h"
+#include "Actors/Golem/Golem.h"
 #include "Components/DrawComponents/DrawComponent.h"
 #include "UIElements/UIScreen.h"
 #include "Utils/Random.h"
@@ -20,7 +20,6 @@ Game::Game() {
     mRenderer = nullptr;
     mTicksCount = 0;
     mGameState = GameState::PAUSED;
-    mUpdatingActors = false;
     mWindowWidth = Game::SCREEN_WIDTH;
     mWindowHeight = Game::SCREEN_HEIGHT;
     mBackgroundTexture = nullptr;
@@ -35,6 +34,7 @@ Game::Game() {
     mSceneManagerTransitionTime = 0.0f;
     mGameScene = GameScene::MainMenu;
     mNextScene = GameScene::MainMenu;
+    mEnemies.clear();
 }
 
 bool Game::Initialize() {
@@ -82,14 +82,10 @@ bool Game::Initialize() {
 
 void Game::SetGameScene(GameScene scene, const float transitionTime) {
     if (mSceneManagerState == SceneManagerState::None) {
-        if (scene == GameScene::MainMenu || scene == GameScene::Level1 || scene == GameScene::Level2) {
-            mNextScene = scene;
-            mSceneManagerState = SceneManagerState::Entering;
-            mSceneManagerTimer = transitionTime;
-            mSceneManagerTransitionTime = transitionTime;
-        } else {
-            SDL_Log("Invalid game scene: %d", static_cast<int>(scene));
-        }
+        mNextScene = scene;
+        mSceneManagerState = SceneManagerState::Entering;
+        mSceneManagerTimer = transitionTime;
+        mSceneManagerTransitionTime = transitionTime;
     } else {
         SDL_Log("Cannot change scene state while SceneManager is not in None state");
     }
@@ -112,6 +108,11 @@ void Game::UnloadScene() {
         SDL_DestroyTexture(mBackgroundTexture);
         mBackgroundTexture = nullptr;
     }
+
+    for (const auto enemy : mEnemies) {
+        enemy->SetState(ActorState::Destroy);
+    }
+    mEnemies.clear();
 }
 
 void Game::ChangeScene() {
@@ -124,6 +125,18 @@ void Game::ChangeScene() {
     else if (mNextScene == GameScene::Level1) {
         BuildFirstLevel();
         mGameState = GameState::PLAYING;
+    }
+    else if (mNextScene == GameScene::Win) {
+        BuildWinScreen();
+        mGameState = GameState::PAUSED;
+    }
+    else if (mNextScene == GameScene::Lose) {
+        BuildLoseScreen();
+        mGameState = GameState::PAUSED;
+    }
+    else {
+        SDL_Log("Invalid game scene: %d", static_cast<int>(mNextScene));
+        return;
     }
 
     mGameScene = mNextScene;
@@ -142,6 +155,54 @@ void Game::SetBackgroundImage(const std::string& texturePath, const Vector2& pos
 
     mBackgroundPosition.Set(position.x, position.y);
     mBackgroundSize.Set(size.x, size.y);
+}
+
+void Game::BuildWinScreen() {
+    SetCameraPos(Vector2::Zero);
+    SetBackgroundImage(
+        "../Assets/Sprites/Menus/WinScreenBkg.png",
+        Vector2::Zero,
+        Vector2(SCREEN_WIDTH, SCREEN_HEIGHT)
+    );
+
+    const auto winScreen = new UIScreen(this, "../Assets/Fonts/PixelifySans.ttf");
+
+    auto *button = winScreen->AddButton(
+        "Pressione Enter!",
+        Vector2(mWindowWidth / 2.0f - 300.0f, mWindowHeight - 100.0f),
+        Vector2(600.0f, 50.0f),
+        [this]() { SetGameScene(GameScene::MainMenu, TRANSITION_TIME); }
+    );
+    button->SetHighlighted(false);
+}
+
+void Game::Win() {
+    SetGameScene(GameScene::Win, TRANSITION_TIME);
+    mGameState = GameState::PAUSED;
+}
+
+void Game::BuildLoseScreen() {
+    SetCameraPos(Vector2::Zero);
+    SetBackgroundImage(
+        "../Assets/Sprites/Menus/LoseScreenBkg.png",
+        Vector2::Zero,
+        Vector2(SCREEN_WIDTH, SCREEN_HEIGHT)
+    );
+
+    const auto loseScreen = new UIScreen(this, "../Assets/Fonts/PixelifySans.ttf");
+
+    auto *button = loseScreen->AddButton(
+        "Pressione Enter!",
+        Vector2(mWindowWidth / 2.0f - 300.0f, mWindowHeight - 100.0f),
+        Vector2(600.0f, 50.0f),
+        [this]() { SetGameScene(GameScene::MainMenu, TRANSITION_TIME); }
+    );
+    button->SetHighlighted(false);
+}
+
+void Game::Lose() {
+    SetGameScene(GameScene::Lose, TRANSITION_TIME);
+    mGameState = GameState::PAUSED;
 }
 
 void Game::BuildMainMenu() {
@@ -182,9 +243,9 @@ void Game::BuildFirstLevel() {
     mPlayer->SetPosition(Vector2(200.f, 200.f));
 
     for (int i = 0; i < 25; i++) {
-        const float offsetX = Random::GetFloatRange(250, 1600);
-        const float offsetY = Random::GetFloatRange(250, 1600);
-        new Golem(this, Vector2(offsetX, offsetY));
+        const float offsetX = Random::GetFloatRange(250, LEVEL_WIDTH * TILE_SIZE - 250);
+        const float offsetY = Random::GetFloatRange(250, LEVEL_HEIGHT * TILE_SIZE - 250);
+        mEnemies.push_back(new Golem(this, Vector2(offsetX, offsetY)));
     }
 
     new Sword(
@@ -399,10 +460,22 @@ void Game::UpdateCamera() {
 }
 
 void Game::UpdateActors(const float deltaTime) {
-    const std::vector<Actor*> actorsOnCamera = mSpatialHashing->QueryOnCamera(mCameraPos, mWindowWidth, mWindowHeight);
+    if (mEnemies.size() > 0) {
+        int defeatedEnemies = 0;
+        for (const auto enemy : mEnemies) {
+            if (!enemy->IsAlive()) {
+                defeatedEnemies++;
+            }
+        }
+        if (defeatedEnemies == mEnemies.size()) {
+            Win();
+        }
+    }
+
+    const std::vector<Actor*> allActors = mSpatialHashing->Query(mPlayer->GetPosition(), 1000);
 
     bool isPlayerOnCamera = false;
-    for (const auto actor : actorsOnCamera) {
+    for (const auto actor : allActors) {
         actor->Update(deltaTime);
         if (actor == mPlayer) {
             isPlayerOnCamera = true;
@@ -413,7 +486,7 @@ void Game::UpdateActors(const float deltaTime) {
         mPlayer->Update(deltaTime);
     }
 
-    for (const auto actor : actorsOnCamera) {
+    for (const auto actor : allActors) {
         if (actor->GetState() == ActorState::Destroy) {
             RemoveActor(actor);
             delete actor;
@@ -450,7 +523,7 @@ void Game::GenerateOutput() const {
         SDL_RenderCopy(mRenderer, mBackgroundTexture, nullptr, &dstRect);
     }
 
-    if (mSpatialHashing) {
+    if (mSpatialHashing && mGameState != GameState::QUITTING) {
         std::vector<DrawComponent*> drawComponents;
 
         const std::vector<Actor*> actorsOnCamera = mSpatialHashing->QueryOnCamera(mCameraPos, mWindowWidth, mWindowHeight);
@@ -548,4 +621,15 @@ std::vector<Actor*> Game::GetNearbyActors(const Vector2& position, const int ran
 
 std::vector<AABBColliderComponent*> Game::GetNearbyColliders(const Vector2& position, const int range) {
     return mSpatialHashing->QueryColliders(position, range);
+}
+
+std::pair<int, int> Game::GetEnemiesCount() const {
+    int defeatedEnemies = 0;
+    for (const auto enemy : mEnemies) {
+        if (!enemy->IsAlive()) {
+            defeatedEnemies++;
+        }
+    }
+
+    return {defeatedEnemies, mEnemies.size()};
 }

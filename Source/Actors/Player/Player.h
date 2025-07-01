@@ -39,8 +39,6 @@ class Player : public Actor {
 
         float GetWalkSpeed() const { return mWalkSpeed; }
 
-        void AddItemToInventory(Item* item); 
-        bool RemoveItemFromInventory(const std::string& itemName); 
         const Inventory& GetInventory() const { return mInventory; }
 
         void OnCollision(float minOverlap, AABBColliderComponent *other) override;

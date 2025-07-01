@@ -16,6 +16,7 @@ class Enemy : public Actor {
         virtual void OnUpdate(float deltaTime);
         void OnCollision(float minOverlap, AABBColliderComponent *other) override;
         void Kill() override;
+        bool IsAlive() const { return !mIsDead; }
 
         float GetDamageAttack() const { return mDamageAttack; }
 
@@ -33,9 +34,9 @@ class Enemy : public Actor {
 
         float mAttackCooldown;
 
-
         bool mIsAttacking = false;
         bool mIsWalking;
+        bool mIsDead;
 
         RigidBodyComponent *mRigidBodyComponent;
         AABBColliderComponent *mColliderComponent;

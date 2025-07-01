@@ -13,6 +13,7 @@ class Inventory{
     void AddItem(Item* newItem); 
     bool RemoveItem(const std::string& itemName);
     bool RemoveItemAtIndex(size_t index);
+    bool InventoryFull() const;
     
     Item* GetItem(const std::string& itemName) const;
     bool HasItem(const std::string& itemName) const;

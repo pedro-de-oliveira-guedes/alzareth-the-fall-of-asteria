@@ -18,6 +18,7 @@ Golem::Golem(Game *game, Vector2 position) : Enemy(game) {
 
     mMaxHealth = 100.0f;
     mCurrentHealth = mMaxHealth;
+    mIsDead = false;
 
     mWalkSpeed =  50.0f;
 
@@ -56,40 +57,26 @@ Golem::Golem(Game *game, Vector2 position) : Enemy(game) {
     mDrawComponent->SetAnimFPS(10.f);
 
     mDrawComponent->SetAnimation(IDLE_ANIMATION);
-
-    SDL_Log("Golem created");
-
-}
-
-void Golem::DebugColliderPosition() const {
-    Vector2 actorPos = GetPosition();
-    Vector2 colliderMin = mColliderComponent->GetMin();
-    Vector2 colliderMax = mColliderComponent->GetMax();
-    
 }
 
 void Golem::Attack() {
-
     if (mAttackCooldown >= 0.0f) {
-        return; // can't attack yet
+        return;
     }
 
-    auto player = static_cast<Player*>(mGame->GetPlayer());
+    auto *player = mGame->GetPlayer();
 
     if (!player || player->GetIsDashing()) {
-        return; // player is dashing, don't attack
+        return;
     }
 
     mIsWalking = false;
     mIsAttacking = true;
-    SDL_Log("Golem attacking player");
-
 
     player->TakeDamage(mDamageAttack);
     ManageAnimations();
 
     mAttackCooldown = 1.0f; // reset
-
 }
 
 void Golem::OnUpdate(float deltaTime) {
@@ -139,17 +126,14 @@ void Golem::Kill() {
     if (mState == ActorState::Destroy) {
         return; // ensure Kill is executed only once
     }
-
-    mState = ActorState::Destroy;
     mGame->RemoveActor(this);
 
     mDrawComponent->SetIsVisible(false);
     mColliderComponent->SetEnabled(false);
     mRigidBodyComponent->SetEnabled(false);
-    SDL_Log("Golem killed");
+    mIsDead = true;
 
     // get random int
-
     int randomInt = std::rand() % 100;
 
     if (randomInt < 20) {
@@ -157,13 +141,13 @@ void Golem::Kill() {
             "../Assets/Sprites/Items/Energy/energy_potion.png",
             "../Assets/Sprites/Items/Energy/energy_potion_inventory.png",
             "../Assets/Sprites/Items/Energy/energy_potion.json",
-            1, Vector2(GetPosition().x, GetPosition().y));
-    } else if (randomInt >= 20 && randomInt < 50) {
+            1, GetPosition());
+    } else if (randomInt < 50) {
         new CollectibleItem(mGame, "Health_Potion", Item::ItemType::Consumable,
             "../Assets/Sprites/Items/Health/health_potion.png",
             "../Assets/Sprites/Items/Health/health_potion_inventory.png",
             "../Assets/Sprites/Items/Health/health_potion.json",
-            1, Vector2(GetPosition().x, GetPosition().y));
+            1, GetPosition());
     }
     // TODO: Add more items to drop
 }

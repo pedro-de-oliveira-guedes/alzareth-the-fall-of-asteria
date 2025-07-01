@@ -32,6 +32,7 @@ class Item : public Actor {
         void AddQuantity(const int quantity) { mQuantity += quantity;}
         void RemoveQuantity(const int quantity) { mQuantity -= quantity; if (mQuantity < 0) mQuantity = 0; }
         virtual void Use(class Player* player) = 0;
+        virtual void Collect() = 0;
 
         void OnCollision(float minOverlap, AABBColliderComponent *other) override;
 

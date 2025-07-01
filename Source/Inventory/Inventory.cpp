@@ -2,50 +2,47 @@
 #include <algorithm>
 
 Inventory::Inventory() {
-  mItems.resize(mMaxItems, nullptr);
+    mItems.resize(mMaxItems, nullptr);
 }
 
 Inventory::~Inventory() {
-  mItems.clear();
+    mItems.clear();
 }
 
 int Inventory::ReturnWeaponIndex() {
-  for (size_t i = 0; i < mItems.size(); ++i) {
-    if (mItems[i] != nullptr && mItems[i]->GetType() == Item::ItemType::Weapon) {
-      //SDL_Log("Índice da arma encontrada: %zu", i + 1);
-      return i; // Retorna o índice da arma
+    for (size_t i = 0; i < mItems.size(); ++i) {
+        if (mItems[i] != nullptr && mItems[i]->GetType() == Item::ItemType::Weapon) {
+              return i;
+        }
     }
-  }
-  //SDL_Log("Nenhuma arma encontrada no inventário.");
-  return -1; // Retorna -1 se nenhuma arma for encontrada
+
+    return -1;
 }
 
 void Inventory::AddItem(Item* newItem) {
-  if (newItem == nullptr) {
-    return;
-  }
-  auto it = std::find(mItems.begin(), mItems.end(), nullptr);
+    if (newItem == nullptr) {
+        return;
+    }
 
-  if (it != mItems.end()) {
-    *it = newItem;
-  }
-  else {
-    return;
-  }
+    auto it = std::find(mItems.begin(), mItems.end(), nullptr);
+    if (it != mItems.end()) {
+        *it = newItem;
+    }
 }
 
 bool Inventory::RemoveItem(const std::string& itemName) {
-  if (mItems.empty()) {
-    return false;
-  }
-
-  for (size_t i = 0; i < mItems.size(); ++i) {
-    if (mItems[i] != nullptr && mItems[i]->GetName() == itemName) {
-      mItems[i] = nullptr; // Define o slot como vazio
-      return true;
+    if (mItems.empty()) {
+        return false;
     }
-  }
-  return false;
+
+    for (size_t i = 0; i < mItems.size(); ++i) {
+        if (mItems[i] != nullptr && mItems[i]->GetName() == itemName) {
+            mItems[i] = nullptr; // Define o slot como vazio
+            return true;
+        }
+    }
+
+    return false;
 }
 
 bool Inventory::RemoveItemAtIndex(size_t index) {
@@ -53,8 +50,16 @@ bool Inventory::RemoveItemAtIndex(size_t index) {
         return false;
     }
 
-    Item* itemToRemove = mItems[index];
     mItems[index] = nullptr;
+    return true;
+}
+
+bool Inventory::InventoryFull() const {
+    for (const auto& item_ptr : mItems) {
+        if (item_ptr == nullptr) {
+            return false;
+        }
+    }
     return true;
 }
 
@@ -64,6 +69,7 @@ Item* Inventory::GetItem(const std::string& itemName) const {
             return item;
         }
     }
+
     return nullptr;
 }
 
@@ -71,14 +77,16 @@ Item* Inventory::GetItemAtIndex(size_t index) const {
     if (index < mItems.size()) {
         return mItems[index]; 
     }
+
     return nullptr; 
 }
 
 bool Inventory::HasItem(const std::string& itemName) const {
-  for (const auto& item_ptr : mItems) {
-    if (item_ptr->GetName() == itemName) {
-      return true;
+    for (const auto& item_ptr : mItems) {
+        if (item_ptr->GetName() == itemName) {
+            return true;
+        }
     }
-  }
-  return false;
+
+    return false;
 }
