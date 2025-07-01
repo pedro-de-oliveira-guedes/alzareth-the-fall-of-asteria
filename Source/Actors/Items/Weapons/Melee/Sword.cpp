@@ -16,7 +16,7 @@ Sword::Sword(Game* game, const std::string& name,
 
     mDamage = 100;
 
-    mPosition = position;
+    SetPosition(position);
 
     int swordSpriteSize = 100;
     
@@ -169,7 +169,7 @@ void Sword::UpdateSwordPosition(const std::string& direction) {
         swordOffset = Vector2(offsetDistance * 0.707f, -offsetDistance * 0.707f);
     }
     
-    mPosition = mPlayerPos + swordOffset;
+    SetPosition(mPlayerPos + swordOffset);
     this->SetPosition(mPosition);
 
 }

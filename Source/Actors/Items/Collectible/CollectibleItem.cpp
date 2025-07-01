@@ -2,10 +2,17 @@
 
 const std::string FLOATING_ANIMATION = "floating";
 
-CollectibleItem::CollectibleItem(Game* game, const std::string& name, ItemType type,
-    const std::string& textureSpritePath, const std::string& textureInventoryPath, const std::string& spriteSheetData, int quantity, const Vector2& position)
-    : Item(game, name, type, textureSpritePath, textureInventoryPath, spriteSheetData, quantity) {
-    mPosition = position;
+CollectibleItem::CollectibleItem(
+    Game* game,
+    const std::string& name,
+    const ItemType type,
+    const std::string& textureSpritePath,
+    const std::string& textureInventoryPath,
+    const std::string& spriteSheetData,
+    const int quantity,
+    const Vector2& position
+) : Item(game, name, type, textureSpritePath, textureInventoryPath, spriteSheetData, quantity) {
+    SetPosition(position);
 
     mDrawComponent = new DrawAnimatedComponent(
         this,
