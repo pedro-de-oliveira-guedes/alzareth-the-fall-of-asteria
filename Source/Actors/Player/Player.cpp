@@ -1,9 +1,10 @@
 #include "Player.h"
-#include "../Enemy.h"
 #include "../../Components/ColliderComponents/AABBColliderComponent.h"
 #include "../../Components/DrawComponents/DrawAnimatedComponent.h"
 #include "../../Components/PhysicsComponents/RigidBodyComponent.h"
 #include "../../Game.h"
+#include "../../Systems/SceneManager/SceneManagerSystem.h"
+#include "../Enemy.h"
 #include "../Items/Collectible/CollectibleItem.h"
 
 const std::string DASH_ANIMATION = "dash";
@@ -272,18 +273,20 @@ void Player::Attack(const Uint8 *keyState) {
 }
 
 void Player::HandleMapBoundaries() {
+    const auto [level_width, level_height] = mGame->GetSceneManager()->GetLevelSize();
+
     if (GetPosition().x < GetGame()->GetCameraPos().x) {
         SetPosition(Vector2(0.f, GetPosition().y));
     }
     else if (GetPosition().x + Game::SPRITE_SIZE > GetGame()->GetCameraPos().x + GetGame()->GetWindowWidth()) {
-        SetPosition(Vector2(Game::LEVEL_WIDTH * Game::TILE_SIZE - Game::SPRITE_SIZE, GetPosition().y));
+        SetPosition(Vector2(level_width * SceneManagerSystem::TILE_SIZE - Game::SPRITE_SIZE, GetPosition().y));
     }
 
     if (GetPosition().y < 0) {
         SetPosition(Vector2(GetPosition().x, 0.f));
     }
-    else if (GetPosition().y + Game::SPRITE_SIZE > Game::LEVEL_HEIGHT * Game::TILE_SIZE) {
-        SetPosition(Vector2(GetPosition().x, Game::LEVEL_HEIGHT * Game::TILE_SIZE - Game::SPRITE_SIZE));
+    else if (GetPosition().y + Game::SPRITE_SIZE > level_height * SceneManagerSystem::TILE_SIZE) {
+        SetPosition(Vector2(GetPosition().x, level_height * SceneManagerSystem::TILE_SIZE - Game::SPRITE_SIZE));
     }
 }
 

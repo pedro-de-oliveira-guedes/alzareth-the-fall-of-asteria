@@ -1,5 +1,7 @@
 #include "CollectibleItem.h"
 
+#include "../../../Systems/SceneManager/SceneManagerSystem.h"
+
 const std::string FLOATING_ANIMATION = "floating";
 
 CollectibleItem::CollectibleItem(
@@ -26,7 +28,16 @@ CollectibleItem::CollectibleItem(
     mDrawComponent->SetAnimFPS(10.0f);
     mDrawComponent->SetIsVisible(true);
 
-    mColliderComponent = new AABBColliderComponent(this, 0, 0, Game::TILE_SIZE / 4, Game::TILE_SIZE / 4, ColliderLayer::Collectible, false, true);
+    mColliderComponent = new AABBColliderComponent(
+        this,
+        0,
+        0,
+        SceneManagerSystem::TILE_SIZE / 4,
+        SceneManagerSystem::TILE_SIZE / 4,
+        ColliderLayer::Collectible,
+        false,
+        true
+    );
     mColliderComponent->SetEnabled(true);
 }
 

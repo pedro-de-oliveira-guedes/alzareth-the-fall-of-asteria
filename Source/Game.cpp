@@ -4,15 +4,15 @@
 #include "Actors/Golem/Golem.h"
 #include "Components/DrawComponents/DrawComponent.h"
 #include "UIElements/UIScreen.h"
-#include "Utils/Random.h"
+#include "Systems/SceneManager/SceneManagerSystem.h"
 
+#include <SDL_image.h>
+#include <SDL_mixer.h>
+#include <SDL_ttf.h>
 #include <algorithm>
 #include <fstream>
 #include <iostream>
 #include <memory>
-#include <SDL_image.h>
-#include <SDL_mixer.h>
-#include <SDL_ttf.h>
 #include <vector>
 
 Game::Game() {
@@ -20,22 +20,17 @@ Game::Game() {
     mRenderer = nullptr;
     mTicksCount = 0;
     mGameState = GameState::PAUSED;
-    mWindowWidth = Game::SCREEN_WIDTH;
-    mWindowHeight = Game::SCREEN_HEIGHT;
+    mWindowWidth = SCREEN_WIDTH;
+    mWindowHeight = SCREEN_HEIGHT;
     mBackgroundTexture = nullptr;
     mBackgroundPosition = Vector2::Zero;
     mBackgroundSize = Vector2(SCREEN_WIDTH, SCREEN_HEIGHT);
     mPlayer = nullptr;
-    mPauseMenu = nullptr;
     mSpatialHashing = nullptr;
     mCameraPos = Vector2::Zero;
     mAudio = nullptr;
-    mSceneManagerState = SceneManagerState::None;
-    mSceneManagerTimer = 0.0f;
-    mSceneManagerTransitionTime = 0.0f;
-    mGameScene = GameScene::MainMenu;
-    mNextScene = GameScene::MainMenu;
     mEnemies.clear();
+    mSceneManager = nullptr;
 }
 
 bool Game::Initialize() {
@@ -72,78 +67,13 @@ bool Game::Initialize() {
         return false;
     }
 
-    Random::Init();
-
     mAudio = new AudioSystem(8);
     mTicksCount = SDL_GetTicks();
 
-    SetGameScene(GameScene::MainMenu, TRANSITION_TIME);
+    mSceneManager = new SceneManagerSystem(this, mAudio);
+    mSceneManager->SetGameScene(SceneManagerSystem::GameScene::MainMenu);
 
     return true;
-}
-
-void Game::SetGameScene(GameScene scene, const float transitionTime) {
-    if (mSceneManagerState == SceneManagerState::None) {
-        mNextScene = scene;
-        mSceneManagerState = SceneManagerState::Entering;
-        mSceneManagerTimer = transitionTime;
-        mSceneManagerTransitionTime = transitionTime;
-    } else {
-        SDL_Log("Cannot change scene state while SceneManager is not in None state");
-    }
-}
-
-void Game::ResetGameScene(const float transitionTime) {
-    SetGameScene(mGameScene, transitionTime);
-}
-
-void Game::UnloadScene() {
-    delete mSpatialHashing;
-    mSpatialHashing = nullptr;
-
-    for (const auto ui : mUIStack) {
-        delete ui;
-    }
-    mUIStack.clear();
-
-    if (mBackgroundTexture) {
-        SDL_DestroyTexture(mBackgroundTexture);
-        mBackgroundTexture = nullptr;
-    }
-
-    for (const auto enemy : mEnemies) {
-        enemy->SetState(ActorState::Destroy);
-    }
-    mEnemies.clear();
-
-    mAudio->StopAllSounds();
-}
-
-void Game::ChangeScene() {
-    UnloadScene();
-
-    if (mNextScene == GameScene::MainMenu) {
-        BuildMainMenu();
-        mGameState = GameState::PAUSED;
-    }
-    else if (mNextScene == GameScene::Level1) {
-        BuildFirstLevel();
-        mGameState = GameState::PLAYING;
-    }
-    else if (mNextScene == GameScene::Win) {
-        BuildWinScreen();
-        mGameState = GameState::PAUSED;
-    }
-    else if (mNextScene == GameScene::Lose) {
-        BuildLoseScreen();
-        mGameState = GameState::PAUSED;
-    }
-    else {
-        SDL_Log("Invalid game scene: %d", static_cast<int>(mNextScene));
-        return;
-    }
-
-    mGameScene = mNextScene;
 }
 
 void Game::SetBackgroundImage(const std::string& texturePath, const Vector2& position, const Vector2& size) {
@@ -161,149 +91,14 @@ void Game::SetBackgroundImage(const std::string& texturePath, const Vector2& pos
     mBackgroundSize.Set(size.x, size.y);
 }
 
-void Game::BuildWinScreen() {
-    SetCameraPos(Vector2::Zero);
-    SetBackgroundImage(
-        "../Assets/Sprites/Menus/WinScreenBkg.png",
-        Vector2::Zero,
-        Vector2(SCREEN_WIDTH, SCREEN_HEIGHT)
-    );
-
-    const auto winScreen = new UIScreen(this, "../Assets/Fonts/PixelifySans.ttf");
-
-    auto *button = winScreen->AddButton(
-        "Pressione Enter!",
-        Vector2(mWindowWidth / 2.0f - 300.0f, mWindowHeight - 100.0f),
-        Vector2(600.0f, 50.0f),
-        [this]() { SetGameScene(GameScene::MainMenu, TRANSITION_TIME); }
-    );
-    button->SetHighlighted(false);
-}
-
 void Game::Win() {
-    SetGameScene(GameScene::Win, TRANSITION_TIME);
+    mSceneManager->SetGameScene(SceneManagerSystem::GameScene::Win);
     mGameState = GameState::PAUSED;
-}
-
-void Game::BuildLoseScreen() {
-    SetCameraPos(Vector2::Zero);
-    SetBackgroundImage(
-        "../Assets/Sprites/Menus/LoseScreenBkg.png",
-        Vector2::Zero,
-        Vector2(SCREEN_WIDTH, SCREEN_HEIGHT)
-    );
-
-    const auto loseScreen = new UIScreen(this, "../Assets/Fonts/PixelifySans.ttf");
-
-    auto *button = loseScreen->AddButton(
-        "Pressione Enter!",
-        Vector2(mWindowWidth / 2.0f - 300.0f, mWindowHeight - 100.0f),
-        Vector2(600.0f, 50.0f),
-        [this]() { SetGameScene(GameScene::MainMenu, TRANSITION_TIME); }
-    );
-    button->SetHighlighted(false);
 }
 
 void Game::Lose() {
-    SetGameScene(GameScene::Lose, TRANSITION_TIME);
+    mSceneManager->SetGameScene(SceneManagerSystem::GameScene::Lose);
     mGameState = GameState::PAUSED;
-}
-
-void Game::BuildMainMenu() {
-    SetCameraPos(Vector2::Zero);
-    SetBackgroundImage(
-        "../Assets/Sprites/Menus/MainMenuBkg.png",
-        Vector2::Zero,
-        Vector2(SCREEN_WIDTH, SCREEN_HEIGHT)
-    );
-
-    const auto mainMenu = new UIScreen(this, "../Assets/Fonts/PixelifySans.ttf");
-
-    const auto playButton = mainMenu->AddButton(
-        "Novo Jogo",
-        Vector2(mWindowWidth / 2.0f - 120.0f, mWindowHeight / 2.0f + 50.0f),
-        Vector2(240.0f, 50.0f),
-        [this]() { SetGameScene(GameScene::Level1, TRANSITION_TIME); }
-    );
-
-    const auto exitButton = mainMenu->AddButton(
-        "Sair",
-        Vector2(mWindowWidth / 2.0f - 120.0f, playButton->GetPosition().y + playButton->GetSize().y + 10.0f),
-        Vector2(240.0f, 50.0f),
-        [this]() { Quit(); }
-    );
-}
-
-void Game::BuildFirstLevel() {
-    SetBackgroundImage(
-        "../Assets/Levels/Level-1/level_1_map.png",
-        Vector2::Zero,
-        Vector2(TILE_SIZE * LEVEL_WIDTH, TILE_SIZE * LEVEL_HEIGHT)
-    );
-
-    mSpatialHashing = new SpatialHashing(TILE_SIZE * 4.0f, LEVEL_WIDTH * TILE_SIZE, LEVEL_HEIGHT * TILE_SIZE);
-
-    mPlayer = new Player(this);
-    mPlayer->SetPosition(Vector2(200.f, 200.f));
-
-    for (int i = 0; i < 25; i++) {
-        const float offsetX = Random::GetFloatRange(250, LEVEL_WIDTH * TILE_SIZE - 250);
-        const float offsetY = Random::GetFloatRange(250, LEVEL_HEIGHT * TILE_SIZE - 250);
-        mEnemies.push_back(new Golem(this, Vector2(offsetX, offsetY)));
-    }
-
-    new Sword(
-        this,
-        "Sword",
-        "../Assets/Sprites/Weapons/Sword/sword.png",
-        "../Assets/Sprites/Weapons/Sword/sword_inv.png",
-        "../Assets/Sprites/Weapons/Sword/sword.json",
-        Vector2(300.0f, 300.0f) ,
-        1
-    );
-
-    mPauseMenu = BuildPauseMenu();
-    mMusicHandle = mAudio->PlaySound("level1.wav", true);
-}
-
-UIScreen* Game::BuildPauseMenu() {
-    const auto pauseMenu = new UIScreen(this, "../Assets/Fonts/PixelifySans.ttf");
-    pauseMenu->SetState(UIScreen::UIState::Idle);
-
-    const auto menuSize = Vector2(720.f, 480.f);
-    const auto screenSize = Vector2(SCREEN_WIDTH, SCREEN_HEIGHT);
-
-    pauseMenu->AddImage(
-        "../Assets/Sprites/Menus/PauseMenuBkg.png",
-        0.5f * (screenSize - menuSize),
-        menuSize
-    );
-
-    const auto continueButton = pauseMenu->AddButton(
-        "Continuar",
-        Vector2(screenSize.x / 2.0f - 120.0f, screenSize.y / 2.0f - 80.0f),
-        Vector2(240.0f, 50.0f),
-        [this]() { TogglePause(); }
-    );
-    continueButton->SetDrawOrder(1);
-
-    const auto mainMenuButton = pauseMenu->AddButton(
-        "Menu Principal",
-        Vector2(screenSize.x / 2.0f - 180.0f, continueButton->GetPosition().y + continueButton->GetSize().y + 15.0f),
-        Vector2(360.0f, 50.0f),
-        [this]() { SetGameScene(GameScene::MainMenu, TRANSITION_TIME); }
-    );
-    mainMenuButton->SetDrawOrder(1);
-
-    const auto exitButton = pauseMenu->AddButton(
-        "Sair",
-        Vector2(screenSize.x / 2.0f - 80.0f, mainMenuButton->GetPosition().y + mainMenuButton->GetSize().y + 15.0f),
-        Vector2(160.0f, 50.0f),
-        [this]() { Quit(); }
-    );
-    exitButton->SetDrawOrder(1);
-
-    return pauseMenu;
 }
 
 void Game::RunLoop() {
@@ -314,7 +109,7 @@ void Game::RunLoop() {
     }
 }
 
-void Game::HandleKeyPressActors(const int key, const bool isPressed) {
+void Game::HandleKeyPressActors(const int key, const bool isPressed) const {
     if (mGameState == GameState::PLAYING) {
         const std::vector<Actor*> actorsOnCamera = mSpatialHashing->QueryOnCamera(mCameraPos, mWindowWidth, mWindowHeight);
 
@@ -329,24 +124,6 @@ void Game::HandleKeyPressActors(const int key, const bool isPressed) {
 
         if (!isPlayerOnCamera && mPlayer) {
             mPlayer->HandleKeyPress(key, isPressed);
-        }
-    }
-}
-
-void Game::TogglePause() {
-    if (mGameScene != GameScene::MainMenu) {
-        if (mGameState == GameState::PLAYING) {
-            mGameState = GameState::PAUSED;
-            mPauseMenu->SetState(UIScreen::UIState::Active);
-
-            mAudio->PauseSound(mMusicHandle);
-            mAudio->PlaySound("menu_click.ogg", false);
-        } else if (mGameState == GameState::PAUSED) {
-            mGameState = GameState::PLAYING;
-            mPauseMenu->SetState(UIScreen::UIState::Idle);
-
-            mAudio->PlaySound("menu_click.ogg", false);
-            mAudio->ResumeSound(mMusicHandle);
         }
     }
 }
@@ -389,7 +166,7 @@ void Game::ProcessInput() {
                 HandleKeyPressActors(event.key.keysym.sym, event.key.repeat == 0);
 
                 if (event.key.keysym.sym == SDLK_ESCAPE) {
-                    TogglePause();
+                    mSceneManager->TogglePause();
                 }
                 break;
             default: ;
@@ -431,40 +208,23 @@ void Game::UpdateGame() {
     }
 
     UpdateCamera();
-    UpdateSceneManager(deltaTime);
-}
-
-void Game::UpdateSceneManager(const float deltaTime) {
-    if (mSceneManagerState == SceneManagerState::Entering) {
-        mSceneManagerTimer -= deltaTime;
-        if (mSceneManagerTimer <= 0.0f) {
-            ChangeScene();
-            mSceneManagerTimer = TRANSITION_TIME;
-            mSceneManagerTransitionTime = TRANSITION_TIME;
-            mSceneManagerState = SceneManagerState::Active;
-        }
-    }
-
-    if (mSceneManagerState == SceneManagerState::Active) {
-        mSceneManagerTimer -= deltaTime;
-        if (mSceneManagerTimer <= 0.0f) {
-            mSceneManagerState = SceneManagerState::None;
-        }
-    }
+    mSceneManager->UpdateSceneManager(deltaTime);
 }
 
 void Game::UpdateCamera() {
     if (!mPlayer || mGameState != GameState::PLAYING) return;
 
+    const auto[level_width, level_height] = mSceneManager->GetLevelSize();
+
     int cameraX = mPlayer->GetPosition().x - (mWindowWidth / 2);
     cameraX = std::max({ cameraX, 0 }); // Locks camera to the left of the screen
-    cameraX = std::min(cameraX, LEVEL_WIDTH * TILE_SIZE - mWindowWidth); // Locks camera to the right of the screen
+    cameraX = std::min(cameraX, level_width * SceneManagerSystem::TILE_SIZE - mWindowWidth); // Locks camera to the right of the screen
 
     int cameraY = mPlayer->GetPosition().y - (mWindowHeight / 2);
     cameraY = std::max(cameraY, -(mWindowHeight / 6)); // Leaves some space above the screen for the HUD
     cameraY = std::min(
         cameraY,
-        (LEVEL_HEIGHT * TILE_SIZE - mWindowHeight) + (mWindowHeight / 6) // Leaves some space below the screen for the HUD
+        (level_height * SceneManagerSystem::TILE_SIZE - mWindowHeight) + (mWindowHeight / 6) // Leaves some space below the screen for the HUD
     );
 
     SetCameraPos(Vector2(cameraX, cameraY));
@@ -562,17 +322,7 @@ void Game::GenerateOutput() const {
         }
     }
 
-    if (mSceneManagerState == SceneManagerState::Entering) {
-        SDL_SetRenderDrawColor(mRenderer, 0, 0, 0, static_cast<Uint8>((1 - mSceneManagerTimer / mSceneManagerTransitionTime) * 255));
-        const SDL_Rect rect = { 0, 0, mWindowWidth, mWindowHeight };
-        SDL_RenderFillRect(mRenderer, &rect);
-    }
-
-    if (mSceneManagerState == SceneManagerState::Active) {
-        SDL_SetRenderDrawColor(mRenderer, 0, 0, 0, static_cast<Uint8>((mSceneManagerTimer / mSceneManagerTransitionTime) * 255));
-        const SDL_Rect rect = { 0, 0, mWindowWidth, mWindowHeight };
-        SDL_RenderFillRect(mRenderer, &rect);
-    }
+    mSceneManager->DrawSceneTransition(mRenderer);
 
     // Swap front buffer and back buffer
     SDL_RenderPresent(mRenderer);
@@ -607,8 +357,30 @@ UIFont* Game::LoadFont(const std::string& fileName) {
     return nullptr;
 }
 
+void Game::ClearGameScene() {
+    delete mSpatialHashing;
+    mSpatialHashing = nullptr;
+
+    for (const auto ui : mUIStack) {
+        delete ui;
+    }
+    mUIStack.clear();
+
+    if (mBackgroundTexture) {
+        SDL_DestroyTexture(mBackgroundTexture);
+        mBackgroundTexture = nullptr;
+    }
+
+    for (const auto enemy : mEnemies) {
+        enemy->SetState(ActorState::Destroy);
+    }
+    mEnemies.clear();
+
+    mAudio->StopAllSounds();
+}
+
 void Game::Shutdown() {
-    UnloadScene();
+    ClearGameScene();
 
     for (const auto &font : mFonts) {
         font.second->Unload();
@@ -645,4 +417,26 @@ std::pair<int, int> Game::GetEnemiesCount() const {
     }
 
     return {defeatedEnemies, mEnemies.size()};
+}
+
+void Game::BuildPlayer(const Vector2 position) {
+    if (mPlayer) {
+        mPlayer->SetPosition(position);
+    } else {
+        mPlayer = new Player(this);
+        mPlayer->SetPosition(position);
+    }
+}
+
+void Game::BuildSpatialHashing() {
+    if (mSpatialHashing) {
+        delete mSpatialHashing;
+    }
+
+    const auto [level_width, level_height] = mSceneManager->GetLevelSize();
+    mSpatialHashing = new SpatialHashing(
+        SceneManagerSystem::TILE_SIZE * 4.0f,
+        level_width * SceneManagerSystem::TILE_SIZE,
+        level_height * SceneManagerSystem::TILE_SIZE
+    );
 }
