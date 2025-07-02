@@ -66,19 +66,25 @@ void UIScreen::Draw(SDL_Renderer *renderer) {
 void UIScreen::ProcessInput(const uint8_t* keys) { }
 
 void UIScreen::HandleKeyPress(const int key) {
+    if (mState != UIState::Active)
+        return;
+
     if (key == SDLK_w) {
         mSelectedButtonIndex--;
+        mGame->GetAudioSystem()->PlaySound("menu_click.ogg", false);
         if (mSelectedButtonIndex < 0) {
             mSelectedButtonIndex = static_cast<int>(mButtons.size()) - 1;
         }
     }
     else if (key == SDLK_s) {
         mSelectedButtonIndex++;
+        mGame->GetAudioSystem()->PlaySound("menu_click.ogg", false);
         if (mSelectedButtonIndex >= static_cast<int>(mButtons.size())) {
             mSelectedButtonIndex = 0;
         }
     }
     else if (key == SDLK_RETURN) {
+        mGame->GetAudioSystem()->PlaySound("menu_click.ogg", false);
         if (mSelectedButtonIndex >= 0 && mSelectedButtonIndex < static_cast<int>(mButtons.size())) {
             mButtons[mSelectedButtonIndex]->OnClick();
         }

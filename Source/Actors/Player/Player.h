@@ -87,6 +87,7 @@ class Player : public Actor {
         SoundHandle mWalkSound;
         SoundHandle mSwordSound;
         SoundHandle mDamageSound;
+        SoundHandle mItemPickupSound;
 
         std::array<bool, 5> mNumberKeysPressedLastFrame;
 

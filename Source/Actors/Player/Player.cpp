@@ -152,6 +152,9 @@ void Player::HandleItemInput(const Uint8* keyState) {
                 if (item && !mInventory.InventoryFull()) {
                     mInventory.AddItem(item);
                     item->Collect();
+
+                    if (mGame->GetAudioSystem()->GetSoundState(mItemPickupSound) != SoundState::Playing)
+                        mItemPickupSound = mGame->GetAudioSystem()->PlaySound("pickup.mp3", false);
                     break;
                 }
             }

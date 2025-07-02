@@ -22,4 +22,6 @@ class Golem : public Enemy {
         RigidBodyComponent *mRigidBodyComponent;
         AABBColliderComponent *mColliderComponent;
         DrawAnimatedComponent *mDrawComponent;
+
+        SoundHandle mAttackSound;
 };
