@@ -71,6 +71,7 @@ public:
     std::vector<AABBColliderComponent*> GetNearbyColliders(const Vector2& position, int range = 2);
 
     // Scene manager auxiliary functions
+    class SceneManagerSystem* GetSceneManager() const { return mSceneManager; }
     void BuildPlayer(Vector2 position);
     void BuildSpatialHashing();
     void AddEnemy(Enemy* enemy) { mEnemies.emplace_back(enemy); }
