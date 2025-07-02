@@ -238,6 +238,14 @@ void SceneManagerSystem::BuildLoseScreen() {
     button->SetHighlighted(false);
 }
 
+std::pair<int, int> SceneManagerSystem::GetLevelSize() const {
+    if (mGameScene == GameScene::Level1 || mNextScene == GameScene::Level1) {
+        return {FIRST_LEVEL_WIDTH, FIRST_LEVEL_HEIGHT};
+    }
+
+    return {0, 0};
+}
+
 void SceneManagerSystem::DrawSceneTransition(SDL_Renderer *renderer) const {
     if (mSceneManagerState == SceneManagerState::Entering) {
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, static_cast<Uint8>((1 - mSceneManagerTimer / mSceneManagerTransitionTime) * 255));
