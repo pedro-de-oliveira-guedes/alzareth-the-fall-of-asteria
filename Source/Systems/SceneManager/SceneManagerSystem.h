@@ -20,6 +20,7 @@ class SceneManagerSystem {
             Lose
         };
 
+        static const int TILE_SIZE = 32;
         SceneManagerSystem(Game *game, AudioSystem *audioSystem);
         ~SceneManagerSystem();
 
@@ -28,7 +29,11 @@ class SceneManagerSystem {
         void UnloadScene() const;
         void ChangeScene();
         void UpdateSceneManager(float deltaTime);
+
         void TogglePause() const;
+
+        std::pair<int, int> GetLevelSize() const;
+
         void DrawSceneTransition(SDL_Renderer *renderer) const;
 
     private:
@@ -48,6 +53,8 @@ class SceneManagerSystem {
 
         void BuildPauseMenu();
 
+        static constexpr int FIRST_LEVEL_WIDTH = 150;
+        static constexpr int FIRST_LEVEL_HEIGHT = 40;
         void BuildFirstLevel();
 
         void BuildWinScreen();
