@@ -29,6 +29,7 @@ Game::Game() {
     mPauseMenu = nullptr;
     mSpatialHashing = nullptr;
     mCameraPos = Vector2::Zero;
+    mAudio = nullptr;
     mSceneManagerState = SceneManagerState::None;
     mSceneManagerTimer = 0.0f;
     mSceneManagerTransitionTime = 0.0f;
@@ -73,6 +74,7 @@ bool Game::Initialize() {
 
     Random::Init();
 
+    mAudio = new AudioSystem(8);
     mTicksCount = SDL_GetTicks();
 
     SetGameScene(GameScene::MainMenu, TRANSITION_TIME);
@@ -113,6 +115,8 @@ void Game::UnloadScene() {
         enemy->SetState(ActorState::Destroy);
     }
     mEnemies.clear();
+
+    mAudio->StopAllSounds();
 }
 
 void Game::ChangeScene() {
@@ -259,6 +263,7 @@ void Game::BuildFirstLevel() {
     );
 
     mPauseMenu = BuildPauseMenu();
+    mMusicHandle = mAudio->PlaySound("level1.wav", true);
 }
 
 UIScreen* Game::BuildPauseMenu() {
@@ -333,11 +338,15 @@ void Game::TogglePause() {
         if (mGameState == GameState::PLAYING) {
             mGameState = GameState::PAUSED;
             mPauseMenu->SetState(UIScreen::UIState::Active);
-            // TODO: Handle sounds
+
+            mAudio->PauseSound(mMusicHandle);
+            mAudio->PlaySound("menu_click.ogg", false);
         } else if (mGameState == GameState::PAUSED) {
             mGameState = GameState::PLAYING;
             mPauseMenu->SetState(UIScreen::UIState::Idle);
-            // TODO: Handle sounds
+
+            mAudio->PlaySound("menu_click.ogg", false);
+            mAudio->ResumeSound(mMusicHandle);
         }
     }
 }
@@ -402,6 +411,8 @@ void Game::UpdateGame() {
     if (mGameState == GameState::PLAYING) {
         UpdateActors(deltaTime);
     }
+
+    mAudio->Update(deltaTime);
 
     for (const auto ui: mUIStack) {
         if (ui->GetState() == UIScreen::UIState::Active) {
@@ -605,7 +616,9 @@ void Game::Shutdown() {
     }
     mFonts.clear();
 
-    // TODO: Clean up audio system
+    delete mAudio;
+    mAudio = nullptr;
+    Mix_CloseAudio();
 
     TTF_Quit();
     IMG_Quit();

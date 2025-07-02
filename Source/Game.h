@@ -6,6 +6,7 @@
 
 #include "Actors/Enemy.h"
 #include "Actors/Player/Player.h"
+#include "Systems/Audio/AudioSystem.h"
 #include "UIElements/UIScreen.h"
 #include "Utils/Math.h"
 #include "Utils/SpatialHashing.h"
@@ -74,8 +75,12 @@ public:
     // Draw functions
     void SetBackgroundImage(const std::string& texturePath, const Vector2& position, const Vector2& size);
 
+    // Camera functions
     Vector2& GetCameraPos() { return mCameraPos; };
     void SetCameraPos(const Vector2& position) { mCameraPos = position; };
+
+    // Audio functions
+    AudioSystem* GetAudioSystem() { return mAudio; }
 
     // Window functions
     int GetWindowWidth() const { return mWindowWidth; }
@@ -131,12 +136,15 @@ private:
     SDL_Window* mWindow;
     SDL_Renderer* mRenderer;
 
-
     // Track elapsed time since game start
     Uint32 mTicksCount;
 
     // Camera position
     Vector2 mCameraPos;
+
+    // Game audio system
+    AudioSystem* mAudio;
+    SoundHandle mMusicHandle;
 
     // All the UI elements
     UIScreen *mPauseMenu;
