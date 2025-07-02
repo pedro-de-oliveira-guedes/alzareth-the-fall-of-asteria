@@ -214,15 +214,17 @@ void Game::UpdateGame() {
 void Game::UpdateCamera() {
     if (!mPlayer || mGameState != GameState::PLAYING) return;
 
+    const auto[level_width, level_height] = mSceneManager->GetLevelSize();
+
     int cameraX = mPlayer->GetPosition().x - (mWindowWidth / 2);
     cameraX = std::max({ cameraX, 0 }); // Locks camera to the left of the screen
-    cameraX = std::min(cameraX, LEVEL_WIDTH * TILE_SIZE - mWindowWidth); // Locks camera to the right of the screen
+    cameraX = std::min(cameraX, level_width * SceneManagerSystem::TILE_SIZE - mWindowWidth); // Locks camera to the right of the screen
 
     int cameraY = mPlayer->GetPosition().y - (mWindowHeight / 2);
     cameraY = std::max(cameraY, -(mWindowHeight / 6)); // Leaves some space above the screen for the HUD
     cameraY = std::min(
         cameraY,
-        (LEVEL_HEIGHT * TILE_SIZE - mWindowHeight) + (mWindowHeight / 6) // Leaves some space below the screen for the HUD
+        (level_height * SceneManagerSystem::TILE_SIZE - mWindowHeight) + (mWindowHeight / 6) // Leaves some space below the screen for the HUD
     );
 
     SetCameraPos(Vector2(cameraX, cameraY));
@@ -430,5 +432,11 @@ void Game::BuildSpatialHashing() {
     if (mSpatialHashing) {
         delete mSpatialHashing;
     }
-    mSpatialHashing = new SpatialHashing(TILE_SIZE * 4.0f, LEVEL_WIDTH * TILE_SIZE, LEVEL_HEIGHT * TILE_SIZE);
+
+    const auto [level_width, level_height] = mSceneManager->GetLevelSize();
+    mSpatialHashing = new SpatialHashing(
+        SceneManagerSystem::TILE_SIZE * 4.0f,
+        level_width * SceneManagerSystem::TILE_SIZE,
+        level_height * SceneManagerSystem::TILE_SIZE
+    );
 }

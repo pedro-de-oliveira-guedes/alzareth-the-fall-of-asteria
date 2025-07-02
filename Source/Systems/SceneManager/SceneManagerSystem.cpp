@@ -174,15 +174,15 @@ void SceneManagerSystem::BuildFirstLevel() {
     mGame->SetBackgroundImage(
         "../Assets/Levels/Level-1/level_1_map.png",
         Vector2::Zero,
-        Vector2(Game::TILE_SIZE * Game::LEVEL_WIDTH, Game::TILE_SIZE * Game::LEVEL_HEIGHT)
+        Vector2(TILE_SIZE * FIRST_LEVEL_WIDTH, TILE_SIZE * FIRST_LEVEL_HEIGHT)
     );
 
     mGame->BuildSpatialHashing();
     mGame->BuildPlayer(Vector2(200.0f, 200.0f));
 
     for (int i = 0; i < 25; i++) {
-        const float offsetX = Random::GetFloatRange(250, Game::LEVEL_WIDTH * Game::TILE_SIZE - 250);
-        const float offsetY = Random::GetFloatRange(250, Game::LEVEL_HEIGHT * Game::TILE_SIZE - 250);
+        const float offsetX = Random::GetFloatRange(250, FIRST_LEVEL_WIDTH * TILE_SIZE - 250);
+        const float offsetY = Random::GetFloatRange(250, FIRST_LEVEL_HEIGHT * TILE_SIZE - 250);
         mGame->AddEnemy(new Golem(mGame, Vector2(offsetX, offsetY)));
     }
 

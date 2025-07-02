@@ -1,9 +1,10 @@
 #include "HUDComponent.h"
 
-#include "../../Game.h"
 #include "../../Actors/Actor.h"
+#include "../../Game.h"
+#include "../../Systems/SceneManager/SceneManagerSystem.h"
+#include "../../UIElements/UIImage.h"
 #include "../../Utils/Math.h"
-#include "../../UIElements/UIImage.h" 
 
 HUDComponent::HUDComponent(
     Actor* owner,
@@ -123,7 +124,7 @@ void HUDComponent::DrawEnemiesCount(SDL_Renderer* renderer) const {
     mEnemiesBoardImage->Draw(renderer, Vector2::Zero);
 
     mEnemiesCountImage->SetPosition(Vector2(screenWidth - 165.0f, 30.0f));
-    mEnemiesCountImage->SetSize(Vector2(Game::TILE_SIZE, Game::TILE_SIZE));
+    mEnemiesCountImage->SetSize(Vector2(SceneManagerSystem::TILE_SIZE, SceneManagerSystem::TILE_SIZE));
     mEnemiesCountImage->Draw(renderer, Vector2::Zero);
 
     const auto [defeated, total] = mOwner->GetGame()->GetEnemiesCount();
@@ -141,7 +142,7 @@ void HUDComponent::DrawEnemiesCount(SDL_Renderer* renderer) const {
         font,
         24,
         0,
-        Vector2(screenWidth - 165.0f + Game::TILE_SIZE + 10.0f, 35.0f),
+        Vector2(screenWidth - 165.0f + SceneManagerSystem::TILE_SIZE + 10.0f, 35.0f),
         Vector2(text.size() * 24.f * 0.6f, 24.f)
     );
     enemiesCountText->Draw(renderer, Vector2::Zero);
