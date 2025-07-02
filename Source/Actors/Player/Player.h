@@ -5,9 +5,8 @@
 #include "../../Components/DrawComponents/DrawAnimatedComponent.h"
 #include "../../Components/UI/HUDComponent.h"
 #include "../../Inventory/Inventory.h"
-#include <array>
 #include "../Items/Weapons/Melee/Sword.h"
-
+#include "../../Systems/Audio/AudioSystem.h"
 
 class Player : public Actor {
     public:
@@ -66,7 +65,7 @@ class Player : public Actor {
         void HandleMapBoundaries();
         void HandleEnergyAndCooldowns(float deltaTime);
 
-        void ManageAnimations() const;
+        void ManageAnimations();
 
         float mMaxHealth;
         float mCurrentHealth;
@@ -85,6 +84,9 @@ class Player : public Actor {
         bool mIsRunning;
         bool mIsDashing;
         bool mEPressedLastFrame;
+        SoundHandle mWalkSound;
+        SoundHandle mSwordSound;
+        SoundHandle mDamageSound;
 
         std::array<bool, 5> mNumberKeysPressedLastFrame;
 

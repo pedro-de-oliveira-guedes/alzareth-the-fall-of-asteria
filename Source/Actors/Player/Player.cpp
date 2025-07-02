@@ -132,8 +132,7 @@ void Player::HandleDash(const Uint8* keyState, const Vector2 force_vector) {
 
         if (force_vector.x < 0) SetRotation(Math::Pi);
         else SetRotation(0);
-    }
-    else {
+    } else {
         mIsDashing = false;
     }
 }
@@ -182,7 +181,7 @@ void Player::UseItemAtIndex(int index) {
         itemToUse->Use(this);
         mInventory.RemoveItemAtIndex(actualIndex);
     } else {
-        // TODO: Play a sound here
+        mGame->GetAudioSystem()->PlaySound("menu_click.ogg", false);
     }
 }
 
@@ -214,7 +213,7 @@ void Player::OnProcessInput(const Uint8* keyState) {
 void Player::Attack(const Uint8 *keyState) {
     // TODO: GASTAR ENERGIA RELACIONADA A CADA ARMA
 
-    if (mIsDashing || mIsRunning || mIsWalking) {
+    if (mIsDashing || mIsRunning) {
         return;
     }
 
@@ -224,8 +223,7 @@ void Player::Attack(const Uint8 *keyState) {
         int weaponIdx = mInventory.ReturnWeaponIndex();
     
         if (weaponIdx < 0) {
-            SDL_Log("No weapon in inventory to attack with");
-            return; // No weapon to attack with
+            return;
         }
 
         // Get the equipped weapon
@@ -242,6 +240,8 @@ void Player::Attack(const Uint8 *keyState) {
                 sword->SetPlayerPos(GetPosition());
                 sword->SetMousePos(mousePos);
                 sword->DrawForAttack();
+                if (mGame->GetAudioSystem()->GetSoundState(mSwordSound) != SoundState::Playing)
+                    mSwordSound = mGame->GetAudioSystem()->PlaySound("sword_attack.wav", false);
 
                 Vector2 attackPosition = GetPosition();
                 float rangeX = sword->GetRangeX();
@@ -317,9 +317,11 @@ void Player::OnUpdate(const float deltaTime) {
     ManageAnimations();
 }
 
-void Player::ManageAnimations() const {
+void Player::ManageAnimations() {
     if (mIsWalking) {
         mDrawComponent->SetAnimation(WALKING_ANIMATION);
+        if (mGame->GetAudioSystem()->GetSoundState(mWalkSound) != SoundState::Playing)
+            mWalkSound = mGame->GetAudioSystem()->PlaySound("footsteps.wav", false);
     }
     else if (mIsRunning) {
         mDrawComponent->SetAnimation(RUNNING_ANIMATION);
@@ -336,6 +338,9 @@ void Player::TakeDamage(const float damage) {
     mCurrentHealth -= damage;
     mCurrentHealth = std::max(mCurrentHealth, 0.f);
     mHUDComponent->UpdateStats(mMaxHealth, mCurrentHealth, mMaxEnergy, mCurrentEnergy);
+
+    if (mGame->GetAudioSystem()->GetSoundState(mDamageSound) != SoundState::Playing)
+        mDamageSound = mGame->GetAudioSystem()->PlaySound("player_damage.wav", false);
 
     if (mCurrentHealth <= 0.f) {
         Kill();
