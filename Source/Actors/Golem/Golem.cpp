@@ -73,6 +73,9 @@ void Golem::Attack() {
     mIsWalking = false;
     mIsAttacking = true;
 
+    if (mGame->GetAudioSystem()->GetSoundState(mAttackSound) != SoundState::Playing)
+        mAttackSound = mGame->GetAudioSystem()->PlaySound("monster_attack.wav", false);
+
     player->TakeDamage(mDamageAttack);
     ManageAnimations();
 

@@ -18,8 +18,12 @@ void Enemy::Kill() {
 
 }
 
-void Enemy::TakeDamage(float damage) {
+void Enemy::TakeDamage(const float damage) {
     mCurrentHealth -= damage;
+
+    if (mGame->GetAudioSystem()->GetSoundState(mDamageSound) != SoundState::Playing)
+        mDamageSound = mGame->GetAudioSystem()->PlaySound("enemy_damage.mp3", false);
+
     if (mCurrentHealth <= 0.0f) {
         Kill();
     }
