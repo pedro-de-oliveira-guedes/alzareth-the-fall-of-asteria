@@ -80,6 +80,8 @@ add_executable(${PROJECT_NAME}
         Source/Game.h
 
         Source/Main.cpp
+        Source/Systems/SceneManager/SceneManagerSystem.cpp
+        Source/Systems/SceneManager/SceneManagerSystem.h
 )
 
 # Linkar com as bibliotecas SDL2_ttf
