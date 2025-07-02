@@ -19,21 +19,6 @@ public:
         QUITTING
     };
 
-    enum class SceneManagerState {
-        None,
-        Entering,
-        Active,
-        Exiting
-    };
-
-    enum class GameScene {
-        MainMenu,
-        Level1,
-        Level2,
-        Win,
-        Lose
-    };
-
     static const int SCREEN_WIDTH = 1280;
     static const int SCREEN_HEIGHT = 720;
 
@@ -41,8 +26,6 @@ public:
     static const int LEVEL_HEIGHT = 40;
     static const int TILE_SIZE = 32;
     static const int SPRITE_SIZE = 100;
-
-    static const int TRANSITION_TIME = 1; // seconds
 
     Game();
 
@@ -53,18 +36,8 @@ public:
     void Win();
     void Lose();
     GameState GetGameState() const { return mGameState; }
+    void SetGameState(const GameState state) { mGameState = state; }
     std::pair<int, int> GetEnemiesCount() const;
-
-    // Scene management
-    void SetGameScene(GameScene scene, float transitionTime = 0.0f);
-    void ResetGameScene(float transitionTime = 0.0f);
-    void UnloadScene();
-    void ChangeScene();
-    void BuildMainMenu();
-    UIScreen* BuildPauseMenu();
-    void BuildFirstLevel();
-    void BuildWinScreen();
-    void BuildLoseScreen();
 
     // Actor functions
     void UpdateActors(float deltaTime);
@@ -100,12 +73,17 @@ public:
     std::vector<Actor*> GetNearbyActors(const Vector2& position, int range = 1);
     std::vector<AABBColliderComponent*> GetNearbyColliders(const Vector2& position, int range = 2);
 
+    // Scene manager auxiliary functions
+    void BuildPlayer(Vector2 position);
+    void BuildSpatialHashing();
+    void AddEnemy(Enemy* enemy) { mEnemies.emplace_back(enemy); }
+    void ClearGameScene();
+
     SDL_Renderer* GetRenderer() const { return mRenderer; }
 
 private:
     void ProcessInput();
-    void TogglePause();
-    void HandleKeyPressActors(const int key, const bool isPressed);
+    void HandleKeyPressActors(const int key, const bool isPressed) const;
     void ProcessInputActors();
     void UpdateGame();
     void UpdateCamera();
@@ -125,12 +103,7 @@ private:
     std::vector<AABBColliderComponent*> mColliders;
 
     // Scenes related attributes
-    void UpdateSceneManager(float deltaTime);
-    SceneManagerState mSceneManagerState;
-    float mSceneManagerTimer;
-    float mSceneManagerTransitionTime;
-    GameScene mGameScene;
-    GameScene mNextScene;
+    class SceneManagerSystem *mSceneManager;
 
     // SDL stuff
     SDL_Window* mWindow;
@@ -144,10 +117,8 @@ private:
 
     // Game audio system
     AudioSystem* mAudio;
-    SoundHandle mMusicHandle;
 
     // All the UI elements
-    UIScreen *mPauseMenu;
     std::vector<class UIScreen*> mUIStack;
     std::unordered_map<std::string, class UIFont*> mFonts;
 
