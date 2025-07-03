@@ -1,6 +1,6 @@
 #include "UIImage.h"
 
-#include <SDL_image.h>
+#include <SDL2/SDL_image.h>
 
 UIImage::UIImage(
     const std::string &imagePath,
