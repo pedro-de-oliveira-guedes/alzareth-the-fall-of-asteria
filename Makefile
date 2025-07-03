@@ -1,6 +1,6 @@
 CXX := g++
 CXXFLAGS := -std=c++17 -Wall -Wextra -I /opt/SDL2/include/SDL2/
-LDFLAGS := -L/opt/SDL2/lib -lSDL2 -L/opt/SDL2/lib -lSDL2_image -L/opt/SDL2/lib -lSDL2_ttf
+LDFLAGS := -L/opt/SDL2/lib -lSDL2 -L/opt/SDL2/lib -lSDL2_image -L/opt/SDL2/lib -lSDL2_ttf -L/opt/SDL2/lib -lSDL2_mixer
 
 SRCS := $(shell find Source -name "*.cpp")
 OBJS := $(patsubst Source/%.cpp, object/%.o, $(SRCS))
