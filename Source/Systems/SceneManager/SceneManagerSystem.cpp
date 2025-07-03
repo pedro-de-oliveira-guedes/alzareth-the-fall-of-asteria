@@ -87,7 +87,7 @@ void SceneManagerSystem::UpdateSceneManager(const float deltaTime) {
 void SceneManagerSystem::BuildMainMenu() {
     mGame->SetCameraPos(Vector2::Zero);
     mGame->SetBackgroundImage(
-        "../Assets/Sprites/Menus/MainMenuBkg.png",
+        "../Assets/Sprites/Menus/MainMenuBKG.png",
         Vector2::Zero,
         Vector2(mGame->GetWindowWidth(), mGame->GetWindowHeight())
     );
@@ -138,7 +138,7 @@ void SceneManagerSystem::BuildPauseMenu() {
     const auto screenSize = Vector2(mGame->GetWindowWidth(), mGame->GetWindowHeight());
 
     pauseMenu->AddImage(
-        "../Assets/Sprites/Menus/PauseMenuBkg.png",
+        "../Assets/Sprites/Menus/PauseMenuBKG.png",
         0.5f * (screenSize - menuSize),
         menuSize
     );
