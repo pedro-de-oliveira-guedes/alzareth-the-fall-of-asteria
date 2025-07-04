@@ -1,6 +1,7 @@
 #include "SceneManagerSystem.h"
 #include "../../Utils/Random.h"
 #include "../../Actors/Golem/Golem.h"
+#include "../../Actors/Skeleton/Skeleton.h"
 
 SceneManagerSystem::SceneManagerSystem(Game *game, AudioSystem *audioSystem) {
     mGame = game;
@@ -87,7 +88,7 @@ void SceneManagerSystem::UpdateSceneManager(const float deltaTime) {
 void SceneManagerSystem::BuildMainMenu() {
     mGame->SetCameraPos(Vector2::Zero);
     mGame->SetBackgroundImage(
-        "../Assets/Sprites/Menus/MainMenuBkg.png",
+        "../Assets/Sprites/Menus/MainMenuBKG.png",
         Vector2::Zero,
         Vector2(mGame->GetWindowWidth(), mGame->GetWindowHeight())
     );
@@ -138,7 +139,7 @@ void SceneManagerSystem::BuildPauseMenu() {
     const auto screenSize = Vector2(mGame->GetWindowWidth(), mGame->GetWindowHeight());
 
     pauseMenu->AddImage(
-        "../Assets/Sprites/Menus/PauseMenuBkg.png",
+        "../Assets/Sprites/Menus/PauseMenuBKG.png",
         0.5f * (screenSize - menuSize),
         menuSize
     );
@@ -180,10 +181,13 @@ void SceneManagerSystem::BuildFirstLevel() {
     mGame->BuildSpatialHashing();
     mGame->BuildPlayer(Vector2(200.0f, 200.0f));
 
-    for (int i = 0; i < 25; i++) {
+    for (int i = 0; i < 1; i++) {
         const float offsetX = Random::GetFloatRange(250, FIRST_LEVEL_WIDTH * TILE_SIZE - 250);
         const float offsetY = Random::GetFloatRange(250, FIRST_LEVEL_HEIGHT * TILE_SIZE - 250);
-        mGame->AddEnemy(new Golem(mGame, Vector2(offsetX, offsetY)));
+        //mGame->AddEnemy(new Golem(mGame, Vector2(offsetX, offsetY)));
+
+        mGame->AddEnemy(new Skeleton(mGame, Vector2(offsetX, offsetY)));
+
     }
 
     new Sword(

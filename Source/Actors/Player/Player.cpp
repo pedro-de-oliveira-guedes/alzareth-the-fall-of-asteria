@@ -6,6 +6,7 @@
 #include "../../Systems/SceneManager/SceneManagerSystem.h"
 #include "../Enemy.h"
 #include "../Items/Collectible/CollectibleItem.h"
+#include "../Projectile/Projectile.h"
 
 const std::string DASH_ANIMATION = "dash";
 const std::string IDLE_ANIMATION = "idle";
@@ -361,7 +362,7 @@ void Player::OnCollision(float minOverlap, AABBColliderComponent *other) {
         }
         weapon->Collect();
         mInventory.AddItem(weapon);
-    }
+    } 
 }
 
 void Player::Kill() {
