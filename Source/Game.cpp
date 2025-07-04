@@ -2,6 +2,7 @@
 #include "Actors/Items/Collectible/CollectibleItem.h"
 #include "Actors/Actor.h"
 #include "Actors/Golem/Golem.h"
+#include "Actors/Skeleton/Skeleton.h"
 #include "Components/DrawComponents/DrawComponent.h"
 #include "UIElements/UIScreen.h"
 #include "Systems/SceneManager/SceneManagerSystem.h"
