@@ -14,8 +14,7 @@ find_package(SDL2_mixer REQUIRED)
 add_executable(${PROJECT_NAME}
         Source/Actors/Actor.cpp
         Source/Actors/Actor.h
-        Source/Actors/Enemy.h
-        Source/Actors/Enemy.cpp
+
         Source/Actors/Items/Item.h
         Source/Actors/Items/Item.cpp
         Source/Actors/Items/Weapons/Weapon.h
@@ -24,10 +23,21 @@ add_executable(${PROJECT_NAME}
         Source/Actors/Items/Weapons/Melee/Sword.cpp
         Source/Actors/Items/Collectible/CollectibleItem.cpp
         Source/Actors/Items/Collectible/CollectibleItem.h
+
         Source/Actors/Player/Player.cpp
         Source/Actors/Player/Player.h
-        Source/Actors/Golem/Golem.h
-        Source/Actors/Golem/Golem.cpp
+
+        Source/Actors/Enemies/Enemy.h
+        Source/Actors/Enemies/Enemy.cpp
+        Source/Actors/Enemies/Golem/Golem.h
+        Source/Actors/Enemies/Golem/Golem.cpp
+        Source/Actors/Enemies/Skeleton/Skeleton.h
+        Source/Actors/Enemies/Skeleton/Skeleton.cpp
+
+        Source/Actors/Projectile/Projectile.h
+        Source/Actors/Projectile/Projectile.cpp
+        Source/Actors/Projectile/Fireball/Fireball.h
+        Source/Actors/Projectile/Fireball/Fireball.cpp
 
         Source/Utils/CSV.h
         Source/Utils/Json.h
