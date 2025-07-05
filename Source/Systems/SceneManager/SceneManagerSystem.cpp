@@ -173,7 +173,7 @@ void SceneManagerSystem::BuildPauseMenu() {
 
 void SceneManagerSystem::BuildFirstLevel() {
     mGame->SetBackgroundImage(
-        "../Assets/Levels/Level-1/level_1_map.png",
+        "../Assets/Levels/Level-1/level_1_new.png",
         Vector2::Zero,
         Vector2(TILE_SIZE * FIRST_LEVEL_WIDTH, TILE_SIZE * FIRST_LEVEL_HEIGHT)
     );
@@ -207,7 +207,7 @@ void SceneManagerSystem::BuildFirstLevel() {
 void SceneManagerSystem::BuildWinScreen() {
     mGame->SetCameraPos(Vector2::Zero);
     mGame->SetBackgroundImage(
-        "../Assets/Sprites/Menus/WinScreenBkg.png",
+        "../Assets/Sprites/Menus/WinScreenBKG.png",
         Vector2::Zero,
         Vector2(mGame->GetWindowWidth(), mGame->GetWindowHeight())
     );

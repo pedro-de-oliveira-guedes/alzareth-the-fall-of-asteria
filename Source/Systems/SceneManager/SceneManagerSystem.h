@@ -53,8 +53,8 @@ class SceneManagerSystem {
 
         void BuildPauseMenu();
 
-        static constexpr int FIRST_LEVEL_WIDTH = 150;
-        static constexpr int FIRST_LEVEL_HEIGHT = 40;
+        static constexpr int FIRST_LEVEL_WIDTH = 115;
+        static constexpr int FIRST_LEVEL_HEIGHT = 32;
         void BuildFirstLevel();
 
         void BuildWinScreen();
