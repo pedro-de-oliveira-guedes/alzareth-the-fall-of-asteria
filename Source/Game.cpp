@@ -1,15 +1,14 @@
 #include "Game.h"
 #include "Actors/Items/Collectible/CollectibleItem.h"
 #include "Actors/Actor.h"
-#include "Actors/Golem/Golem.h"
-#include "Actors/Skeleton/Skeleton.h"
+#include "Actors/Enemies/Golem/Golem.h"
 #include "Components/DrawComponents/DrawComponent.h"
 #include "UIElements/UIScreen.h"
 #include "Systems/SceneManager/SceneManagerSystem.h"
 
-#include <SDL2/SDL_image.h>
-#include <SDL2/SDL_mixer.h>
-#include <SDL2/SDL_ttf.h>
+#include <SDL_image.h>
+#include <SDL_mixer.h>
+#include <SDL_ttf.h>
 #include <algorithm>
 #include <fstream>
 #include <iostream>

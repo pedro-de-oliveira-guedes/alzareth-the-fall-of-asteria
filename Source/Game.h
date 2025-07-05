@@ -1,10 +1,10 @@
 #pragma once
-#include <SDL2/SDL.h>
+#include <SDL.h>
 #include <string>
 #include <unordered_map>
 #include <vector>
 
-#include "Actors/Enemy.h"
+#include "Actors/Enemies/Enemy.h"
 #include "Actors/Player/Player.h"
 #include "Systems/Audio/AudioSystem.h"
 #include "UIElements/UIScreen.h"

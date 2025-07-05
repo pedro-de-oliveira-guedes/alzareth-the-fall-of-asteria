@@ -1,9 +1,9 @@
 #include "Golem.h"
-#include "../../Game.h"
-#include "../../Components/PhysicsComponents/RigidBodyComponent.h"
-#include "../../Components/DrawComponents/DrawAnimatedComponent.h"
-#include "../../Components/ColliderComponents/AABBColliderComponent.h"
-#include "../Items/Collectible/CollectibleItem.h"
+#include "../../../Game.h"
+#include "../../../Components/PhysicsComponents/RigidBodyComponent.h"
+#include "../../../Components/DrawComponents/DrawAnimatedComponent.h"
+#include "../../../Components/ColliderComponents/AABBColliderComponent.h"
+#include "../../Items/Collectible/CollectibleItem.h"
 
 #include <random>
 

@@ -1,7 +1,7 @@
 #include "SceneManagerSystem.h"
 #include "../../Utils/Random.h"
-#include "../../Actors/Golem/Golem.h"
-#include "../../Actors/Skeleton/Skeleton.h"
+#include "../../Actors/Enemies/Golem/Golem.h"
+#include "../../Actors/Enemies/Skeleton/Skeleton.h"
 
 SceneManagerSystem::SceneManagerSystem(Game *game, AudioSystem *audioSystem) {
     mGame = game;
@@ -187,7 +187,6 @@ void SceneManagerSystem::BuildFirstLevel() {
         //mGame->AddEnemy(new Golem(mGame, Vector2(offsetX, offsetY)));
 
         mGame->AddEnemy(new Skeleton(mGame, Vector2(offsetX, offsetY)));
-
     }
 
     new Sword(

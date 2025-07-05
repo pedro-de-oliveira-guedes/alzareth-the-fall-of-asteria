@@ -1,8 +1,6 @@
 #include "Enemy.h"
-#include "./../Game.h"
-#include "./../Components/PhysicsComponents/RigidBodyComponent.h"
-#include "./../Components/DrawComponents/DrawAnimatedComponent.h"
-#include "./../Components/ColliderComponents/AABBColliderComponent.h"
+#include "../../Components/ColliderComponents/AABBColliderComponent.h"
+#include "../../Game.h"
 
 
 Enemy::Enemy(Game *game) : Actor(game) {}

@@ -1,10 +1,10 @@
 #include "Skeleton.h"
-#include "../../Game.h"
-#include "../../Components/PhysicsComponents/RigidBodyComponent.h"
-#include "../../Components/DrawComponents/DrawAnimatedComponent.h"
-#include "../../Components/ColliderComponents/AABBColliderComponent.h"
-#include "../Items/Collectible/CollectibleItem.h"
-#include "../Projectile/Fireball/Fireball.h"
+#include "../../../Game.h"
+#include "../../../Components/PhysicsComponents/RigidBodyComponent.h"
+#include "../../../Components/DrawComponents/DrawAnimatedComponent.h"
+#include "../../../Components/ColliderComponents/AABBColliderComponent.h"
+#include "../../Items/Collectible/CollectibleItem.h"
+#include "../../Projectile/Fireball/Fireball.h"
 
 #include <random>
 
@@ -13,7 +13,7 @@ const std::string WALKING_ANIMATION = "walking";
 const std::string ATTACK_ANIMATION = "attack";
 
 
-Skeleton::Skeleton(Game *game, Vector2 position) : Enemy(game) {
+Skeleton::Skeleton(Game *game, const Vector2 position) : Enemy(game) {
 
     SetPosition(position);
 
