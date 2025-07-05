@@ -16,14 +16,14 @@ SpatialHashing::SpatialHashing(int cellSize, int width, int height) {
 
 SpatialHashing::~SpatialHashing() {
     // Delete all actors
-    for (auto& row : mGrid) {
+    /* for (auto& row : mGrid) {
         for (auto& cell : row) {
            while(!cell.empty()) {
                delete cell.back(); // Assuming ownership of actors
            }
             cell.clear();
         }
-    }
+    } */
 
     mGrid.clear();
     mPositions.clear();

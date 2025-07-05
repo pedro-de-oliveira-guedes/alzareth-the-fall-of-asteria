@@ -1,5 +1,5 @@
 CXX := g++
-CXXFLAGS := -std=c++17 -Wall -Wextra -I /opt/SDL2/include/SDL2/
+CXXFLAGS := -std=c++17 -Wall -Wextra -I /opt/SDL2/include/SDL2/ -g
 LDFLAGS := -L/opt/SDL2/lib -lSDL2 -L/opt/SDL2/lib -lSDL2_image -L/opt/SDL2/lib -lSDL2_ttf -L/opt/SDL2/lib -lSDL2_mixer
 
 SRCS := $(shell find Source -name "*.cpp")

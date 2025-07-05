@@ -16,6 +16,7 @@ class SceneManagerSystem {
             MainMenu,
             Level1,
             Level2,
+            Level3,
             Win,
             Lose
         };
@@ -36,6 +37,8 @@ class SceneManagerSystem {
 
         void DrawSceneTransition(SDL_Renderer *renderer) const;
 
+        GameScene GetCurrentScene() const { return mGameScene; }
+
     private:
         Game *mGame;
         AudioSystem *mAudio;
@@ -53,9 +56,13 @@ class SceneManagerSystem {
 
         void BuildPauseMenu();
 
-        static constexpr int FIRST_LEVEL_WIDTH = 115;
-        static constexpr int FIRST_LEVEL_HEIGHT = 32;
+        static constexpr int FIRST_SECOND_LEVEL_WIDTH = 115;
+        static constexpr int FIRST_SECOND_LEVEL_HEIGHT = 32;
+        static constexpr int THIRD_LEVEL_WIDTH = 41;
+        static constexpr int THIRD_LEVEL_HEIGHT = 26;
         void BuildFirstLevel();
+        void BuildSecondLevel();
+        void BuildThirdLevel();
 
         void BuildWinScreen();
 
