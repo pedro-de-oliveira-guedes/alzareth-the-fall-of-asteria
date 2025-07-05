@@ -173,7 +173,7 @@ void SceneManagerSystem::BuildPauseMenu() {
 
 void SceneManagerSystem::BuildFirstLevel() {
     mGame->SetBackgroundImage(
-        "../Assets/Levels/Level-1/level_1_new.png",
+        "../Assets/Levels/Level-1/level_1_no_border.png",
         Vector2::Zero,
         Vector2(TILE_SIZE * FIRST_LEVEL_WIDTH, TILE_SIZE * FIRST_LEVEL_HEIGHT)
     );
