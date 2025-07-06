@@ -1,7 +1,9 @@
 #include "SceneManagerSystem.h"
 #include "../../Utils/Random.h"
 #include "../../Actors/Golem/Golem.h"
+#include "../../Actors/Golem2/Golem2.h"
 #include "../../Actors/Skeleton/Skeleton.h"
+#include "../../Actors/Ghost/Ghost.h"
 #include "../../Actors/Items/Weapons/Ranged/MagicToken.h"
 
 SceneManagerSystem::SceneManagerSystem(Game *game, AudioSystem *audioSystem) {
@@ -247,7 +249,10 @@ void SceneManagerSystem::BuildSecondLevel() {
     for (int i = 0; i < 1; i++) {
         const float offsetX = Random::GetFloatRange(250, FIRST_SECOND_LEVEL_WIDTH * TILE_SIZE - 250);
         const float offsetY = Random::GetFloatRange(250, FIRST_SECOND_LEVEL_HEIGHT * TILE_SIZE - 250);
-        mGame->AddEnemy(new Skeleton(mGame, Vector2(offsetX, offsetY)));
+        //mGame->AddEnemy(new Skeleton(mGame, Vector2(offsetX, offsetY)));
+
+        //mGame->AddEnemy(new Golem2(mGame, Vector2(offsetX, offsetY)));
+        mGame->AddEnemy(new Ghost(mGame, Vector2(offsetX, offsetY)));
         SDL_Log("Enemy added at position (%f, %f)", offsetX, offsetY);
     }
 
