@@ -63,11 +63,11 @@ class Alzareth : public Actor {
         RigidBodyComponent *mRigidBodyComponent;
         AABBColliderComponent *mAABBColliderComponent;
 
-        static constexpr std::string IDLE_ANIMATION = "idle";
-        static constexpr std::string FALLING_ANIMATION = "falling";
-        static constexpr std::string RISING_ANIMATION = "rising";
-        static constexpr std::string VULNERABLE_ANIMATION = "vulnerable";
-        static constexpr std::string CASTING_ANIMATION = "casting";
+        const std::string IDLE_ANIMATION = "idle";
+        const std::string FALLING_ANIMATION = "falling";
+        const std::string RISING_ANIMATION = "rising";
+        const std::string VULNERABLE_ANIMATION = "vulnerable";
+        const std::string CASTING_ANIMATION = "casting";
         DrawAnimatedComponent *mDrawComponentAlzareth;
         void HandleAlzarethState(float deltaTime);
 
@@ -81,9 +81,9 @@ class Alzareth : public Actor {
         float mShieldDestructionTimer;
         bool mIsShieldDestroying;
 
-        static constexpr std::string SHIELD_BUILDING_ANIMATION = "shield_building";
-        static constexpr std::string SHIELD_DESTRUCTION_ANIMATION = "shield_destruction";
-        static constexpr std::string SHIELD_ACTIVE_ANIMATION = "shield_active";
+        const std::string SHIELD_BUILDING_ANIMATION = "shield_building";
+        const std::string SHIELD_DESTRUCTION_ANIMATION = "shield_destruction";
+        const std::string SHIELD_ACTIVE_ANIMATION = "shield_active";
         DrawAnimatedComponent *mDrawComponentShield;
         void HandleShieldState(float deltaTime);
 };
