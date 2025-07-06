@@ -92,8 +92,7 @@ void Ghost::OnUpdate(float deltaTime) {
     //DebugColliderPosition();
 
     if (mCurrentHealth <= 0.0f) {
-        mState = ActorState::Destroy;
-        Kill();
+        this->Kill();
         return;
     }
 
@@ -140,6 +139,8 @@ void Ghost::Kill() {
     if (mState == ActorState::Destroy) {
         return; // ensure Kill is executed only once
     }
+
+    mState = ActorState::Destroy; 
     mGame->RemoveActor(this);
 
     mDrawComponent->SetIsVisible(false);
@@ -150,28 +151,28 @@ void Ghost::Kill() {
     // get random int
     int randomInt = std::rand() % 100;
 
-    if (randomInt > 20 && randomInt < 50) {
+    if (randomInt > 0 && randomInt < 20) {
         new CollectibleItem(mGame, "Energy_Potion", Item::ItemType::Consumable,
             "../Assets/Sprites/Items/Energy/energy_potion.png",
             "../Assets/Sprites/Items/Energy/energy_potion_inventory.png",
             "../Assets/Sprites/Items/Energy/energy_potion.json",
             1, GetPosition());
     }
-    else if (randomInt < 65) {
+    else if (randomInt < 30) {
         new CollectibleItem(mGame, "Health_Potion", Item::ItemType::Consumable,
             "../Assets/Sprites/Items/Health/health_potion.png",
             "../Assets/Sprites/Items/Health/health_potion_inventory.png",
             "../Assets/Sprites/Items/Health/health_potion.json",
             1, GetPosition());
     }
-    else if (randomInt < 70) {
+    else if (randomInt < 35) {
         new CollectibleItem(mGame, "Invulnerability_Potion", Item::ItemType::Consumable,
             "../Assets/Sprites/Items/Invulnerability/invulnerability_potion.png",
             "../Assets/Sprites/Items/Invulnerability/invulnerability_potion_inventory.png",
             "../Assets/Sprites/Items/Invulnerability/invulnerability_potion.json",
             1, GetPosition());
     }
-    else if (randomInt < 85){
+    else if (randomInt < 50){
         new MagicToken(
             mGame,
             "Magic_Token",
