@@ -16,11 +16,11 @@ Golem2::Golem2(Game *game, Vector2 position) : Enemy(game) {
 
     SetPosition(position);
 
-    mMaxHealth = 100.0f;
+    mMaxHealth = 130.0f;
     mCurrentHealth = mMaxHealth;
     mIsDead = false;
 
-    mWalkSpeed =  50.0f;
+    mWalkSpeed =  70.0f;
 
     mRigidBodyComponent = new RigidBodyComponent(this, 1.0f, 5.0f);
     int golem2Size = 99;
@@ -51,9 +51,9 @@ Golem2::Golem2(Game *game, Vector2 position) : Enemy(game) {
         100
     );
 
-    mDrawComponent->AddAnimation(IDLE_ANIMATION, {0});
-    mDrawComponent->AddAnimation(ATTACK_ANIMATION, {2, 4, 5});
-    mDrawComponent->AddAnimation(WALKING_ANIMATION, {0, 2, 8, 3});
+    mDrawComponent->AddAnimation(IDLE_ANIMATION, {1});
+    mDrawComponent->AddAnimation(ATTACK_ANIMATION, {3, 4, 5});
+    mDrawComponent->AddAnimation(WALKING_ANIMATION, {1, 3, 0, 9});
     mDrawComponent->SetAnimFPS(10.f);
 
     mDrawComponent->SetAnimation(IDLE_ANIMATION);
@@ -79,7 +79,7 @@ void Golem2::Attack() {
     player->TakeDamage(mDamageAttack);
     ManageAnimations();
 
-    mAttackCooldown = 1.0f; // reset
+    mAttackCooldown = 0.8f; // reset
 }
 
 void Golem2::OnUpdate(float deltaTime) {
@@ -111,7 +111,7 @@ void Golem2::OnUpdate(float deltaTime) {
 
     if (distance > 0.0f) toPlayer *= 1/distance; // normalize
 
-    if (distance < 50.0f) {
+    if (distance < 60.0f) {
         Attack();
     } else {
         mIsWalking = true;
