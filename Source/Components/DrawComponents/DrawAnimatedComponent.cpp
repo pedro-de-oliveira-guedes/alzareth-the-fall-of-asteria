@@ -51,7 +51,7 @@ void DrawAnimatedComponent::LoadSpriteSheet(const std::string &texturePath, cons
 }
 
 void DrawAnimatedComponent::Draw(SDL_Renderer *renderer) {
-    if (mIsPaused) return;
+    if (!mIsEnabled) return;
 
     int spriteIdx = static_cast<int>(mAnimTimer) % mAnimations[mAnimName].size();
     spriteIdx = mAnimations[mAnimName][spriteIdx];
