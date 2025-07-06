@@ -6,7 +6,7 @@
 #include "../../Systems/SceneManager/SceneManagerSystem.h"
 #include "../Enemy.h"
 #include "../Items/Collectible/CollectibleItem.h"
-#include "../Projectile/Projectile.h"
+#include "../Items/Weapons/Ranged/MagicToken.h"
 
 const std::string DASH_ANIMATION = "dash";
 const std::string IDLE_ANIMATION = "idle";
@@ -43,6 +43,8 @@ Player::Player(Game* game, const float walkSpeed, const float runSpeed, const fl
     mInvulnerabilityTime = 0.0f; 
 
     mNumberKeysPressedLastFrame.fill(false);
+
+    mPreviousMouseButtonState = 0;
 
     mRigidBodyComponent = new RigidBodyComponent(this, 1.0f, 5.0f);
     mColliderComponent = new AABBColliderComponent(this, 0, 0, Game::SPRITE_SIZE, Game::SPRITE_SIZE, ColliderLayer::Player);
@@ -150,10 +152,12 @@ void Player::HandleItemInput(const Uint8* keyState) {
                 mColliderComponent->Intersect(*otherCollider) &&
                 otherCollider->IsEnabled()
             ) {
-                auto* item = dynamic_cast<CollectibleItem*>(otherCollider->GetOwner());
+                // Modificado para tentar converter para Item*
+                auto* item = dynamic_cast<Item*>(otherCollider->GetOwner());
+                // Verifica se é um Item e se o inventário não está cheio
                 if (item && !mInventory.InventoryFull()) {
                     mInventory.AddItem(item);
-                    item->Collect();
+                    item->Collect(); // Chama o método Collect do Item
 
                     if (mGame->GetAudioSystem()->GetSoundState(mItemPickupSound) != SoundState::Playing)
                         mItemPickupSound = mGame->GetAudioSystem()->PlaySound("pickup.mp3", false);
@@ -207,7 +211,10 @@ void Player::OnProcessInput(const Uint8* keyState) {
     HandleRotation();
     HandleItemInput(keyState);
     HandleUseItem(keyState); 
-    Attack(keyState);
+
+    int mouseX, mouseY;
+    Uint32 mouseButtonState = SDL_GetMouseState(&mouseX, &mouseY);
+    Attack(keyState, mouseButtonState);
 
     const auto force_vector = HandleBasicMovementInput(keyState);
     ApplyBasicMovement(force_vector);
@@ -215,38 +222,46 @@ void Player::OnProcessInput(const Uint8* keyState) {
     HandleDash(keyState, force_vector);
 }
 
-void Player::Attack(const Uint8 *keyState) {
-    // TODO: GASTAR ENERGIA RELACIONADA A CADA ARMA
-
+void Player::Attack(const Uint8* keyState, Uint32 mouseButtonState) {
     if (mIsDashing || mIsRunning) {
+        mPreviousMouseButtonState = mouseButtonState; 
         return;
     }
 
-    int mouseState = SDL_GetMouseState(nullptr, nullptr);
-    if (mouseState & SDL_BUTTON(SDL_BUTTON_LEFT)) {
-        // check if the inventory contains a weapon
+    bool currentLeftMouseButtonPressed = (mouseButtonState & SDL_BUTTON(SDL_BUTTON_LEFT));
+    bool previousLeftMouseButtonPressed = (mPreviousMouseButtonState & SDL_BUTTON(SDL_BUTTON_LEFT));
+
+
+    if (currentLeftMouseButtonPressed && !previousLeftMouseButtonPressed) { 
         int weaponIdx = mInventory.ReturnWeaponIndex();
-    
+        
         if (weaponIdx < 0) {
+            mPreviousMouseButtonState = mouseButtonState; 
+            return; 
+        }
+
+        Item* equippedItem = mInventory.GetItemAtIndex(weaponIdx);
+        if (!equippedItem) {
+            mPreviousMouseButtonState = mouseButtonState; 
             return;
         }
 
-        // Get the equipped weapon
-        Item* weaponItem = mInventory.GetItemAtIndex(weaponIdx);
-        if (weaponItem && weaponItem->GetType() == Item::ItemType::Weapon) {
-            Sword* sword = dynamic_cast<Sword*>(weaponItem);
+        if (equippedItem->GetType() == Item::ItemType::Weapon) { // Melee weapon (Sword)
+            Sword* sword = dynamic_cast<Sword*>(equippedItem);
             if (sword) {
+
+                
                 int mouseX, mouseY;
-                SDL_GetMouseState(&mouseX, &mouseY);
-                Vector2 mousePos(mouseX + mGame->GetCameraPos().x, 
-                               mouseY + mGame->GetCameraPos().y);
-                
-                
+                SDL_GetMouseState(&mouseX, &mouseY); 
+                Vector2 mousePos(static_cast<float>(mouseX) + mGame->GetCameraPos().x,
+                                 static_cast<float>(mouseY) + mGame->GetCameraPos().y);
+
                 sword->SetPlayerPos(GetPosition());
                 sword->SetMousePos(mousePos);
                 sword->DrawForAttack();
-                if (mGame->GetAudioSystem()->GetSoundState(mSwordSound) != SoundState::Playing)
+                if (mGame->GetAudioSystem()->GetSoundState(mSwordSound) != SoundState::Playing) {
                     mSwordSound = mGame->GetAudioSystem()->PlaySound("sword_attack.wav", false);
+                }
 
                 Vector2 attackPosition = GetPosition();
                 float rangeX = sword->GetRangeX();
@@ -260,17 +275,35 @@ void Player::Attack(const Uint8 *keyState) {
                             std::abs(otherPos.x - attackPosition.x) <= rangeX &&
                             std::abs(otherPos.y - attackPosition.y) <= rangeY
                         ) {
-                            auto *enemy = dynamic_cast<Enemy*>(otherCollider->GetOwner());
-                            if (enemy) {
+                            auto* enemy = dynamic_cast<Enemy*>(otherCollider->GetOwner());
+                            if (enemy && !sword->GetHasHitThisAttack()) { 
                                 enemy->TakeDamage(sword->GetDamage());
-                                sword->SetHasHitThisAttack(true);
+                                sword->SetHasHitThisAttack(true); 
                             }
                         }
                     }
                 }
             }
+        } else if (equippedItem->GetType() == Item::ItemType::RangedWeapon) { 
+            MagicToken* magicToken = dynamic_cast<MagicToken*>(equippedItem);
+            if (magicToken) {
+                magicToken->Use(this); 
+            }
+        }
+    } else if (!currentLeftMouseButtonPressed) { 
+        int weaponIdx = mInventory.ReturnWeaponIndex();
+        if (weaponIdx >= 0) {
+            Item* equippedItem = mInventory.GetItemAtIndex(weaponIdx);
+            if (equippedItem && equippedItem->GetType() == Item::ItemType::Weapon) {
+                Sword* sword = dynamic_cast<Sword*>(equippedItem);
+                if (sword) {
+                    sword->SetHasHitThisAttack(false);
+                }
+            }
         }
     }
+
+    mPreviousMouseButtonState = mouseButtonState;
 }
 
 void Player::HandleMapBoundaries() {
@@ -362,7 +395,7 @@ void Player::OnCollision(float minOverlap, AABBColliderComponent *other) {
         }
         weapon->Collect();
         mInventory.AddItem(weapon);
-    } 
+    }
 }
 
 void Player::Kill() {
