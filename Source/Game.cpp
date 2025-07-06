@@ -429,14 +429,11 @@ std::pair<int, int> Game::GetEnemiesCount() const {
 }
 
 void Game::BuildPlayer(const Vector2 position) {
-    SDL_Log("Building player at position (%f, %f)", position.x, position.y);
     if (mPlayer) {
         mPlayer->SetPosition(position);
-        SDL_Log("Player position updated.");
     } else {
         mPlayer = new Player(this);
         mPlayer->SetPosition(position);
-        SDL_Log("Player created and positioned.");
     }
 }
 
