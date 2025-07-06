@@ -148,37 +148,30 @@ void Player::HandleItemInput(const Uint8* keyState) {
         const auto& colliders = mGame->GetNearbyColliders(mPosition);
         for (const AABBColliderComponent* otherCollider : colliders) {
             if (
-                (otherCollider->GetLayer() == ColliderLayer::Collectible || otherCollider->GetLayer() == ColliderLayer::MeleeWeapon) && // Modificado para incluir MeleeWeapon
+                (otherCollider->GetLayer() == ColliderLayer::Collectible || otherCollider->GetLayer() == ColliderLayer::MeleeWeapon) && 
                 mColliderComponent->Intersect(*otherCollider) &&
                 otherCollider->IsEnabled()
             ) {
                 auto* item = dynamic_cast<Item*>(otherCollider->GetOwner());
                 if (item) {
-                    // Tenta adicionar o novo item, e recebe de volta qualquer item que tenha sido dropado
                     Item* droppedItem = mInventory.AddItem(item);
 
                     if (droppedItem != nullptr) {
-                        // Um item foi substituído/dropado, "solte-o" de volta no mundo
-                        droppedItem->SetState(ActorState::Active); // Reativa o ator
-                        droppedItem->SetPosition(GetPosition());   // Define sua posição para a do jogador
-                        droppedItem->GetComponent<AABBColliderComponent>()->SetEnabled(true); // Re-habilita seu colisor
+                        droppedItem->SetState(ActorState::Active); 
+                        droppedItem->SetPosition(GetPosition());   
+                        droppedItem->GetComponent<AABBColliderComponent>()->SetEnabled(true);
                         
-                        // Assumindo que todos os itens dropáveis têm um DrawComponent
                         auto drawComp = droppedItem->GetComponent<DrawComponent>();
                         if (drawComp) {
-                            drawComp->SetIsVisible(true); // Re-habilita sua visibilidade
+                            drawComp->SetIsVisible(true);
                         }
-                        // NOTA: Não é necessário chamar mGame->AddActor(droppedItem);
-                        // pois o item nunca foi realmente removido da lista de atores do jogo,
-                        // apenas teve sua visibilidade e colisão desabilitadas.
-                        SDL_Log("Player: Dropped item %s at player pos (%f, %f)", droppedItem->GetName().c_str(), GetPosition().x, GetPosition().y);
+
                     }
 
-                    // Se o item foi adicionado com sucesso (ou substituído), "colete-o" do mundo
                     item->Collect(); 
                     if (mGame->GetAudioSystem()->GetSoundState(mItemPickupSound) != SoundState::Playing)
                         mItemPickupSound = mGame->GetAudioSystem()->PlaySound("pickup.mp3", false);
-                    break; // Sai do loop após pegar um item
+                    break;
                 }
             }
         }
