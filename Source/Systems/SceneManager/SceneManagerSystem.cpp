@@ -196,21 +196,21 @@ void SceneManagerSystem::BuildFirstLevel() {
     for (int i = 0; i < 25; i++) {
         const float offsetX = Random::GetFloatRange(250, FIRST_SECOND_LEVEL_WIDTH * TILE_SIZE - 250);
         const float offsetY = Random::GetFloatRange(250, FIRST_SECOND_LEVEL_HEIGHT * TILE_SIZE - 250);
-        //mGame->AddEnemy(new Golem(mGame, Vector2(offsetX, offsetY)));
+        mGame->AddEnemy(new Golem(mGame, Vector2(offsetX, offsetY)));
 
-        mGame->AddEnemy(new Skeleton(mGame, Vector2(200, 200)));
+        // mGame->AddEnemy(new Skeleton(mGame, Vector2(offsetX, offsetY)));
 
     }
 
-    // new Sword(
-    //     mGame,
-    //     "Sword",
-    //     "../Assets/Sprites/Weapons/Sword/sword.png",
-    //     "../Assets/Sprites/Weapons/Sword/sword_inv.png",
-    //     "../Assets/Sprites/Weapons/Sword/sword.json",
-    //     Vector2(300.0f, 300.0f) ,
-    //     1
-    // );
+    new Sword(
+        mGame,
+        "Sword",
+        "../Assets/Sprites/Weapons/Sword/sword.png",
+        "../Assets/Sprites/Weapons/Sword/sword_inv.png",
+        "../Assets/Sprites/Weapons/Sword/sword.json",
+        Vector2(350.0f, 350.0f) ,
+        1
+    );
 
      new MagicToken(
         mGame,
@@ -244,7 +244,7 @@ void SceneManagerSystem::BuildSecondLevel() {
     mGame->BuildPlayer(Vector2(200.0f, 200.0f));
     SDL_Log("Player added to Level 2");
 
-    for (int i = 0; i < 1; i++) {
+    for (int i = 0; i < 25; i++) {
         const float offsetX = Random::GetFloatRange(250, FIRST_SECOND_LEVEL_WIDTH * TILE_SIZE - 250);
         const float offsetY = Random::GetFloatRange(250, FIRST_SECOND_LEVEL_HEIGHT * TILE_SIZE - 250);
         mGame->AddEnemy(new Skeleton(mGame, Vector2(offsetX, offsetY)));
