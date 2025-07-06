@@ -168,7 +168,7 @@ void Golem::OnUpdate(float deltaTime) {
 
     if (distance > 0.0f) toPlayer *= 1 / distance; // normalize
 
-    if (distance < 30.0f) {
+    if (distance < 20.0f) {
         Attack();
     }
     else {

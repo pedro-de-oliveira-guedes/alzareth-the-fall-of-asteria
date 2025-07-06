@@ -18,7 +18,7 @@ Ghost::Ghost(Game *game, Vector2 position) : Enemy(game) {
 
     SetPosition(position);
 
-    mMaxHealth = 100.0f;
+    mMaxHealth = 120.0f;
     mCurrentHealth = mMaxHealth;
     mIsDead = false;
 
