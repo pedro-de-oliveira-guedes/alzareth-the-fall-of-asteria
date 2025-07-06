@@ -38,8 +38,12 @@ add_executable(${PROJECT_NAME}
         Source/Actors/Enemies/Enemy.cpp
         Source/Actors/Enemies/Golem/Golem.h
         Source/Actors/Enemies/Golem/Golem.cpp
+        Source/Actors/Enemies/Golem2/Golem2.h
+        Source/Actors/Enemies/Golem2/Golem2.cpp
         Source/Actors/Enemies/Skeleton/Skeleton.h
         Source/Actors/Enemies/Skeleton/Skeleton.cpp
+        Source/Actors/Enemies/Ghost/Ghost.h
+        Source/Actors/Enemies/Ghost/Ghost.cpp
 
         Source/Actors/Projectile/Projectile.h
         Source/Actors/Projectile/Projectile.cpp
@@ -47,6 +51,8 @@ add_executable(${PROJECT_NAME}
         Source/Actors/Projectile/Fireball/Fireball.cpp
         Source/Actors/Projectile/BallAttackToken/BallAttackToken.h
         Source/Actors/Projectile/BallAttackToken/BallAttackToken.cpp
+        Source/Actors/Projectile/GhostAttack/GhostAttack.h
+        Source/Actors/Projectile/GhostAttack/GhostAttack.cpp
 
         Source/Utils/CSV.h
         Source/Utils/Json.h
