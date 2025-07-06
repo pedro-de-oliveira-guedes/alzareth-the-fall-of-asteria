@@ -3,6 +3,7 @@
 #include "../../Actors/Golem/Golem.h"
 #include "../../Actors/Golem2/Golem2.h"
 #include "../../Actors/Skeleton/Skeleton.h"
+#include "../../Actors/Ghost/Ghost.h"
 
 SceneManagerSystem::SceneManagerSystem(Game *game, AudioSystem *audioSystem) {
     mGame = game;
@@ -238,7 +239,8 @@ void SceneManagerSystem::BuildSecondLevel() {
         const float offsetY = Random::GetFloatRange(250, FIRST_SECOND_LEVEL_HEIGHT * TILE_SIZE - 250);
         //mGame->AddEnemy(new Skeleton(mGame, Vector2(offsetX, offsetY)));
 
-        mGame->AddEnemy(new Golem2(mGame, Vector2(offsetX, offsetY)));
+        //mGame->AddEnemy(new Golem2(mGame, Vector2(offsetX, offsetY)));
+        mGame->AddEnemy(new Ghost(mGame, Vector2(offsetX, offsetY)));
         SDL_Log("Enemy added at position (%f, %f)", offsetX, offsetY);
     }
 
