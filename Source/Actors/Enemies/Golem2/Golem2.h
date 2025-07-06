@@ -1,6 +1,6 @@
 #pragma once
 #include "../Enemy.h"
-#include "../../Components/DrawComponents/DrawAnimatedComponent.h"
+#include "../../../Components/DrawComponents/DrawAnimatedComponent.h"
 
 class Golem2 : public Enemy {
     public:

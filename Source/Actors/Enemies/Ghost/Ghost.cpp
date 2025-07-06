@@ -1,9 +1,10 @@
-#include "Golem2.h"
-#include "../../Game.h"
-#include "../../Components/PhysicsComponents/RigidBodyComponent.h"
-#include "../../Components/DrawComponents/DrawAnimatedComponent.h"
-#include "../../Components/ColliderComponents/AABBColliderComponent.h"
-#include "../Items/Collectible/CollectibleItem.h"
+#include "Ghost.h"
+#include "../../../Game.h"
+#include "../../../Components/PhysicsComponents/RigidBodyComponent.h"
+#include "../../../Components/DrawComponents/DrawAnimatedComponent.h"
+#include "../../../Components/ColliderComponents/AABBColliderComponent.h"
+#include "../../Items/Collectible/CollectibleItem.h"
+#include "../../Projectile/GhostAttack/GhostAttack.h"
 
 #include <random>
 
@@ -12,22 +13,22 @@ const std::string WALKING_ANIMATION = "walking";
 const std::string ATTACK_ANIMATION = "attack";
 
 
-Golem2::Golem2(Game *game, Vector2 position) : Enemy(game) {
+Ghost::Ghost(Game *game, Vector2 position) : Enemy(game) {
 
     SetPosition(position);
 
-    mMaxHealth = 130.0f;
+    mMaxHealth = 100.0f;
     mCurrentHealth = mMaxHealth;
     mIsDead = false;
 
-    mWalkSpeed =  70.0f;
+    mWalkSpeed =  60.0f;
 
     mRigidBodyComponent = new RigidBodyComponent(this, 1.0f, 5.0f);
-    int golem2Size = 99;
+    int GhostSize = 99;
     int colliderSize = 80;
     
-    int offsetX = (golem2Size - colliderSize) / 2;
-    int offsetY = (golem2Size - colliderSize) / 2;
+    int offsetX = (GhostSize - colliderSize) / 2;
+    int offsetY = (GhostSize - colliderSize) / 2;
     
     mColliderComponent = new AABBColliderComponent(
         this, 
@@ -40,26 +41,26 @@ Golem2::Golem2(Game *game, Vector2 position) : Enemy(game) {
         true
     );
 
-    mDamageAttack = 5.0f;
+    mDamageAttack = 15.0f;
 
-    mAttackCooldown = 1.5f;
+    mAttackCooldown = 2.0f;
 
     mDrawComponent = new DrawAnimatedComponent(
         this,
-        "../Assets/Sprites/Golem_2/golem2.png",
-        "../Assets/Sprites/Golem_2/golem2.json",
+        "../Assets/Sprites/Ghost/ghost.png",
+        "../Assets/Sprites/Ghost/ghost.json",
         100
     );
 
-    mDrawComponent->AddAnimation(IDLE_ANIMATION, {1});
-    mDrawComponent->AddAnimation(ATTACK_ANIMATION, {3, 4, 5});
-    mDrawComponent->AddAnimation(WALKING_ANIMATION, {1, 3, 0, 9});
+    mDrawComponent->AddAnimation(IDLE_ANIMATION, {0});
+    mDrawComponent->AddAnimation(ATTACK_ANIMATION, {4,6,9, 2});
+    mDrawComponent->AddAnimation(WALKING_ANIMATION, {10,1,7,8});
     mDrawComponent->SetAnimFPS(10.f);
 
     mDrawComponent->SetAnimation(IDLE_ANIMATION);
 }
 
-void Golem2::Attack() {
+void Ghost::Attack() {
     if (mAttackCooldown >= 0.0f) {
         return;
     }
@@ -76,13 +77,17 @@ void Golem2::Attack() {
     if (mGame->GetAudioSystem()->GetSoundState(mAttackSound) != SoundState::Playing)
         mAttackSound = mGame->GetAudioSystem()->PlaySound("monster_attack.wav", false);
 
-    player->TakeDamage(mDamageAttack);
+    Vector2 playerPos = mGame->GetPlayer()->GetPosition();
+    Vector2 direction = playerPos - GetPosition();
+    direction.Normalize();
+
+    new GhostAttack(mGame, GetPosition(), direction * 200.0f, mDamageAttack); 
     ManageAnimations();
 
-    mAttackCooldown = 0.8f; // reset
+    mAttackCooldown = 2.0f; // reset
 }
 
-void Golem2::OnUpdate(float deltaTime) {
+void Ghost::OnUpdate(float deltaTime) {
 
     //DebugColliderPosition();
 
@@ -111,7 +116,7 @@ void Golem2::OnUpdate(float deltaTime) {
 
     if (distance > 0.0f) toPlayer *= 1/distance; // normalize
 
-    if (distance < 60.0f) {
+    if (distance < 500.0f) {
         Attack();
     } else {
         mIsWalking = true;
@@ -125,7 +130,7 @@ void Golem2::OnUpdate(float deltaTime) {
     ManageAnimations();
 }
 
-void Golem2::Kill() {
+void Ghost::Kill() {
     if (mState == ActorState::Destroy) {
         return; // ensure Kill is executed only once
     }
@@ -155,7 +160,7 @@ void Golem2::Kill() {
     // TODO: Add more items to drop
 }
 
-void Golem2::ManageAnimations() const {
+void Ghost::ManageAnimations() const {
     if (mIsAttacking) {
         mDrawComponent->SetAnimation(ATTACK_ANIMATION);
     } else if (!mIsWalking) {
@@ -165,7 +170,7 @@ void Golem2::ManageAnimations() const {
     }
 }
 
-void Golem2::OnCollision(float minOverlap, AABBColliderComponent *other) {
+void Ghost::OnCollision(float minOverlap, AABBColliderComponent *other) {
 
     if (other->GetLayer() == ColliderLayer::Player) {
         // get the player damage
