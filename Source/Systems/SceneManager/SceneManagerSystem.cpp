@@ -2,7 +2,7 @@
 #include "../../Utils/Random.h"
 #include "../../Actors/Enemies/Golem/Golem.h"
 #include "../../Actors/Enemies/Skeleton/Skeleton.h"
-#include "../../Actors/Ghost/Ghost.h"
+#include "../../Actors/Enemies/Ghost/Ghost.h"
 
 SceneManagerSystem::SceneManagerSystem(Game *game, AudioSystem *audioSystem) {
     mGame = game;
@@ -193,9 +193,6 @@ void SceneManagerSystem::BuildFirstLevel() {
         const float offsetX = Random::GetFloatRange(250, FIRST_SECOND_LEVEL_WIDTH * TILE_SIZE - 250);
         const float offsetY = Random::GetFloatRange(250, FIRST_SECOND_LEVEL_HEIGHT * TILE_SIZE - 250);
         mGame->AddEnemy(new Golem(mGame, Vector2(offsetX, offsetY)));
-
-        // mGame->AddEnemy(new Skeleton(mGame, Vector2(offsetX, offsetY)));
-
     }
 
     new Sword(
@@ -207,7 +204,6 @@ void SceneManagerSystem::BuildFirstLevel() {
         Vector2(350.0f, 350.0f) ,
         1
     );
-
 
     BuildPauseMenu();
     mMainMusicHandle = mAudio->PlaySound("level1.wav", true);
@@ -317,7 +313,9 @@ void SceneManagerSystem::BuildLoseScreen() {
 std::pair<int, int> SceneManagerSystem::GetLevelSize() const {
     if (mGameScene == GameScene::Level1 || mNextScene == GameScene::Level1 || mGameScene == GameScene::Level2 || mNextScene == GameScene::Level2) {
         return {FIRST_SECOND_LEVEL_WIDTH, FIRST_SECOND_LEVEL_HEIGHT};
-    } else if (mGameScene == GameScene::Level3 || mNextScene == GameScene::Level3) {
+    }
+
+    if (mGameScene == GameScene::Level3 || mNextScene == GameScene::Level3) {
         return {THIRD_LEVEL_WIDTH, THIRD_LEVEL_HEIGHT};
     }
 
