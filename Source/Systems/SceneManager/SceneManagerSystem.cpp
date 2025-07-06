@@ -2,10 +2,9 @@
 #include "../../Utils/Random.h"
 #include "../../Actors/Golem/Golem.h"
 #include "../../Actors/Skeleton/Skeleton.h"
-#include "../../Actors/Items/Weapons/Melee/Sword.h"
 #include "../../Actors/Items/Weapons/Ranged/MagicToken.h"
 
-SceneManagerSystem::SceneManagerSystem(Game* game, AudioSystem* audioSystem) {
+SceneManagerSystem::SceneManagerSystem(Game *game, AudioSystem *audioSystem) {
     mGame = game;
     mAudio = audioSystem;
 
@@ -28,8 +27,7 @@ void SceneManagerSystem::SetGameScene(const GameScene scene) {
         mSceneManagerState = SceneManagerState::Entering;
         mSceneManagerTimer = TRANSITION_TIME;
         mSceneManagerTransitionTime = TRANSITION_TIME;
-    }
-    else {
+    } else {
         SDL_Log("Cannot change scene state while SceneManager is not in None state");
     }
 }
@@ -135,8 +133,7 @@ void SceneManagerSystem::TogglePause() const {
 
             mAudio->PauseSound(mMainMusicHandle);
             mAudio->PlaySound("menu_click.ogg", false);
-        }
-        else if (mGame->GetGameState() == Game::GameState::PAUSED) {
+        } else if (mGame->GetGameState() == Game::GameState::PAUSED) {
             mGame->SetGameState(Game::GameState::PLAYING);
             mPauseMenu->SetState(UIScreen::UIState::Idle);
 
@@ -196,10 +193,6 @@ void SceneManagerSystem::BuildFirstLevel() {
     mGame->BuildSpatialHashing();
     mGame->BuildPlayer(Vector2(200.0f, 200.0f));
 
-    for (int i = 0; i < 25; i++) {
-        const float offsetX = Random::GetFloatRange(250, FIRST_LEVEL_WIDTH * TILE_SIZE - 250);
-        const float offsetY = Random::GetFloatRange(250, FIRST_LEVEL_HEIGHT * TILE_SIZE - 250);
-        mGame->AddEnemy(new Golem(mGame, Vector2(offsetX, offsetY)));
     for (int i = 0; i < 1; i++) {
         const float offsetX = Random::GetFloatRange(250, FIRST_SECOND_LEVEL_WIDTH * TILE_SIZE - 250);
         const float offsetY = Random::GetFloatRange(250, FIRST_SECOND_LEVEL_HEIGHT * TILE_SIZE - 250);
@@ -209,25 +202,26 @@ void SceneManagerSystem::BuildFirstLevel() {
 
     }
 
-    new Sword(
+    // new Sword(
+    //     mGame,
+    //     "Sword",
+    //     "../Assets/Sprites/Weapons/Sword/sword.png",
+    //     "../Assets/Sprites/Weapons/Sword/sword_inv.png",
+    //     "../Assets/Sprites/Weapons/Sword/sword.json",
+    //     Vector2(300.0f, 300.0f) ,
+    //     1
+    // );
+
+     new MagicToken(
         mGame,
-        "Sword",
-        "../Assets/Sprites/Weapons/Sword/sword.png", 
-        "../Assets/Sprites/Weapons/Sword/sword_inv.png", 
-        "../Assets/Sprites/Weapons/Sword/sword.json", 
-        Vector2(300.0f, 300.0f) ,
-        1
+        "Magic_Token",
+        "../Assets/Sprites/Weapons/Token/magic_token.png", 
+        "../Assets/Sprites/Weapons/Token/token_inventory.png", 
+        "../Assets/Sprites/Weapons/Token/magic_token.json", 
+        Vector2(300.0f, 300.0f),
+        1 
     );
 
-    // new MagicToken(
-    //     mGame,
-    //     "Magic_Token",
-    //     "../Assets/Sprites/Weapons/Token/magic_token.png", 
-    //     "../Assets/Sprites/Weapons/Token/token_inventory.png", 
-    //     "../Assets/Sprites/Weapons/Token/magic_token.json", 
-    //     Vector2(300.0f, 300.0f),
-    //     1 
-    // );
 
     BuildPauseMenu();
     mMainMusicHandle = mAudio->PlaySound("level1.wav", true);
@@ -328,7 +322,7 @@ void SceneManagerSystem::BuildWinScreen() {
 
     const auto winScreen = new UIScreen(mGame, "../Assets/Fonts/PixelifySans.ttf");
 
-    auto* button = winScreen->AddButton(
+    auto *button = winScreen->AddButton(
         "Pressione Enter!",
         Vector2(mGame->GetWindowWidth() / 2.0f - 300.0f, mGame->GetWindowHeight() - 100.0f),
         Vector2(600.0f, 50.0f),
@@ -347,7 +341,7 @@ void SceneManagerSystem::BuildLoseScreen() {
 
     const auto loseScreen = new UIScreen(mGame, "../Assets/Fonts/PixelifySans.ttf");
 
-    auto* button = loseScreen->AddButton(
+    auto *button = loseScreen->AddButton(
         "Pressione Enter!",
         Vector2(mGame->GetWindowWidth() / 2.0f - 300.0f, mGame->GetWindowHeight() - 100.0f),
         Vector2(600.0f, 50.0f),
@@ -363,10 +357,10 @@ std::pair<int, int> SceneManagerSystem::GetLevelSize() const {
         return {THIRD_LEVEL_WIDTH, THIRD_LEVEL_HEIGHT};
     }
 
-    return { 0, 0 };
+    return {0, 0};
 }
 
-void SceneManagerSystem::DrawSceneTransition(SDL_Renderer* renderer) const {
+void SceneManagerSystem::DrawSceneTransition(SDL_Renderer *renderer) const {
     if (mSceneManagerState == SceneManagerState::Entering) {
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, static_cast<Uint8>((1 - mSceneManagerTimer / mSceneManagerTransitionTime) * 255));
         const SDL_Rect rect = { 0, 0, mGame->GetWindowWidth(), mGame->GetWindowHeight() };
