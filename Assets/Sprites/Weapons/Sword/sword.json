@@ -1,24 +1,24 @@
 {
   "frames": [
     {
-      "filename": "sword_s.png",
+      "filename": "sword_teste1.png",
       "frame": {
-        "x": 400,
+        "x": 0,
         "y": 0,
-        "w": 100,
-        "h": 100
+        "w": 128,
+        "h": 112
       },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 100,
-        "h": 100
+        "w": 128,
+        "h": 112
       },
       "sourceSize": {
-        "w": 100,
-        "h": 100
+        "w": 128,
+        "h": 112
       },
       "pivot": {
         "x": 0.5,
@@ -26,24 +26,24 @@
       }
     },
     {
-      "filename": "sword_e.png",
+      "filename": "sword_teste10.png",
       "frame": {
         "x": 0,
-        "y": 0,
-        "w": 100,
-        "h": 100
+        "y": 112,
+        "w": 128,
+        "h": 112
       },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 100,
-        "h": 100
+        "w": 128,
+        "h": 112
       },
       "sourceSize": {
-        "w": 100,
-        "h": 100
+        "w": 128,
+        "h": 112
       },
       "pivot": {
         "x": 0.5,
@@ -51,24 +51,24 @@
       }
     },
     {
-      "filename": "sword_sw.png",
+      "filename": "sword_teste11.png",
       "frame": {
-        "x": 600,
+        "x": 128,
         "y": 0,
-        "w": 100,
-        "h": 100
+        "w": 128,
+        "h": 112
       },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 100,
-        "h": 100
+        "w": 128,
+        "h": 112
       },
       "sourceSize": {
-        "w": 100,
-        "h": 100
+        "w": 128,
+        "h": 112
       },
       "pivot": {
         "x": 0.5,
@@ -76,24 +76,24 @@
       }
     },
     {
-      "filename": "sword_n.png",
+      "filename": "sword_teste2.png",
       "frame": {
-        "x": 100,
-        "y": 0,
-        "w": 100,
-        "h": 100
+        "x": 0,
+        "y": 224,
+        "w": 128,
+        "h": 112
       },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 100,
-        "h": 100
+        "w": 128,
+        "h": 112
       },
       "sourceSize": {
-        "w": 100,
-        "h": 100
+        "w": 128,
+        "h": 112
       },
       "pivot": {
         "x": 0.5,
@@ -101,24 +101,24 @@
       }
     },
     {
-      "filename": "sword_nw.png",
+      "filename": "sword_teste3.png",
       "frame": {
-        "x": 300,
-        "y": 0,
-        "w": 100,
-        "h": 100
+        "x": 128,
+        "y": 112,
+        "w": 128,
+        "h": 112
       },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 100,
-        "h": 100
+        "w": 128,
+        "h": 112
       },
       "sourceSize": {
-        "w": 100,
-        "h": 100
+        "w": 128,
+        "h": 112
       },
       "pivot": {
         "x": 0.5,
@@ -126,24 +126,24 @@
       }
     },
     {
-      "filename": "sword_ne.png",
+      "filename": "sword_teste4.png",
       "frame": {
-        "x": 200,
+        "x": 256,
         "y": 0,
-        "w": 100,
-        "h": 100
+        "w": 128,
+        "h": 112
       },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 100,
-        "h": 100
+        "w": 128,
+        "h": 112
       },
       "sourceSize": {
-        "w": 100,
-        "h": 100
+        "w": 128,
+        "h": 112
       },
       "pivot": {
         "x": 0.5,
@@ -151,24 +151,24 @@
       }
     },
     {
-      "filename": "sword_w.png",
+      "filename": "sword_teste5.png",
       "frame": {
-        "x": 700,
-        "y": 0,
-        "w": 100,
-        "h": 100
+        "x": 0,
+        "y": 336,
+        "w": 128,
+        "h": 112
       },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 100,
-        "h": 100
+        "w": 128,
+        "h": 112
       },
       "sourceSize": {
-        "w": 100,
-        "h": 100
+        "w": 128,
+        "h": 112
       },
       "pivot": {
         "x": 0.5,
@@ -176,24 +176,99 @@
       }
     },
     {
-      "filename": "sword_se.png",
+      "filename": "sword_teste6.png",
       "frame": {
-        "x": 500,
-        "y": 0,
-        "w": 100,
-        "h": 100
+        "x": 128,
+        "y": 224,
+        "w": 128,
+        "h": 112
       },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 100,
-        "h": 100
+        "w": 128,
+        "h": 112
       },
       "sourceSize": {
-        "w": 100,
-        "h": 100
+        "w": 128,
+        "h": 112
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "sword_teste7.png",
+      "frame": {
+        "x": 256,
+        "y": 112,
+        "w": 128,
+        "h": 112
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 128,
+        "h": 112
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 112
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "sword_teste8.png",
+      "frame": {
+        "x": 384,
+        "y": 0,
+        "w": 128,
+        "h": 112
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 128,
+        "h": 112
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 112
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "sword_teste9.png",
+      "frame": {
+        "x": 0,
+        "y": 448,
+        "w": 128,
+        "h": 112
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 128,
+        "h": 112
+      },
+      "sourceSize": {
+        "w": 128,
+        "h": 112
       },
       "pivot": {
         "x": 0.5,
@@ -207,8 +282,8 @@
     "image": "sword.png",
     "format": "RGBA8888",
     "size": {
-      "w": 530,
-      "h": 530
+      "w": 512,
+      "h": 560
     },
     "scale": 1
   }

@@ -5,6 +5,8 @@
 #include "../../../../Components/DrawComponents/DrawSpriteComponent.h"
 #include "../../../../Game.h"
 
+const std::string ATTACK_SWORD_ANIMATION = "atack";
+
 
 class Sword : public Item {
 public:
