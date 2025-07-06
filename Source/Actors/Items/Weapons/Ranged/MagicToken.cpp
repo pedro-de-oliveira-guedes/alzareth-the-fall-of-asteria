@@ -14,8 +14,8 @@ MagicToken::MagicToken(Game* game,
                        int quantity)
     : Item(game, name, ItemType::RangedWeapon, texturePath, textureInventoryPath, spriteSheetData, quantity) { 
 
-    mDamage = 20; 
-    mEnergyCost = 10; 
+    mDamage = 50; 
+    mEnergyCost = 5; 
 
     SetPosition(position);
 
@@ -48,6 +48,7 @@ MagicToken::MagicToken(Game* game,
     mDrawComponent->SetIsVisible(true);
     mDrawComponent->SetIsPaused(true);
     mDrawComponent->SetLooping(false);
+    mGame->SetMagicTokenInWorld(true);
 }
 
 MagicToken::~MagicToken() {}

@@ -32,6 +32,7 @@ Game::Game() {
     mAudio = nullptr;
     mEnemies.clear();
     mSceneManager = nullptr;
+    mMagicTokenInWorld = false;
 }
 
 bool Game::Initialize() {

@@ -10,13 +10,24 @@ class Inventory{
     Inventory();
     ~Inventory();
 
-    void AddItem(Item* newItem); 
+    Item* AddItem(Item* newItem); 
     bool RemoveItem(const std::string& itemName);
-    bool RemoveItemAtIndex(size_t index);
+    Item* RemoveItemAtIndex(size_t index);
     bool InventoryFull() const;
     
     Item* GetItem(const std::string& itemName) const;
     bool HasItem(const std::string& itemName) const;
+
+    int GetInventorySize() const {
+        int count = 0;
+        for (const auto& item_ptr : mItems) {
+            if (item_ptr != nullptr) {
+                count++;
+            }
+        }
+        return count;
+    };
+    int GetMaxItems() const { return mMaxItems; }
 
     const std::vector<Item*>& GetItems() const { return mItems; }
     Item* GetItemAtIndex(size_t index) const;
@@ -25,5 +36,5 @@ class Inventory{
 
   private:
     std::vector<Item*> mItems; 
-    int mMaxItems = 5; 
+    int mMaxItems = 6; 
 };

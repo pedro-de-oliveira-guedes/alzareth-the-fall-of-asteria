@@ -5,6 +5,7 @@
 #include "../../Components/ColliderComponents/AABBColliderComponent.h"
 #include "../Items/Collectible/CollectibleItem.h"
 #include "../Projectile/Projectile.h"
+#include "../Items/Weapons/Ranged/MagicToken.h"
 
 #include <random>
 
@@ -142,21 +143,42 @@ void Golem::Kill() {
     // get random int
     int randomInt = std::rand() % 100;
 
-    if (randomInt < 20) {
+    if (randomInt < 40) {
         new CollectibleItem(mGame, "Energy_Potion", Item::ItemType::Consumable,
             "../Assets/Sprites/Items/Energy/energy_potion.png",
             "../Assets/Sprites/Items/Energy/energy_potion_inventory.png",
             "../Assets/Sprites/Items/Energy/energy_potion.json",
             1, GetPosition());
     }
-    else if (randomInt < 50) {
+    else if (randomInt < 70) {
         new CollectibleItem(mGame, "Health_Potion", Item::ItemType::Consumable,
             "../Assets/Sprites/Items/Health/health_potion.png",
             "../Assets/Sprites/Items/Health/health_potion_inventory.png",
             "../Assets/Sprites/Items/Health/health_potion.json",
             1, GetPosition());
     }
-    // TODO: Add more items to drop
+    else if (randomInt < 90) {
+        new CollectibleItem(mGame, "Invulnerability_Potion", Item::ItemType::Consumable,
+            "../Assets/Sprites/Items/Invulnerability/invulnerability_potion.png",
+            "../Assets/Sprites/Items/Invulnerability/invulnerability_potion_inventory.png",
+            "../Assets/Sprites/Items/Invulnerability/invulnerability_potion.json",
+            1, GetPosition());
+    }
+    else {
+        if (mGame->GetMagicTokenInWorld()) {
+            return;
+        }
+        else {
+            new MagicToken(
+                mGame,
+                "Magic_Token",
+                "../Assets/Sprites/Weapons/Token/magic_token.png",
+                "../Assets/Sprites/Weapons/Token/token_inventory.png",
+                "../Assets/Sprites/Weapons/Token/magic_token.json",
+                GetPosition(),
+                1);
+        }
+    }
 }
 
 void Golem::ManageAnimations() const {
@@ -176,7 +198,9 @@ void Golem::OnCollision(float minOverlap, AABBColliderComponent* other) {
         auto projectile = dynamic_cast<Projectile*>(other->GetOwner());
         if (projectile) {
             TakeDamage(projectile->GetDamage());
+            projectile->SetState(ActorState::Destroy);
             mGame->RemoveActor(projectile);
+            return; 
         }
     }
 
