@@ -156,6 +156,12 @@ void Skeleton::Kill() {
             "../Assets/Sprites/Items/Health/health_potion_inventory.png",
             "../Assets/Sprites/Items/Health/health_potion.json",
             1, GetPosition());
+    } else if(randomInt < 100) {
+        new CollectibleItem(mGame, "Invulnerability_Potion", Item::ItemType::Consumable,
+            "../Assets/Sprites/Items/Invulnerability/invulnerability_potion.png",
+            "../Assets/Sprites/Items/Invulnerability/invulnerability_potion_inventory.png",
+            "../Assets/Sprites/Items/Invulnerability/invulnerability_potion.json",
+            1, GetPosition());
     }
     // TODO: Add more items to drop
 }
@@ -176,6 +182,7 @@ void Skeleton::OnCollision(float minOverlap, AABBColliderComponent *other) {
         auto projectile = dynamic_cast<Projectile*>(other->GetOwner());
         if (projectile) {
             TakeDamage(projectile->GetDamage()); 
+            projectile->SetState(ActorState::Destroy); 
             mGame->RemoveActor(projectile);
         }
     }

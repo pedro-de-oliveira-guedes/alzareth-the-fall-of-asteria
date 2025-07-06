@@ -193,7 +193,7 @@ void SceneManagerSystem::BuildFirstLevel() {
     mGame->BuildSpatialHashing();
     mGame->BuildPlayer(Vector2(200.0f, 200.0f));
 
-    for (int i = 0; i < 1; i++) {
+    for (int i = 0; i < 25; i++) {
         const float offsetX = Random::GetFloatRange(250, FIRST_SECOND_LEVEL_WIDTH * TILE_SIZE - 250);
         const float offsetY = Random::GetFloatRange(250, FIRST_SECOND_LEVEL_HEIGHT * TILE_SIZE - 250);
         //mGame->AddEnemy(new Golem(mGame, Vector2(offsetX, offsetY)));

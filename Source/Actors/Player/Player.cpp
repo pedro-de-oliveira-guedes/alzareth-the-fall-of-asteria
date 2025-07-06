@@ -196,6 +196,7 @@ void Player::UseItemAtIndex(int index) {
 
 void Player::HandleStatusEffects(float deltaTime) { 
     if (mIsInvulnerable) {
+        SDL_Log("Invulnerabilidade ativa por %.2f segundos", mInvulnerabilityTime);
         mInvulnerabilityTime -= deltaTime;
         if (mInvulnerabilityTime <= 0.0f) {
             mIsInvulnerable = false;
@@ -350,6 +351,8 @@ void Player::OnUpdate(const float deltaTime) {
 
     HandleEnergyAndCooldowns(deltaTime);
 
+    HandleStatusEffects(deltaTime);
+
     mCurrentEnergy = std::max(mCurrentEnergy, 0.f);
     mCurrentHealth = std::max(mCurrentHealth, 0.f);
     mHUDComponent->UpdateStats(mMaxHealth, mCurrentHealth, mMaxEnergy, mCurrentEnergy);
@@ -375,6 +378,11 @@ void Player::ManageAnimations() {
 }
 
 void Player::TakeDamage(const float damage) {
+    if (mIsInvulnerable) {
+        SDL_Log("Jogador invulnerável, dano não aplicado.");
+        return;
+    }
+    
     mCurrentHealth -= damage;
     mCurrentHealth = std::max(mCurrentHealth, 0.f);
     mHUDComponent->UpdateStats(mMaxHealth, mCurrentHealth, mMaxEnergy, mCurrentEnergy);

@@ -176,6 +176,7 @@ void Golem::OnCollision(float minOverlap, AABBColliderComponent* other) {
         auto projectile = dynamic_cast<Projectile*>(other->GetOwner());
         if (projectile) {
             TakeDamage(projectile->GetDamage());
+            projectile->SetState(ActorState::Destroy); 
             mGame->RemoveActor(projectile);
         }
     }

@@ -8,7 +8,7 @@ BallAttackToken::BallAttackToken(Game* game, Vector2 position, Vector2 velocity,
 
     mColliderComponent = new AABBColliderComponent(
         this,
-        0, 0, 10, 10, 
+        0, 0, 50, 50, 
         ColliderLayer::PlayerProjectile, 
         false,
         true
