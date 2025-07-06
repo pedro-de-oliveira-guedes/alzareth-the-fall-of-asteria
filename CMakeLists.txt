@@ -92,6 +92,10 @@ add_executable(${PROJECT_NAME}
         Source/Main.cpp
         Source/Systems/SceneManager/SceneManagerSystem.cpp
         Source/Systems/SceneManager/SceneManagerSystem.h
+        Source/Actors/Alzareth/Alzareth.cpp
+        Source/Actors/Alzareth/Alzareth.h
+        Source/Actors/Alzareth/Attacks/DeathRay.cpp
+        Source/Actors/Alzareth/Attacks/DeathRay.h
 )
 
 # Linkar com as bibliotecas SDL2_ttf
