@@ -1,6 +1,11 @@
 #pragma once
+<<<<<<< HEAD
 #include "../../Systems/Audio/AudioSystem.h"
 #include "../../Components/DrawComponents/DrawAnimatedComponent.h"
+=======
+#include "../../Components/DrawComponents/DrawAnimatedComponent.h"
+#include "../../Systems/Audio/AudioSystem.h"
+>>>>>>> 209208d4a209ff0bee4291c59b568828ce542caa
 #include "../Actor.h"
 
 class Enemy : public Actor {

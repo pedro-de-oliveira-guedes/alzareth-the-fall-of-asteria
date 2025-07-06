@@ -195,7 +195,7 @@ void Golem::ManageAnimations() const {
     }
 }
 
-void Golem::OnCollision(float /*minOverlap*/, AABBColliderComponent* other) {
+void Golem::OnCollision(float minOverlap, AABBColliderComponent* other) {
     if (other->GetLayer() == ColliderLayer::PlayerProjectile) {
         auto projectile = dynamic_cast<Projectile*>(other->GetOwner());
         if (projectile) {

@@ -5,9 +5,9 @@
 #include "UIElements/UIScreen.h"
 #include "Systems/SceneManager/SceneManagerSystem.h"
 
-#include <SDL2/SDL_image.h>
-#include <SDL2/SDL_mixer.h>
-#include <SDL2/SDL_ttf.h>
+#include <SDL_image.h>
+#include <SDL_mixer.h>
+#include <SDL_ttf.h>
 #include <algorithm>
 #include <fstream>
 #include <iostream>
@@ -239,7 +239,6 @@ void Game::UpdateActors(const float deltaTime) {
             }
         }
         if (defeatedEnemies == mEnemies.size()) {
-            SDL_Log("All enemies defeated, player wins!");
             mGameState = GameState::PAUSED;
             if (mSceneManager->GetCurrentScene() == SceneManagerSystem::GameScene::Level1) {
                 mSceneManager->SetGameScene(SceneManagerSystem::GameScene::Level2);
@@ -365,10 +364,7 @@ UIFont* Game::LoadFont(const std::string& fileName) {
     return nullptr;
 }
 
-void Game::ClearGameScene() {
-    delete mSpatialHashing;
-    mSpatialHashing = nullptr;
-
+void Game::ClearGameScene(const bool shouldDeletePlayer) {
     for (const auto ui : mUIStack) {
         delete ui;
     }
@@ -379,16 +375,35 @@ void Game::ClearGameScene() {
         mBackgroundTexture = nullptr;
     }
 
-    for (const auto enemy : mEnemies) {
-        enemy->SetState(ActorState::Destroy);
+    if (mSpatialHashing) {
+        const std::vector<Actor*> allActors = mSpatialHashing->Query(mPlayer->GetPosition(), 1000);
+        const std::vector<Item*> inventoryItems = mPlayer->GetInventory().GetItems();
+        for (auto *actor : allActors) {
+            if (actor != mPlayer && std::find(inventoryItems.begin(), inventoryItems.end(), actor) == inventoryItems.end()) {
+                delete actor;
+            }
+        }
+
+        if (shouldDeletePlayer) {
+            for (const auto *item : mPlayer->GetInventory().GetItems()) {
+                delete item;
+            }
+
+            delete mPlayer;
+            mPlayer = nullptr;
+        }
+
+        delete mSpatialHashing;
+        mSpatialHashing = nullptr;
     }
+
     mEnemies.clear();
 
     mAudio->StopAllSounds();
 }
 
 void Game::Shutdown() {
-    ClearGameScene();
+    ClearGameScene(true);
 
     for (const auto &font : mFonts) {
         font.second->Unload();
@@ -428,21 +443,18 @@ std::pair<int, int> Game::GetEnemiesCount() const {
 }
 
 void Game::BuildPlayer(const Vector2 position) {
-    SDL_Log("Building player at position (%f, %f)", position.x, position.y);
     if (mPlayer) {
+        mPlayer->SetCurrentHealth(mPlayer->GetMaxHealth());
+        mPlayer->SetCurrentEnergy(mPlayer->GetMaxEnergy());
         mPlayer->SetPosition(position);
-        SDL_Log("Player position updated.");
     } else {
         mPlayer = new Player(this);
         mPlayer->SetPosition(position);
-        SDL_Log("Player created and positioned.");
     }
 }
 
 void Game::BuildSpatialHashing() {
-    if (mSpatialHashing) {
-        delete mSpatialHashing;
-    }
+    delete mSpatialHashing;
 
     const auto [level_width, level_height] = mSceneManager->GetLevelSize();
     mSpatialHashing = new SpatialHashing(

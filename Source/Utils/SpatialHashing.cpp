@@ -1,7 +1,3 @@
-//
-// Created by Lucas N. Ferreira on 29/05/25.
-//
-
 #include "SpatialHashing.h"
 
 SpatialHashing::SpatialHashing(int cellSize, int width, int height) {
@@ -11,20 +7,10 @@ SpatialHashing::SpatialHashing(int cellSize, int width, int height) {
 
     int cols = (width + cellSize - 1) / cellSize;
     int rows = (height + cellSize - 1) / cellSize;
-    mGrid.resize(rows, std::vector<std::vector<Actor*>>(cols));
+    mGrid.resize(rows, std::vector(cols, std::vector<Actor*>(0)));
 }
 
 SpatialHashing::~SpatialHashing() {
-    // Delete all actors
-    /* for (auto& row : mGrid) {
-        for (auto& cell : row) {
-           while(!cell.empty()) {
-               delete cell.back(); // Assuming ownership of actors
-           }
-            cell.clear();
-        }
-    } */
-
     mGrid.clear();
     mPositions.clear();
     mCellIndices.clear();

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../Component.h"
-#include <SDL2/SDL.h>
+#include <SDL.h>
 
 class DrawComponent : public Component {
     public:

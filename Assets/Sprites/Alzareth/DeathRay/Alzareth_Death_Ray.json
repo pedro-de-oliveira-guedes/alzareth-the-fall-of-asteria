@@ -1,0 +1,65 @@
+{
+  "frames": [
+    {
+      "filename": "death-ray-0.png",
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 816,
+        "h": 2048
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 816,
+        "h": 2048
+      },
+      "sourceSize": {
+        "w": 816,
+        "h": 2048
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "death-ray-1.png",
+      "frame": {
+        "x": 0,
+        "y": 2048,
+        "w": 816,
+        "h": 2048
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 816,
+        "h": 2048
+      },
+      "sourceSize": {
+        "w": 816,
+        "h": 2048
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    }
+  ],
+  "meta": {
+    "app": "http://free-tex-packer.com",
+    "version": "0.6.7",
+    "image": "Alzareth_Death_Ray.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 816,
+      "h": 4096
+    },
+    "scale": 1
+  }
+}
