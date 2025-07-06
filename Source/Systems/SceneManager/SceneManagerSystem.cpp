@@ -2,6 +2,7 @@
 #include "../../Utils/Random.h"
 #include "../../Actors/Golem/Golem.h"
 #include "../../Actors/Skeleton/Skeleton.h"
+#include "../../Actors/Items/Weapons/Ranged/MagicToken.h"
 
 SceneManagerSystem::SceneManagerSystem(Game *game, AudioSystem *audioSystem) {
     mGame = game;
@@ -201,15 +202,26 @@ void SceneManagerSystem::BuildFirstLevel() {
 
     }
 
-    new Sword(
+    // new Sword(
+    //     mGame,
+    //     "Sword",
+    //     "../Assets/Sprites/Weapons/Sword/sword.png",
+    //     "../Assets/Sprites/Weapons/Sword/sword_inv.png",
+    //     "../Assets/Sprites/Weapons/Sword/sword.json",
+    //     Vector2(300.0f, 300.0f) ,
+    //     1
+    // );
+
+     new MagicToken(
         mGame,
-        "Sword",
-        "../Assets/Sprites/Weapons/Sword/sword.png",
-        "../Assets/Sprites/Weapons/Sword/sword_inv.png",
-        "../Assets/Sprites/Weapons/Sword/sword.json",
-        Vector2(300.0f, 300.0f) ,
-        1
+        "Magic_Token",
+        "../Assets/Sprites/Weapons/Token/magic_token.png", 
+        "../Assets/Sprites/Weapons/Token/token_inventory.png", 
+        "../Assets/Sprites/Weapons/Token/magic_token.json", 
+        Vector2(300.0f, 300.0f),
+        1 
     );
+
 
     BuildPauseMenu();
     mMainMusicHandle = mAudio->PlaySound("level1.wav", true);

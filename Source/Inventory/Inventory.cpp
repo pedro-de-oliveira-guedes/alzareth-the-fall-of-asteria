@@ -11,7 +11,8 @@ Inventory::~Inventory() {
 
 int Inventory::ReturnWeaponIndex() {
     for (size_t i = 0; i < mItems.size(); ++i) {
-        if (mItems[i] != nullptr && mItems[i]->GetType() == Item::ItemType::Weapon) {
+        if (mItems[i] != nullptr && 
+            (mItems[i]->GetType() == Item::ItemType::Weapon || mItems[i]->GetType() == Item::ItemType::RangedWeapon)){
               return i;
         }
     }

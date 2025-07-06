@@ -8,7 +8,8 @@ class Item : public Actor {
         enum class ItemType {
             None,
             Weapon,
-            Consumable
+            Consumable,
+            RangedWeapon
         };
 
         explicit Item(

@@ -45,7 +45,7 @@ class Player : public Actor {
 
         void TakeDamage(float damage);
 
-        void Attack(const Uint8 *keyState);
+        void Attack(const Uint8 *keyState, Uint32 mouseButtonState);
 
         void UseItemAtIndex(int index);
 
@@ -66,6 +66,8 @@ class Player : public Actor {
         void HandleEnergyAndCooldowns(float deltaTime);
 
         void ManageAnimations();
+
+        void AttackToken();
 
         float mMaxHealth;
         float mCurrentHealth;
@@ -92,6 +94,8 @@ class Player : public Actor {
         std::array<bool, 5> mNumberKeysPressedLastFrame;
 
         Inventory mInventory;
+
+        Uint32 mPreviousMouseButtonState;
 
         bool mIsInvulnerable;
         float mInvulnerabilityTime;

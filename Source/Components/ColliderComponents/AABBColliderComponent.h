@@ -11,6 +11,7 @@ enum class ColliderLayer {
     Bullet,
     Collectible,
     EnemyProjectile,
+    PlayerProjectile,
 };
 
 class AABBColliderComponent : public Component {
