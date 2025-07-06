@@ -1,8 +1,10 @@
 #include "Enemy.h"
-#include "./../Game.h"
-#include "./../Components/PhysicsComponents/RigidBodyComponent.h"
-#include "./../Components/DrawComponents/DrawAnimatedComponent.h"
-#include "./../Components/ColliderComponents/AABBColliderComponent.h"
+#include "../../Game.h"
+#include "./../../Components/PhysicsComponents/RigidBodyComponent.h"
+#include "./../../Components/DrawComponents/DrawAnimatedComponent.h"
+#include "./../../Components/ColliderComponents/AABBColliderComponent.h"
+#include "../Items/Collectible/CollectibleItem.h"
+#include "../Items/Weapons/Ranged/MagicToken.h"
 
 
 Enemy::Enemy(Game *game) : Actor(game) {}
@@ -14,9 +16,6 @@ void Enemy::ManageAnimations() const {}
 
 void Enemy::OnCollision(float minOverlap, AABBColliderComponent *other) {}
 
-void Enemy::Kill() {
-
-}
 
 void Enemy::TakeDamage(const float damage) {
     mCurrentHealth -= damage;
@@ -29,4 +28,4 @@ void Enemy::TakeDamage(const float damage) {
     }
 }
 
-
+void Enemy::Kill() {}

@@ -1,6 +1,6 @@
 #pragma once
 #include "../Enemy.h"
-#include "../../Components/DrawComponents/DrawAnimatedComponent.h"
+#include "../../../Components/DrawComponents/DrawAnimatedComponent.h"
 
 class Ghost : public Enemy {
     public:
@@ -16,6 +16,7 @@ class Ghost : public Enemy {
         void OnCollision(float minOverlap, AABBColliderComponent *other) override;
 
         void Kill() override;
+
     private:
         void ManageAnimations() const;
 

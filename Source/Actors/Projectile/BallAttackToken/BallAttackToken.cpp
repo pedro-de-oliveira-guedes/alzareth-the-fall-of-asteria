@@ -8,7 +8,7 @@ BallAttackToken::BallAttackToken(Game* game, Vector2 position, Vector2 velocity,
 
     mColliderComponent = new AABBColliderComponent(
         this,
-        0, 0, 80, 80, 
+        0, 0, 20, 20, 
         ColliderLayer::PlayerProjectile, 
         false,
         true
@@ -23,4 +23,15 @@ BallAttackToken::BallAttackToken(Game* game, Vector2 position, Vector2 velocity,
 
     mDrawComponent->AddAnimation("default", {0});
     mDrawComponent->SetAnimation("default");
+}
+
+void BallAttackToken::OnUpdate(float deltaTime) {
+    Vector2 newPos = GetPosition() + mVelocity * deltaTime;
+    SetPosition(newPos);
+
+    mLifetime -= deltaTime;
+    if (mLifetime <= 0.0f) {
+        mGame->RemoveActor(this);
+        return;
+    }
 }

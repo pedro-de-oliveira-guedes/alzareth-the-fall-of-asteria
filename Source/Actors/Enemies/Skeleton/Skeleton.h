@@ -1,10 +1,10 @@
 #pragma once
 #include "../Enemy.h"
-#include "../../Components/DrawComponents/DrawAnimatedComponent.h"
+#include "../../../Components/DrawComponents/DrawAnimatedComponent.h"
 
-class Golem2 : public Enemy {
+class Skeleton : public Enemy {
     public:
-        explicit Golem2(
+        explicit Skeleton(
             Game *game,
             Vector2 position
         );
@@ -16,6 +16,7 @@ class Golem2 : public Enemy {
         void OnCollision(float minOverlap, AABBColliderComponent *other) override;
 
         void Kill() override;
+
     private:
         void ManageAnimations() const;
 

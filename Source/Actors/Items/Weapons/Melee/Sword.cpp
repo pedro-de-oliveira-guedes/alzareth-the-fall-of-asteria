@@ -18,13 +18,13 @@ Sword::Sword(Game* game, const std::string& name,
                const std::string& texturePath, const std::string& textureInventoryPath, const std::string& spriteSheetData, const Vector2& position, int quantity)
     : Item(game, name, ItemType::Weapon, texturePath, textureInventoryPath, spriteSheetData, quantity) {
 
-    mDamage = 30;
+    mDamage = 530;
 
     SetPosition(position);
 
     int swordSpriteSize = 100;
     
-    int colliderSize = 60; // About 60% of sprite size
+    int colliderSize = 120; // Aumentado para cerca de 80% do tamanho do sprite da espada
     
     int offsetX = (swordSpriteSize - colliderSize) / 2;
     int offsetY = (swordSpriteSize - colliderSize) / 2;

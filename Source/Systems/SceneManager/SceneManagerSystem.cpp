@@ -1,9 +1,9 @@
 #include "SceneManagerSystem.h"
 #include "../../Utils/Random.h"
-#include "../../Actors/Golem/Golem.h"
-#include "../../Actors/Golem2/Golem2.h"
-#include "../../Actors/Skeleton/Skeleton.h"
-#include "../../Actors/Ghost/Ghost.h"
+#include "../../Actors/Enemies/Golem/Golem.h"
+#include "../../Actors/Enemies/Golem2/Golem2.h"
+#include "../../Actors/Enemies/Skeleton/Skeleton.h"
+#include "../../Actors/Enemies/Ghost/Ghost.h"
 #include "../../Actors/Items/Weapons/Ranged/MagicToken.h"
 
 SceneManagerSystem::SceneManagerSystem(Game *game, AudioSystem *audioSystem) {
@@ -195,12 +195,19 @@ void SceneManagerSystem::BuildFirstLevel() {
     mGame->BuildSpatialHashing();
     mGame->BuildPlayer(Vector2(200.0f, 200.0f));
 
-    for (int i = 0; i < 25; i++) {
-        const float offsetX = Random::GetFloatRange(250, FIRST_SECOND_LEVEL_WIDTH * TILE_SIZE - 250);
-        const float offsetY = Random::GetFloatRange(250, FIRST_SECOND_LEVEL_HEIGHT * TILE_SIZE - 250);
+    for (int i = 0; i < 20; i++) {
+        const float offsetX = Random::GetFloatRange(450, FIRST_SECOND_LEVEL_WIDTH * TILE_SIZE - 450);
+        const float offsetY = Random::GetFloatRange(450, FIRST_SECOND_LEVEL_HEIGHT * TILE_SIZE - 450);
         mGame->AddEnemy(new Golem(mGame, Vector2(offsetX, offsetY)));
 
-        // mGame->AddEnemy(new Skeleton(mGame, Vector2(offsetX, offsetY)));
+
+    }
+
+    for (int i = 0; i < 5; i++) {
+        const float offsetX = Random::GetFloatRange(450, FIRST_SECOND_LEVEL_WIDTH * TILE_SIZE - 450);
+        const float offsetY = Random::GetFloatRange(450, FIRST_SECOND_LEVEL_HEIGHT * TILE_SIZE - 450);
+
+        mGame->AddEnemy(new Skeleton(mGame, Vector2(offsetX, offsetY)));
 
     }
 
@@ -236,12 +243,16 @@ void SceneManagerSystem::BuildSecondLevel() {
     mGame->BuildPlayer(Vector2(200.0f, 200.0f));
     SDL_Log("Player added to Level 2");
 
-    for (int i = 0; i < 25; i++) {
-        const float offsetX = Random::GetFloatRange(250, FIRST_SECOND_LEVEL_WIDTH * TILE_SIZE - 250);
-        const float offsetY = Random::GetFloatRange(250, FIRST_SECOND_LEVEL_HEIGHT * TILE_SIZE - 250);
-        //mGame->AddEnemy(new Skeleton(mGame, Vector2(offsetX, offsetY)));
+    for (int i = 0; i < 20; i++) {
+        const float offsetX = Random::GetFloatRange(450, FIRST_SECOND_LEVEL_WIDTH * TILE_SIZE - 450);
+        const float offsetY = Random::GetFloatRange(450, FIRST_SECOND_LEVEL_HEIGHT * TILE_SIZE - 450);
+        mGame->AddEnemy(new Golem2(mGame, Vector2(offsetX, offsetY)));
+        SDL_Log("Enemy added at position (%f, %f)", offsetX, offsetY);
+    }
 
-        //mGame->AddEnemy(new Golem2(mGame, Vector2(offsetX, offsetY)));
+    for (int i = 0; i < 5; i++) {
+        const float offsetX = Random::GetFloatRange(450, FIRST_SECOND_LEVEL_WIDTH * TILE_SIZE - 450);
+        const float offsetY = Random::GetFloatRange(450, FIRST_SECOND_LEVEL_HEIGHT * TILE_SIZE - 450);
         mGame->AddEnemy(new Ghost(mGame, Vector2(offsetX, offsetY)));
         SDL_Log("Enemy added at position (%f, %f)", offsetX, offsetY);
     }

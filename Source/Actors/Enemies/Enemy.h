@@ -1,7 +1,7 @@
 #pragma once
-#include "../Systems/Audio/AudioSystem.h"
-#include "./../Components/DrawComponents/DrawAnimatedComponent.h"
-#include "./Actor.h"
+#include "../../Systems/Audio/AudioSystem.h"
+#include "../../Components/DrawComponents/DrawAnimatedComponent.h"
+#include "../Actor.h"
 
 class Enemy : public Actor {
     public:
