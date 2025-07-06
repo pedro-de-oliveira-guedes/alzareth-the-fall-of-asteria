@@ -18,7 +18,7 @@ Sword::Sword(Game* game, const std::string& name,
                const std::string& texturePath, const std::string& textureInventoryPath, const std::string& spriteSheetData, const Vector2& position, int quantity)
     : Item(game, name, ItemType::Weapon, texturePath, textureInventoryPath, spriteSheetData, quantity) {
 
-    mDamage = 100;
+    mDamage = 30;
 
     SetPosition(position);
 
