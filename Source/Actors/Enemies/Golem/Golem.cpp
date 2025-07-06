@@ -85,10 +85,6 @@ void Golem::Attack() {
 }
 
 void Golem::OnUpdate(float deltaTime) {
-
-    //DebugColliderPosition();
-
-
     if (mAttackCooldown > 0.0f) {
         mAttackCooldown -= deltaTime;
     }
@@ -122,7 +118,6 @@ void Golem::OnUpdate(float deltaTime) {
         Vector2 step = toPlayer * (mWalkSpeed) * (deltaTime);
         SetPosition(EnemyPos + step);
     }
-
 
     ManageAnimations();
 }
@@ -163,19 +158,17 @@ void Golem::Kill() {
             1, GetPosition());
     }
     else {
-        if (mGame->GetMagicTokenInWorld()) {
-            return;
-        }
-        else {
-            new MagicToken(
-                mGame,
-                "Magic_Token",
-                "../Assets/Sprites/Weapons/Token/magic_token.png",
-                "../Assets/Sprites/Weapons/Token/token_inventory.png",
-                "../Assets/Sprites/Weapons/Token/magic_token.json",
-                GetPosition(),
-                1);
-        }
+        if (mGame->GetMagicTokenInWorld()) return;
+
+        new MagicToken(
+            mGame,
+            "Magic_Token",
+            "../Assets/Sprites/Weapons/Token/magic_token.png",
+            "../Assets/Sprites/Weapons/Token/token_inventory.png",
+            "../Assets/Sprites/Weapons/Token/magic_token.json",
+            GetPosition(),
+            1
+        );
     }
 }
 
