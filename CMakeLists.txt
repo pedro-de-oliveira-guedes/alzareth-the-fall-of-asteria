@@ -28,6 +28,16 @@ add_executable(${PROJECT_NAME}
         Source/Actors/Player/Player.h
         Source/Actors/Golem/Golem.h
         Source/Actors/Golem/Golem.cpp
+        Source/Actors/Skeleton/Skeleton.h
+        Source/Actors/Skeleton/Skeleton.cpp
+        Source/Actors/Projectile/Projectile.h
+        Source/Actors/Projectile/Projectile.cpp
+        Source/Actors/Projectile/Fireball/Fireball.h
+        Source/Actors/Projectile/Fireball/Fireball.cpp
+        Source/Actors/Projectile/BallAttackToken/BallAttackToken.h
+        Source/Actors/Projectile/BallAttackToken/BallAttackToken.cpp
+        Source/Actors/Items/Weapons/Ranged/MagicToken.h
+        Source/Actors/Items/Weapons/Ranged/MagicToken.cpp
 
         Source/Utils/CSV.h
         Source/Utils/Json.h
