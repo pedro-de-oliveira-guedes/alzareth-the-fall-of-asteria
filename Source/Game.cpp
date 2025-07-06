@@ -365,10 +365,7 @@ UIFont* Game::LoadFont(const std::string& fileName) {
     return nullptr;
 }
 
-void Game::ClearGameScene() {
-    delete mSpatialHashing;
-    mSpatialHashing = nullptr;
-
+void Game::ClearGameScene(const bool shouldDeletePlayer) {
     for (const auto ui : mUIStack) {
         delete ui;
     }
@@ -379,16 +376,35 @@ void Game::ClearGameScene() {
         mBackgroundTexture = nullptr;
     }
 
-    for (const auto enemy : mEnemies) {
-        enemy->SetState(ActorState::Destroy);
+    if (mSpatialHashing) {
+        const std::vector<Actor*> allActors = mSpatialHashing->Query(mPlayer->GetPosition(), 1000);
+        const std::vector<Item*> inventoryItems = mPlayer->GetInventory().GetItems();
+        for (auto *actor : allActors) {
+            if (actor != mPlayer && std::find(inventoryItems.begin(), inventoryItems.end(), actor) == inventoryItems.end()) {
+                delete actor;
+            }
+        }
+
+        if (shouldDeletePlayer) {
+            for (const auto *item : mPlayer->GetInventory().GetItems()) {
+                delete item;
+            }
+
+            delete mPlayer;
+            mPlayer = nullptr;
+        }
+
+        delete mSpatialHashing;
+        mSpatialHashing = nullptr;
     }
+
     mEnemies.clear();
 
     mAudio->StopAllSounds();
 }
 
 void Game::Shutdown() {
-    ClearGameScene();
+    ClearGameScene(true);
 
     for (const auto &font : mFonts) {
         font.second->Unload();
