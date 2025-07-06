@@ -5,6 +5,7 @@
 #include "../../../Components/ColliderComponents/AABBColliderComponent.h"
 #include "../../Items/Collectible/CollectibleItem.h"
 #include "../../Projectile/GhostAttack/GhostAttack.h"
+#include "../../Items/Weapons/Ranged/MagicToken.h"
 
 #include <random>
 
@@ -17,7 +18,7 @@ Ghost::Ghost(Game *game, Vector2 position) : Enemy(game) {
 
     SetPosition(position);
 
-    mMaxHealth = 100.0f;
+    mMaxHealth = 120.0f;
     mCurrentHealth = mMaxHealth;
     mIsDead = false;
 
@@ -74,8 +75,7 @@ void Ghost::Attack() {
     mIsWalking = false;
     mIsAttacking = true;
 
-    if (mGame->GetAudioSystem()->GetSoundState(mAttackSound) != SoundState::Playing)
-        mAttackSound = mGame->GetAudioSystem()->PlaySound("monster_attack.wav", false);
+    
 
     Vector2 playerPos = mGame->GetPlayer()->GetPosition();
     Vector2 direction = playerPos - GetPosition();
@@ -90,6 +90,11 @@ void Ghost::Attack() {
 void Ghost::OnUpdate(float deltaTime) {
 
     //DebugColliderPosition();
+
+    if (mCurrentHealth <= 0.0f) {
+        this->Kill();
+        return;
+    }
 
 
     if (mAttackCooldown > 0.0f) {
@@ -134,6 +139,8 @@ void Ghost::Kill() {
     if (mState == ActorState::Destroy) {
         return; // ensure Kill is executed only once
     }
+
+    mState = ActorState::Destroy; 
     mGame->RemoveActor(this);
 
     mDrawComponent->SetIsVisible(false);
@@ -144,20 +151,37 @@ void Ghost::Kill() {
     // get random int
     int randomInt = std::rand() % 100;
 
-    if (randomInt < 20) {
+    if (randomInt > 0 && randomInt < 20) {
         new CollectibleItem(mGame, "Energy_Potion", Item::ItemType::Consumable,
             "../Assets/Sprites/Items/Energy/energy_potion.png",
             "../Assets/Sprites/Items/Energy/energy_potion_inventory.png",
             "../Assets/Sprites/Items/Energy/energy_potion.json",
             1, GetPosition());
-    } else if (randomInt < 50) {
+    }
+    else if (randomInt < 30) {
         new CollectibleItem(mGame, "Health_Potion", Item::ItemType::Consumable,
             "../Assets/Sprites/Items/Health/health_potion.png",
             "../Assets/Sprites/Items/Health/health_potion_inventory.png",
             "../Assets/Sprites/Items/Health/health_potion.json",
             1, GetPosition());
     }
-    // TODO: Add more items to drop
+    else if (randomInt < 35) {
+        new CollectibleItem(mGame, "Invulnerability_Potion", Item::ItemType::Consumable,
+            "../Assets/Sprites/Items/Invulnerability/invulnerability_potion.png",
+            "../Assets/Sprites/Items/Invulnerability/invulnerability_potion_inventory.png",
+            "../Assets/Sprites/Items/Invulnerability/invulnerability_potion.json",
+            1, GetPosition());
+    }
+    else if (randomInt < 50){
+        new MagicToken(
+            mGame,
+            "Magic_Token",
+            "../Assets/Sprites/Weapons/Token/magic_token.png",
+            "../Assets/Sprites/Weapons/Token/token_inventory.png",
+            "../Assets/Sprites/Weapons/Token/magic_token.json",
+            GetPosition(),
+            1);
+    }
 }
 
 void Ghost::ManageAnimations() const {
@@ -171,6 +195,16 @@ void Ghost::ManageAnimations() const {
 }
 
 void Ghost::OnCollision(float minOverlap, AABBColliderComponent *other) {
+
+    if (other->GetLayer() == ColliderLayer::PlayerProjectile) {
+        auto projectile = dynamic_cast<Projectile*>(other->GetOwner());
+        if (projectile) {
+            TakeDamage(projectile->GetDamage());
+            projectile->SetState(ActorState::Destroy);
+            mGame->RemoveActor(projectile);
+            return; 
+        }
+    }
 
     if (other->GetLayer() == ColliderLayer::Player) {
         // get the player damage

@@ -14,7 +14,7 @@ const std::string WALKING_ANIMATION = "walking";
 const std::string ATTACK_ANIMATION = "attack";
 
 
-Golem::Golem(Game *game, Vector2 position) : Enemy(game) {
+Golem::Golem(Game* game, Vector2 position) : Enemy(game) {
 
     SetPosition(position);
 
@@ -61,12 +61,62 @@ Golem::Golem(Game *game, Vector2 position) : Enemy(game) {
     mDrawComponent->SetAnimation(IDLE_ANIMATION);
 }
 
+
+void Golem::Kill() {
+    if (mState == ActorState::Destroy) {
+        return; // ensure Kill is executed only once
+    }
+
+    mState = ActorState::Destroy; 
+    mGame->RemoveActor(this);
+
+    mDrawComponent->SetIsVisible(false);
+    mColliderComponent->SetEnabled(false);
+    mRigidBodyComponent->SetEnabled(false);
+    mIsDead = true;
+
+    // get random int
+    int randomInt = std::rand() % 100;
+
+    if (randomInt > 0 && randomInt < 20) {
+        new CollectibleItem(mGame, "Energy_Potion", Item::ItemType::Consumable,
+            "../Assets/Sprites/Items/Energy/energy_potion.png",
+            "../Assets/Sprites/Items/Energy/energy_potion_inventory.png",
+            "../Assets/Sprites/Items/Energy/energy_potion.json",
+            1, GetPosition());
+    }
+    else if (randomInt < 30) {
+        new CollectibleItem(mGame, "Health_Potion", Item::ItemType::Consumable,
+            "../Assets/Sprites/Items/Health/health_potion.png",
+            "../Assets/Sprites/Items/Health/health_potion_inventory.png",
+            "../Assets/Sprites/Items/Health/health_potion.json",
+            1, GetPosition());
+    }
+    else if (randomInt < 35) {
+        new CollectibleItem(mGame, "Invulnerability_Potion", Item::ItemType::Consumable,
+            "../Assets/Sprites/Items/Invulnerability/invulnerability_potion.png",
+            "../Assets/Sprites/Items/Invulnerability/invulnerability_potion_inventory.png",
+            "../Assets/Sprites/Items/Invulnerability/invulnerability_potion.json",
+            1, GetPosition());
+    }
+    else if (randomInt < 50){
+        new MagicToken(
+            mGame,
+            "Magic_Token",
+            "../Assets/Sprites/Weapons/Token/magic_token.png",
+            "../Assets/Sprites/Weapons/Token/token_inventory.png",
+            "../Assets/Sprites/Weapons/Token/magic_token.json",
+            GetPosition(),
+            1);
+    }
+}
+
 void Golem::Attack() {
     if (mAttackCooldown >= 0.0f) {
         return;
     }
 
-    auto *player = mGame->GetPlayer();
+    auto* player = mGame->GetPlayer();
 
     if (!player || player->GetIsDashing()) {
         return;
@@ -85,6 +135,15 @@ void Golem::Attack() {
 }
 
 void Golem::OnUpdate(float deltaTime) {
+
+    //DebugColliderPosition();
+
+    if (mCurrentHealth <= 0.0f) {
+        this->Kill();
+        return;
+    }
+
+
     if (mAttackCooldown > 0.0f) {
         mAttackCooldown -= deltaTime;
     }
@@ -101,7 +160,8 @@ void Golem::OnUpdate(float deltaTime) {
     // rotate based on player position
     if (toPlayer.x < 0.0f) {
         SetRotation(Math::Pi);
-    } else {
+    }
+    else {
         SetRotation(0.0f);
     }
 
@@ -109,9 +169,10 @@ void Golem::OnUpdate(float deltaTime) {
 
     if (distance > 0.0f) toPlayer *= 1 / distance; // normalize
 
-    if (distance < 50.0f) {
+    if (distance < 20.0f) {
         Attack();
-    } else {
+    }
+    else {
         mIsWalking = true;
         mIsAttacking = false;
 
@@ -119,57 +180,8 @@ void Golem::OnUpdate(float deltaTime) {
         SetPosition(EnemyPos + step);
     }
 
+
     ManageAnimations();
-}
-
-void Golem::Kill() {
-    if (mState == ActorState::Destroy) {
-        return; // ensure Kill is executed only once
-    }
-    mGame->RemoveActor(this);
-
-    mDrawComponent->SetIsVisible(false);
-    mColliderComponent->SetEnabled(false);
-    mRigidBodyComponent->SetEnabled(false);
-    mIsDead = true;
-
-    // get random int
-    int randomInt = std::rand() % 100;
-
-    if (randomInt < 40) {
-        new CollectibleItem(mGame, "Energy_Potion", Item::ItemType::Consumable,
-            "../Assets/Sprites/Items/Energy/energy_potion.png",
-            "../Assets/Sprites/Items/Energy/energy_potion_inventory.png",
-            "../Assets/Sprites/Items/Energy/energy_potion.json",
-            1, GetPosition());
-    }
-    else if (randomInt < 70) {
-        new CollectibleItem(mGame, "Health_Potion", Item::ItemType::Consumable,
-            "../Assets/Sprites/Items/Health/health_potion.png",
-            "../Assets/Sprites/Items/Health/health_potion_inventory.png",
-            "../Assets/Sprites/Items/Health/health_potion.json",
-            1, GetPosition());
-    }
-    else if (randomInt < 90) {
-        new CollectibleItem(mGame, "Invulnerability_Potion", Item::ItemType::Consumable,
-            "../Assets/Sprites/Items/Invulnerability/invulnerability_potion.png",
-            "../Assets/Sprites/Items/Invulnerability/invulnerability_potion_inventory.png",
-            "../Assets/Sprites/Items/Invulnerability/invulnerability_potion.json",
-            1, GetPosition());
-    }
-    else {
-        if (mGame->GetMagicTokenInWorld()) return;
-
-        new MagicToken(
-            mGame,
-            "Magic_Token",
-            "../Assets/Sprites/Weapons/Token/magic_token.png",
-            "../Assets/Sprites/Weapons/Token/token_inventory.png",
-            "../Assets/Sprites/Weapons/Token/magic_token.json",
-            GetPosition(),
-            1
-        );
-    }
 }
 
 void Golem::ManageAnimations() const {
@@ -184,16 +196,17 @@ void Golem::ManageAnimations() const {
     }
 }
 
-void Golem::OnCollision(float minOverlap, AABBColliderComponent *other) {
+void Golem::OnCollision(float minOverlap, AABBColliderComponent* other) {
     if (other->GetLayer() == ColliderLayer::PlayerProjectile) {
         auto projectile = dynamic_cast<Projectile*>(other->GetOwner());
         if (projectile) {
             TakeDamage(projectile->GetDamage());
-            projectile->SetState(ActorState::Destroy);
+            projectile->SetState(ActorState::Destroy); 
             mGame->RemoveActor(projectile);
-            return;
+            return; 
         }
     }
+
 
     if (other->GetLayer() == ColliderLayer::Player) {
         // get the player damage

@@ -16,6 +16,7 @@ class Ghost : public Enemy {
         void OnCollision(float minOverlap, AABBColliderComponent *other) override;
 
         void Kill() override;
+
     private:
         void ManageAnimations() const;
 

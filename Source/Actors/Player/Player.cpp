@@ -305,11 +305,20 @@ void Player::Attack(const Uint8* keyState, Uint32 mouseButtonState) {
             }
         }
         else if (equippedItem->GetType() == Item::ItemType::RangedWeapon) {
+
             MagicToken* magicToken = dynamic_cast<MagicToken*>(equippedItem);
             if (magicToken) {
                 magicToken->Use(this);
             }
-        }
+
+            const auto& colliders = mGame->GetNearbyColliders(mPosition);
+            for (const AABBColliderComponent* otherCollider : colliders) {
+                if (otherCollider->GetLayer() == ColliderLayer::Enemy) {
+                    auto* enemy = dynamic_cast<Enemy*>(otherCollider->GetOwner());
+                    enemy->TakeDamage(magicToken->GetDamage());
+                }
+             }
+            }
     }
     else if (!currentLeftMouseButtonPressed) {
         int weaponIdx = mInventory.ReturnWeaponIndex();
@@ -416,14 +425,6 @@ void Player::TakeDamage(const float damage) {
 }
 
 void Player::OnCollision(float minOverlap, AABBColliderComponent* other) {
-    // if (other->GetLayer() == ColliderLayer::MeleeWeapon) {
-    //     auto weapon = dynamic_cast<Sword*>(other->GetOwner());
-    //     if (!weapon) {
-    //         return;
-    //     }
-    //     weapon->Collect();
-    //     mInventory.AddItem(weapon);
-    // }
 }
 
 void Player::Kill() {

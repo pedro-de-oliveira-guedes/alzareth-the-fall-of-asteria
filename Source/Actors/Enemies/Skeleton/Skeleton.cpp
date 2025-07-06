@@ -5,6 +5,7 @@
 #include "../../../Components/ColliderComponents/AABBColliderComponent.h"
 #include "../../Items/Collectible/CollectibleItem.h"
 #include "../../Projectile/Fireball/Fireball.h"
+#include "../../Items/Weapons/Ranged/MagicToken.h"
 
 #include <random>
 
@@ -12,6 +13,54 @@ const std::string IDLE_ANIMATION = "idle";
 const std::string WALKING_ANIMATION = "walking";
 const std::string ATTACK_ANIMATION = "attack";
 
+void Skeleton::Kill() {
+    if (mState == ActorState::Destroy) {
+        return; // ensure Kill is executed only once
+    }
+
+    mState = ActorState::Destroy;
+    mGame->RemoveActor(this);
+
+    mDrawComponent->SetIsVisible(false);
+    mColliderComponent->SetEnabled(false);
+    mRigidBodyComponent->SetEnabled(false);
+    mIsDead = true;
+
+    // get random int
+    int randomInt = std::rand() % 100;
+
+    if (randomInt > 0 && randomInt < 20) {
+        new CollectibleItem(mGame, "Energy_Potion", Item::ItemType::Consumable,
+            "../Assets/Sprites/Items/Energy/energy_potion.png",
+            "../Assets/Sprites/Items/Energy/energy_potion_inventory.png",
+            "../Assets/Sprites/Items/Energy/energy_potion.json",
+            1, GetPosition());
+    }
+    else if (randomInt < 30) {
+        new CollectibleItem(mGame, "Health_Potion", Item::ItemType::Consumable,
+            "../Assets/Sprites/Items/Health/health_potion.png",
+            "../Assets/Sprites/Items/Health/health_potion_inventory.png",
+            "../Assets/Sprites/Items/Health/health_potion.json",
+            1, GetPosition());
+    }
+    else if (randomInt < 35) {
+        new CollectibleItem(mGame, "Invulnerability_Potion", Item::ItemType::Consumable,
+            "../Assets/Sprites/Items/Invulnerability/invulnerability_potion.png",
+            "../Assets/Sprites/Items/Invulnerability/invulnerability_potion_inventory.png",
+            "../Assets/Sprites/Items/Invulnerability/invulnerability_potion.json",
+            1, GetPosition());
+    }
+    else if (randomInt < 50){
+        new MagicToken(
+            mGame,
+            "Magic_Token",
+            "../Assets/Sprites/Weapons/Token/magic_token.png",
+            "../Assets/Sprites/Weapons/Token/token_inventory.png",
+            "../Assets/Sprites/Weapons/Token/magic_token.json",
+            GetPosition(),
+            1);
+    }
+}
 
 Skeleton::Skeleton(Game *game, const Vector2 position) : Enemy(game) {
 
@@ -91,6 +140,11 @@ void Skeleton::OnUpdate(float deltaTime) {
 
     //DebugColliderPosition();
 
+    if (mCurrentHealth <= 0.0f) {
+        this->Kill();
+        return;
+    }
+
 
     if (mAttackCooldown > 0.0f) {
         mAttackCooldown -= deltaTime;
@@ -130,52 +184,6 @@ void Skeleton::OnUpdate(float deltaTime) {
     ManageAnimations();
 }
 
-void Skeleton::Kill() {
-    if (mState == ActorState::Destroy) {
-        return; // ensure Kill is executed only once
-    }
-    mGame->RemoveActor(this);
-
-    mDrawComponent->SetIsVisible(false);
-    mColliderComponent->SetEnabled(false);
-    mRigidBodyComponent->SetEnabled(false);
-    mIsDead = true;
-
-    // get random int
-    int randomInt = std::rand() % 100;
-
-    if (randomInt < 40) {
-        new CollectibleItem(mGame, "Energy_Potion", Item::ItemType::Consumable,
-            "../Assets/Sprites/Items/Energy/energy_potion.png",
-            "../Assets/Sprites/Items/Energy/energy_potion_inventory.png",
-            "../Assets/Sprites/Items/Energy/energy_potion.json",
-            1, GetPosition());
-    }
-    else if (randomInt < 70) {
-        new CollectibleItem(mGame, "Health_Potion", Item::ItemType::Consumable,
-            "../Assets/Sprites/Items/Health/health_potion.png",
-            "../Assets/Sprites/Items/Health/health_potion_inventory.png",
-            "../Assets/Sprites/Items/Health/health_potion.json",
-            1, GetPosition());
-    }
-    else if (randomInt < 90) {
-        new CollectibleItem(mGame, "Invulnerability_Potion", Item::ItemType::Consumable,
-            "../Assets/Sprites/Items/Invulnerability/invulnerability_potion.png",
-            "../Assets/Sprites/Items/Invulnerability/invulnerability_potion_inventory.png",
-            "../Assets/Sprites/Items/Invulnerability/invulnerability_potion.json",
-            1, GetPosition());
-    }
-    else {
-        if (mGame->GetMagicTokenInWorld()) return;
-
-
-        new CollectibleItem(mGame, "Magic_Token", Item::ItemType::RangedWeapon,
-            "../Assets/Sprites/Items/MagicToken/magic_token.png",
-            "../Assets/Sprites/Items/MagicToken/magic_token_inventory.png",
-            "../Assets/Sprites/Items/MagicToken/magic_token.json",
-            1, GetPosition());
-    }
-}
 
 void Skeleton::ManageAnimations() const {
     if (mIsAttacking) {
@@ -196,6 +204,7 @@ void Skeleton::OnCollision(float minOverlap, AABBColliderComponent *other) {
             TakeDamage(projectile->GetDamage());
             projectile->SetState(ActorState::Destroy);
             mGame->RemoveActor(projectile);
+            return;
         }
     }
 

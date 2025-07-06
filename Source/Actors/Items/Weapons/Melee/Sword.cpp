@@ -1,9 +1,6 @@
 #include "Sword.h"
 #include "../../../Player/Player.h"
 
-// Remova as definições de EAST, SOUTH_EAST, etc., se elas só forem usadas para definir animações que não serão mais usadas para a espada de ataque.
-// Se elas forem usadas para UpdateSwordPosition, mantenha-as ou defina-as globalmente.
-// Para este exemplo, vou mantê-las aqui se existirem, mas o SetAnimation(newDirection) será removido.
 const std::string EAST = "east";
 const std::string SOUTH_EAST = "south_east";
 const std::string SOUTH = "south";
@@ -21,13 +18,13 @@ Sword::Sword(
     const std::string& spriteSheetData,
     const Vector2& position, int quantity
 ) : Item(game, name, ItemType::Weapon, texturePath, textureInventoryPath, spriteSheetData, quantity) {
-    mDamage = 30;
+    mDamage = 100;
 
     SetPosition(position);
 
     int swordSpriteSize = 100;
     
-    int colliderSize = 60; // About 60% of sprite size
+    int colliderSize = 120; 
     
     int offsetX = (swordSpriteSize - colliderSize) / 2;
     int offsetY = (swordSpriteSize - colliderSize) / 2;
@@ -49,7 +46,6 @@ Sword::Sword(
         100 // drawOrder
     );
 
-    // Adicione a animação de ataque com todos os 10 frames
     mDrawComponent->AddAnimation(ATTACK_SWORD_ANIMATION, {0, 1, 2, 3, 4, 5, 6, 7, 8, 9});     
     
     mDrawComponent->SetIsVisible(true);
@@ -59,7 +55,6 @@ Sword::Sword(
     mDrawComponent->SetAnimation(ATTACK_SWORD_ANIMATION);
     mDrawComponent->SetAnimTimer(0.0f);
     
-    // mTimeAttack = 1.0f; // Remova esta linha
 }
 
 Sword::~Sword() {}

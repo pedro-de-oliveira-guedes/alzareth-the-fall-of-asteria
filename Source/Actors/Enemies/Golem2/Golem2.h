@@ -16,6 +16,7 @@ class Golem2 : public Enemy {
         void OnCollision(float minOverlap, AABBColliderComponent *other) override;
 
         void Kill() override;
+
     private:
         void ManageAnimations() const;
 

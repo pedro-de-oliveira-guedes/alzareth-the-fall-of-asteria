@@ -4,6 +4,8 @@
 #include "../../../Components/DrawComponents/DrawAnimatedComponent.h"
 #include "../../../Components/ColliderComponents/AABBColliderComponent.h"
 #include "../../Items/Collectible/CollectibleItem.h"
+#include "../../Projectile/Projectile.h"
+#include "../../Items/Weapons/Ranged/MagicToken.h"
 
 #include <random>
 
@@ -86,6 +88,11 @@ void Golem2::OnUpdate(float deltaTime) {
 
     //DebugColliderPosition();
 
+    if (mCurrentHealth <= 0.0f) {
+        this->Kill();
+        return;
+    }
+
 
     if (mAttackCooldown > 0.0f) {
         mAttackCooldown -= deltaTime;
@@ -111,7 +118,7 @@ void Golem2::OnUpdate(float deltaTime) {
 
     if (distance > 0.0f) toPlayer *= 1/distance; // normalize
 
-    if (distance < 60.0f) {
+    if (distance < 20.0f) {
         Attack();
     } else {
         mIsWalking = true;
@@ -129,6 +136,8 @@ void Golem2::Kill() {
     if (mState == ActorState::Destroy) {
         return; // ensure Kill is executed only once
     }
+
+    mState = ActorState::Destroy;
     mGame->RemoveActor(this);
 
     mDrawComponent->SetIsVisible(false);
@@ -139,20 +148,37 @@ void Golem2::Kill() {
     // get random int
     int randomInt = std::rand() % 100;
 
-    if (randomInt < 20) {
+    if (randomInt > 0 && randomInt < 20) {
         new CollectibleItem(mGame, "Energy_Potion", Item::ItemType::Consumable,
             "../Assets/Sprites/Items/Energy/energy_potion.png",
             "../Assets/Sprites/Items/Energy/energy_potion_inventory.png",
             "../Assets/Sprites/Items/Energy/energy_potion.json",
             1, GetPosition());
-    } else if (randomInt < 50) {
+    }
+    else if (randomInt < 30) {
         new CollectibleItem(mGame, "Health_Potion", Item::ItemType::Consumable,
             "../Assets/Sprites/Items/Health/health_potion.png",
             "../Assets/Sprites/Items/Health/health_potion_inventory.png",
             "../Assets/Sprites/Items/Health/health_potion.json",
             1, GetPosition());
     }
-    // TODO: Add more items to drop
+    else if (randomInt < 35) {
+        new CollectibleItem(mGame, "Invulnerability_Potion", Item::ItemType::Consumable,
+            "../Assets/Sprites/Items/Invulnerability/invulnerability_potion.png",
+            "../Assets/Sprites/Items/Invulnerability/invulnerability_potion_inventory.png",
+            "../Assets/Sprites/Items/Invulnerability/invulnerability_potion.json",
+            1, GetPosition());
+    }
+    else if (randomInt < 50){
+        new MagicToken(
+            mGame,
+            "Magic_Token",
+            "../Assets/Sprites/Weapons/Token/magic_token.png",
+            "../Assets/Sprites/Weapons/Token/token_inventory.png",
+            "../Assets/Sprites/Weapons/Token/magic_token.json",
+            GetPosition(),
+            1);
+    }
 }
 
 void Golem2::ManageAnimations() const {
@@ -166,6 +192,16 @@ void Golem2::ManageAnimations() const {
 }
 
 void Golem2::OnCollision(float minOverlap, AABBColliderComponent *other) {
+
+    if (other->GetLayer() == ColliderLayer::PlayerProjectile) {
+        auto projectile = dynamic_cast<Projectile*>(other->GetOwner());
+        if (projectile) {
+            TakeDamage(projectile->GetDamage());
+            projectile->SetState(ActorState::Destroy);
+            mGame->RemoveActor(projectile);
+            return; 
+        }
+    }
 
     if (other->GetLayer() == ColliderLayer::Player) {
         // get the player damage
