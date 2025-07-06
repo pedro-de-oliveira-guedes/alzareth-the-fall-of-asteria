@@ -240,7 +240,6 @@ void Game::UpdateActors(const float deltaTime) {
             }
         }
         if (defeatedEnemies == mEnemies.size()) {
-            SDL_Log("All enemies defeated, player wins!");
             mGameState = GameState::PAUSED;
             if (mSceneManager->GetCurrentScene() == SceneManagerSystem::GameScene::Level1) {
                 mSceneManager->SetGameScene(SceneManagerSystem::GameScene::Level2);
@@ -438,9 +437,7 @@ void Game::BuildPlayer(const Vector2 position) {
 }
 
 void Game::BuildSpatialHashing() {
-    if (mSpatialHashing) {
-        delete mSpatialHashing;
-    }
+    delete mSpatialHashing;
 
     const auto [level_width, level_height] = mSceneManager->GetLevelSize();
     mSpatialHashing = new SpatialHashing(
