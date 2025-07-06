@@ -212,16 +212,6 @@ void SceneManagerSystem::BuildFirstLevel() {
         1
     );
 
-     new MagicToken(
-        mGame,
-        "Magic_Token",
-        "../Assets/Sprites/Weapons/Token/magic_token.png", 
-        "../Assets/Sprites/Weapons/Token/token_inventory.png", 
-        "../Assets/Sprites/Weapons/Token/magic_token.json", 
-        Vector2(300.0f, 300.0f),
-        1 
-    );
-
 
     BuildPauseMenu();
     mMainMusicHandle = mAudio->PlaySound("level1.wav", true);
