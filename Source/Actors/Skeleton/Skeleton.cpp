@@ -172,6 +172,13 @@ void Skeleton::ManageAnimations() const {
 
 void Skeleton::OnCollision(float minOverlap, AABBColliderComponent *other) {
 
+    if(other->GetLayer() == ColliderLayer::PlayerProjectile){
+        auto projectile = dynamic_cast<Projectile*>(other->GetOwner());
+        if (projectile) {
+            TakeDamage(projectile->GetDamage()); 
+            mGame->RemoveActor(projectile);
+        }
+    }
     if (other->GetLayer() == ColliderLayer::Player) {
         // get the player damage
         auto player = dynamic_cast<Player*>(other->GetOwner());
