@@ -37,7 +37,11 @@ void SceneManagerSystem::ResetGameScene() {
 }
 
 void SceneManagerSystem::UnloadScene() const {
-    mGame->ClearGameScene();
+    if (mNextScene == GameScene::MainMenu || mNextScene == GameScene::Win || mNextScene == GameScene::Lose) {
+        mGame->ClearGameScene(true);
+    } else {
+        mGame->ClearGameScene(false);
+    }
 }
 
 void SceneManagerSystem::ChangeScene() {
