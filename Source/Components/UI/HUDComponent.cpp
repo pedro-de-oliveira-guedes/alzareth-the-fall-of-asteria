@@ -168,19 +168,32 @@ void HUDComponent::UpdateInventoryDisplay() {
 
     const Inventory& playerInventory = mOwner->GetGame()->GetPlayer()->GetInventory();
 
-    float itemDisplayY = mInventoryImage->GetPosition().y + 95.0f;
+    float itemDisplayY = mInventoryImage->GetPosition().y + 99.0f;
 
-    float initialPaddingX = 18.0f;
-    float itemSpacingX = 10.5f;
-    float itemImageSize = 44.0f;
+    float initialPaddingX = 39.0f;
+    float itemSpacingX = 0.01f;
+    // float itemImageSize = 35.0f; // Esta variável será definida dinamicamente agora
+
+    float largeItemSpacingX = 48.0f; 
 
     float currentX = mInventoryImage->GetPosition().x + initialPaddingX;
     const auto& inventorySlots = playerInventory.GetItems(); 
 
+    int itemIndex = 0; 
+
     for (const auto& item_ptr : inventorySlots) { 
+        float currentItemImageSize; // Declaração da variável para o tamanho atual da imagem
+
+        // Define o tamanho da imagem com base no índice do item
+        if (itemIndex == 0) {
+            currentItemImageSize = 36.0f; // Tamanho para o primeiro item
+        } else {
+            currentItemImageSize = 34.0f; // Tamanho para os outros itens
+        }
+
         if (item_ptr != nullptr) { 
             Vector2 itemPos = Vector2(currentX, itemDisplayY);
-            Vector2 itemSize = Vector2(itemImageSize, itemImageSize);
+            Vector2 itemSize = Vector2(currentItemImageSize, currentItemImageSize); // Usa o tamanho definido condicionalmente
 
             UIImage* itemImage = new UIImage(
                 item_ptr->GetInventoryTexturePath(), 
@@ -188,10 +201,14 @@ void HUDComponent::UpdateInventoryDisplay() {
                 itemSize
             );
             mInventoryItems.push_back(itemImage);
-
-            currentX += itemImageSize + itemSpacingX;
-        } else {
-            currentX += itemImageSize + itemSpacingX; 
         }
+        
+        // Atualiza a posição X usando o tamanho da imagem atual para o espaçamento
+        if (itemIndex == 0) {
+            currentX += currentItemImageSize + largeItemSpacingX; 
+        } else {
+            currentX += currentItemImageSize + itemSpacingX; 
+        }
+        itemIndex++; 
     }
 }
