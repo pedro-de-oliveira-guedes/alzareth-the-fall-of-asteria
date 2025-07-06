@@ -8,9 +8,11 @@ DrawAnimatedComponent::DrawAnimatedComponent(
     Actor *owner,
     const std::string &spriteSheetPath,
     const std::string &spriteSheetData,
+    const float rotationDegrees,
     const int drawOrder
 ) : DrawSpriteComponent(owner, spriteSheetPath, 0, 0, drawOrder) {
     LoadSpriteSheet(spriteSheetPath, spriteSheetData);
+    mRotationDegrees = rotationDegrees;
 }
 
 DrawAnimatedComponent::~DrawAnimatedComponent() {
@@ -66,7 +68,7 @@ void DrawAnimatedComponent::Draw(SDL_Renderer *renderer) {
         mSpriteSheetSurface,
         mSpriteSheetData[spriteIdx],
         &screenRegion,
-        0,
+        mRotationDegrees,
         nullptr,
         flip
     );

@@ -11,6 +11,7 @@ class DrawAnimatedComponent : public DrawSpriteComponent {
             Actor* owner,
             const std::string &spriteSheetPath,
             const std::string &spriteSheetData,
+            const float rotationDegrees = 0.0f,
             int drawOrder = 100
         );
         ~DrawAnimatedComponent() override;
@@ -59,4 +60,5 @@ class DrawAnimatedComponent : public DrawSpriteComponent {
         bool mIsPaused = false;
 
         float mRotation = 0.0f;
+        float mRotationDegrees = 0.0f;
 };
