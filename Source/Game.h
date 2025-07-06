@@ -75,7 +75,7 @@ public:
     void BuildPlayer(Vector2 position);
     void BuildSpatialHashing();
     void AddEnemy(Enemy* enemy) { mEnemies.emplace_back(enemy); }
-    void ClearGameScene();
+    void ClearGameScene(bool shouldDeletePlayer = false);
 
     bool GetMagicTokenInWorld() const { return mMagicTokenInWorld; }
     void SetMagicTokenInWorld(bool inWorld) { mMagicTokenInWorld = inWorld; }
