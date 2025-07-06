@@ -445,6 +445,8 @@ std::pair<int, int> Game::GetEnemiesCount() const {
 
 void Game::BuildPlayer(const Vector2 position) {
     if (mPlayer) {
+        mPlayer->SetCurrentHealth(mPlayer->GetMaxHealth());
+        mPlayer->SetCurrentEnergy(mPlayer->GetMaxEnergy());
         mPlayer->SetPosition(position);
     } else {
         mPlayer = new Player(this);
