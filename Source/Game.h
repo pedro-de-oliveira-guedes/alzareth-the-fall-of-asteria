@@ -77,6 +77,9 @@ public:
     void AddEnemy(Enemy* enemy) { mEnemies.emplace_back(enemy); }
     void ClearGameScene();
 
+    bool GetMagicTokenInWorld() const { return mMagicTokenInWorld; }
+    void SetMagicTokenInWorld(bool inWorld) { mMagicTokenInWorld = inWorld; }
+
     SDL_Renderer* GetRenderer() const { return mRenderer; }
 
 private:
@@ -122,6 +125,8 @@ private:
 
     // Level data
     SpatialHashing *mSpatialHashing;
+
+    bool mMagicTokenInWorld = false;
 
     // Window dimensions
     int mWindowWidth;

@@ -21,11 +21,18 @@ add_executable(${PROJECT_NAME}
         Source/Actors/Items/Weapons/Weapons.cpp
         Source/Actors/Items/Weapons/Melee/Sword.h
         Source/Actors/Items/Weapons/Melee/Sword.cpp
+        Source/Actors/Items/Weapons/Ranged/MagicToken.h
+        Source/Actors/Items/Weapons/Ranged/MagicToken.cpp
         Source/Actors/Items/Collectible/CollectibleItem.cpp
         Source/Actors/Items/Collectible/CollectibleItem.h
 
         Source/Actors/Player/Player.cpp
         Source/Actors/Player/Player.h
+
+        Source/Actors/Alzareth/Alzareth.cpp
+        Source/Actors/Alzareth/Alzareth.h
+        Source/Actors/Alzareth/Attacks/DeathRay.cpp
+        Source/Actors/Alzareth/Attacks/DeathRay.h
 
         Source/Actors/Enemies/Enemy.h
         Source/Actors/Enemies/Enemy.cpp
@@ -38,6 +45,8 @@ add_executable(${PROJECT_NAME}
         Source/Actors/Projectile/Projectile.cpp
         Source/Actors/Projectile/Fireball/Fireball.h
         Source/Actors/Projectile/Fireball/Fireball.cpp
+        Source/Actors/Projectile/BallAttackToken/BallAttackToken.h
+        Source/Actors/Projectile/BallAttackToken/BallAttackToken.cpp
 
         Source/Utils/CSV.h
         Source/Utils/Json.h
@@ -92,10 +101,6 @@ add_executable(${PROJECT_NAME}
         Source/Main.cpp
         Source/Systems/SceneManager/SceneManagerSystem.cpp
         Source/Systems/SceneManager/SceneManagerSystem.h
-        Source/Actors/Alzareth/Alzareth.cpp
-        Source/Actors/Alzareth/Alzareth.h
-        Source/Actors/Alzareth/Attacks/DeathRay.cpp
-        Source/Actors/Alzareth/Attacks/DeathRay.h
 )
 
 # Linkar com as bibliotecas SDL2_ttf

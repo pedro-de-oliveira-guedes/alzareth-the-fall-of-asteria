@@ -6,7 +6,7 @@
 #include "../../Systems/SceneManager/SceneManagerSystem.h"
 #include "../Enemies/Enemy.h"
 #include "../Items/Collectible/CollectibleItem.h"
-#include "../Projectile/Projectile.h"
+#include "../Items/Weapons/Ranged/MagicToken.h"
 
 const std::string DASH_ANIMATION = "dash";
 const std::string IDLE_ANIMATION = "idle";
@@ -39,10 +39,12 @@ Player::Player(Game* game, const float walkSpeed, const float runSpeed, const fl
     mIsDashing = false;
     mEPressedLastFrame = false;
 
-    mIsInvulnerable = false;      
-    mInvulnerabilityTime = 0.0f; 
+    mIsInvulnerable = false;
+    mInvulnerabilityTime = 0.0f;
 
     mNumberKeysPressedLastFrame.fill(false);
+
+    mPreviousMouseButtonState = 0;
 
     mRigidBodyComponent = new RigidBodyComponent(this, 1.0f, 5.0f);
     mColliderComponent = new AABBColliderComponent(this, 0, 0, Game::SPRITE_SIZE, Game::SPRITE_SIZE, ColliderLayer::Player);
@@ -134,7 +136,8 @@ void Player::HandleDash(const Uint8* keyState, const Vector2 force_vector) {
 
         if (force_vector.x < 0) SetRotation(Math::Pi);
         else SetRotation(0);
-    } else {
+    }
+    else {
         mIsDashing = false;
     }
 }
@@ -146,15 +149,34 @@ void Player::HandleItemInput(const Uint8* keyState) {
         const auto& colliders = mGame->GetNearbyColliders(mPosition);
         for (const AABBColliderComponent* otherCollider : colliders) {
             if (
-                otherCollider->GetLayer() == ColliderLayer::Collectible &&
+                (otherCollider->GetLayer() == ColliderLayer::Collectible || otherCollider->GetLayer() == ColliderLayer::MeleeWeapon) &&
                 mColliderComponent->Intersect(*otherCollider) &&
                 otherCollider->IsEnabled()
-            ) {
-                auto* item = dynamic_cast<CollectibleItem*>(otherCollider->GetOwner());
-                if (item && !mInventory.InventoryFull()) {
-                    mInventory.AddItem(item);
-                    item->Collect();
+                ) {
+                auto* item = dynamic_cast<Item*>(otherCollider->GetOwner());
+                if (item) {
+                    SDL_Log("mInvetory.GetInventorySize(): %d, mInventory.GetMaxItems(): %d",
+                        mInventory.GetInventorySize(), mInventory.GetMaxItems());
+                    if (mInventory.GetInventorySize() >= mInventory.GetMaxItems()) {
+                        mGame->GetAudioSystem()->PlaySound("menu_click.ogg", false);
+                        return;
+                    }
 
+                    Item* droppedItem = mInventory.AddItem(item);
+
+                    if (droppedItem != nullptr) {
+                        droppedItem->SetState(ActorState::Active);
+                        droppedItem->SetPosition(GetPosition());
+                        droppedItem->GetComponent<AABBColliderComponent>()->SetEnabled(true);
+
+                        auto drawComp = droppedItem->GetComponent<DrawComponent>();
+                        if (drawComp) {
+                            drawComp->SetIsVisible(true);
+                        }
+
+                    }
+
+                    item->Collect();
                     if (mGame->GetAudioSystem()->GetSoundState(mItemPickupSound) != SoundState::Playing)
                         mItemPickupSound = mGame->GetAudioSystem()->PlaySound("pickup.mp3", false);
                     break;
@@ -162,7 +184,6 @@ void Player::HandleItemInput(const Uint8* keyState) {
             }
         }
     }
-
     mEPressedLastFrame = currentEPressed;
 }
 
@@ -172,7 +193,7 @@ void Player::HandleUseItem(const Uint8* keyState) {
         bool currentKeyPressed = keyState[key_scancode];
 
         if (currentKeyPressed && !mNumberKeysPressedLastFrame[i]) {
-            UseItemAtIndex(i);
+            UseItemAtIndex(i + 1);
         }
         mNumberKeysPressedLastFrame[i] = currentKeyPressed;
     }
@@ -185,17 +206,19 @@ void Player::UseItemAtIndex(int index) {
     if (itemToUse && itemToUse->GetType() == Item::ItemType::Consumable) {
         itemToUse->Use(this);
         mInventory.RemoveItemAtIndex(actualIndex);
-    } else {
+    }
+    else {
         mGame->GetAudioSystem()->PlaySound("menu_click.ogg", false);
     }
 }
 
-void Player::HandleStatusEffects(float deltaTime) { 
+void Player::HandleStatusEffects(float deltaTime) {
     if (mIsInvulnerable) {
+        SDL_Log("Invulnerabilidade ativa por %.2f segundos", mInvulnerabilityTime);
         mInvulnerabilityTime -= deltaTime;
         if (mInvulnerabilityTime <= 0.0f) {
             mIsInvulnerable = false;
-            mInvulnerabilityTime = 0.0f; 
+            mInvulnerabilityTime = 0.0f;
             SDL_Log("Invulnerabilidade desativada!");
         }
     }
@@ -206,8 +229,11 @@ void Player::OnProcessInput(const Uint8* keyState) {
 
     HandleRotation();
     HandleItemInput(keyState);
-    HandleUseItem(keyState); 
-    Attack(keyState);
+    HandleUseItem(keyState);
+
+    int mouseX, mouseY;
+    Uint32 mouseButtonState = SDL_GetMouseState(&mouseX, &mouseY);
+    Attack(keyState, mouseButtonState);
 
     const auto force_vector = HandleBasicMovementInput(keyState);
     ApplyBasicMovement(force_vector);
@@ -215,38 +241,46 @@ void Player::OnProcessInput(const Uint8* keyState) {
     HandleDash(keyState, force_vector);
 }
 
-void Player::Attack(const Uint8 *keyState) {
-    // TODO: GASTAR ENERGIA RELACIONADA A CADA ARMA
-
+void Player::Attack(const Uint8* keyState, Uint32 mouseButtonState) {
     if (mIsDashing || mIsRunning) {
+        mPreviousMouseButtonState = mouseButtonState;
         return;
     }
 
-    int mouseState = SDL_GetMouseState(nullptr, nullptr);
-    if (mouseState & SDL_BUTTON(SDL_BUTTON_LEFT)) {
-        // check if the inventory contains a weapon
+    bool currentLeftMouseButtonPressed = (mouseButtonState & SDL_BUTTON(SDL_BUTTON_LEFT));
+    bool previousLeftMouseButtonPressed = (mPreviousMouseButtonState & SDL_BUTTON(SDL_BUTTON_LEFT));
+
+
+    if (currentLeftMouseButtonPressed && !previousLeftMouseButtonPressed) {
         int weaponIdx = mInventory.ReturnWeaponIndex();
-    
+
         if (weaponIdx < 0) {
+            mPreviousMouseButtonState = mouseButtonState;
             return;
         }
 
-        // Get the equipped weapon
-        Item* weaponItem = mInventory.GetItemAtIndex(weaponIdx);
-        if (weaponItem && weaponItem->GetType() == Item::ItemType::Weapon) {
-            Sword* sword = dynamic_cast<Sword*>(weaponItem);
+        Item* equippedItem = mInventory.GetItemAtIndex(weaponIdx);
+        if (!equippedItem) {
+            mPreviousMouseButtonState = mouseButtonState;
+            return;
+        }
+
+        if (equippedItem->GetType() == Item::ItemType::Weapon) { // Melee weapon (Sword)
+            Sword* sword = dynamic_cast<Sword*>(equippedItem);
             if (sword) {
+
+
                 int mouseX, mouseY;
                 SDL_GetMouseState(&mouseX, &mouseY);
-                Vector2 mousePos(mouseX + mGame->GetCameraPos().x, 
-                               mouseY + mGame->GetCameraPos().y);
-                
-                
+                Vector2 mousePos(static_cast<float>(mouseX) + mGame->GetCameraPos().x,
+                    static_cast<float>(mouseY) + mGame->GetCameraPos().y);
+
                 sword->SetPlayerPos(GetPosition());
                 sword->SetMousePos(mousePos);
                 sword->DrawForAttack();
-                if (mGame->GetAudioSystem()->GetSoundState(mSwordSound) != SoundState::Playing)
+                if (mGame->GetAudioSystem()->GetSoundState(mSwordSound) != SoundState::Playing) {
                     mSwordSound = mGame->GetAudioSystem()->PlaySound("sword_attack.wav", false);
+                }
 
                 Vector2 attackPosition = GetPosition();
                 float rangeX = sword->GetRangeX();
@@ -259,9 +293,9 @@ void Player::Attack(const Uint8 *keyState) {
                         if (
                             std::abs(otherPos.x - attackPosition.x) <= rangeX &&
                             std::abs(otherPos.y - attackPosition.y) <= rangeY
-                        ) {
-                            auto *enemy = dynamic_cast<Enemy*>(otherCollider->GetOwner());
-                            if (enemy) {
+                            ) {
+                            auto* enemy = dynamic_cast<Enemy*>(otherCollider->GetOwner());
+                            if (enemy && !sword->GetHasHitThisAttack()) {
                                 enemy->TakeDamage(sword->GetDamage());
                                 sword->SetHasHitThisAttack(true);
                             }
@@ -270,7 +304,27 @@ void Player::Attack(const Uint8 *keyState) {
                 }
             }
         }
+        else if (equippedItem->GetType() == Item::ItemType::RangedWeapon) {
+            MagicToken* magicToken = dynamic_cast<MagicToken*>(equippedItem);
+            if (magicToken) {
+                magicToken->Use(this);
+            }
+        }
     }
+    else if (!currentLeftMouseButtonPressed) {
+        int weaponIdx = mInventory.ReturnWeaponIndex();
+        if (weaponIdx >= 0) {
+            Item* equippedItem = mInventory.GetItemAtIndex(weaponIdx);
+            if (equippedItem && equippedItem->GetType() == Item::ItemType::Weapon) {
+                Sword* sword = dynamic_cast<Sword*>(equippedItem);
+                if (sword) {
+                    sword->SetHasHitThisAttack(false);
+                }
+            }
+        }
+    }
+
+    mPreviousMouseButtonState = mouseButtonState;
 }
 
 void Player::HandleMapBoundaries() {
@@ -317,6 +371,8 @@ void Player::OnUpdate(const float deltaTime) {
 
     HandleEnergyAndCooldowns(deltaTime);
 
+    HandleStatusEffects(deltaTime);
+
     mCurrentEnergy = std::max(mCurrentEnergy, 0.f);
     mCurrentHealth = std::max(mCurrentHealth, 0.f);
     mHUDComponent->UpdateStats(mMaxHealth, mCurrentHealth, mMaxEnergy, mCurrentEnergy);
@@ -342,6 +398,11 @@ void Player::ManageAnimations() {
 }
 
 void Player::TakeDamage(const float damage) {
+    if (mIsInvulnerable) {
+        SDL_Log("Jogador invulnerável, dano não aplicado.");
+        return;
+    }
+
     mCurrentHealth -= damage;
     mCurrentHealth = std::max(mCurrentHealth, 0.f);
     mHUDComponent->UpdateStats(mMaxHealth, mCurrentHealth, mMaxEnergy, mCurrentEnergy);
@@ -354,15 +415,15 @@ void Player::TakeDamage(const float damage) {
     }
 }
 
-void Player::OnCollision(float minOverlap, AABBColliderComponent *other) {
-    if (other->GetLayer() == ColliderLayer::MeleeWeapon) {
-        auto weapon = dynamic_cast<Sword*>(other->GetOwner());
-        if (!weapon) {
-            return;
-        }
-        weapon->Collect();
-        mInventory.AddItem(weapon);
-    } 
+void Player::OnCollision(float minOverlap, AABBColliderComponent* other) {
+    // if (other->GetLayer() == ColliderLayer::MeleeWeapon) {
+    //     auto weapon = dynamic_cast<Sword*>(other->GetOwner());
+    //     if (!weapon) {
+    //         return;
+    //     }
+    //     weapon->Collect();
+    //     mInventory.AddItem(weapon);
+    // }
 }
 
 void Player::Kill() {

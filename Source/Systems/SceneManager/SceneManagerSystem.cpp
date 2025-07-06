@@ -2,6 +2,7 @@
 #include "../../Utils/Random.h"
 #include "../../Actors/Enemies/Golem/Golem.h"
 #include "../../Actors/Enemies/Skeleton/Skeleton.h"
+#include "../../Actors/Ghost/Ghost.h"
 
 SceneManagerSystem::SceneManagerSystem(Game *game, AudioSystem *audioSystem) {
     mGame = game;
@@ -49,6 +50,13 @@ void SceneManagerSystem::ChangeScene() {
     else if (mNextScene == GameScene::Level1) {
         BuildFirstLevel();
         mGame->SetGameState(Game::GameState::PLAYING);
+    } else if (mNextScene == GameScene::Level2) {
+        BuildSecondLevel();
+        mGame->SetGameState(Game::GameState::PLAYING);
+    }
+    else if (mNextScene == GameScene::Level3) {
+        mGame->SetGameState(Game::GameState::PLAYING);
+        BuildThirdLevel();
     }
     else if (mNextScene == GameScene::Win) {
         BuildWinScreen();
@@ -175,17 +183,81 @@ void SceneManagerSystem::BuildFirstLevel() {
     mGame->SetBackgroundImage(
         "../Assets/Levels/Level-1/level_1_no_border.png",
         Vector2::Zero,
-        Vector2(TILE_SIZE * FIRST_LEVEL_WIDTH, TILE_SIZE * FIRST_LEVEL_HEIGHT)
+        Vector2(TILE_SIZE * FIRST_SECOND_LEVEL_WIDTH, TILE_SIZE * FIRST_SECOND_LEVEL_HEIGHT)
     );
 
     mGame->BuildSpatialHashing();
     mGame->BuildPlayer(Vector2(200.0f, 200.0f));
 
-    for (int i = 0; i < 1; i++) {
-        const float offsetX = Random::GetFloatRange(250, FIRST_LEVEL_WIDTH * TILE_SIZE - 250);
-        const float offsetY = Random::GetFloatRange(250, FIRST_LEVEL_HEIGHT * TILE_SIZE - 250);
-        //mGame->AddEnemy(new Golem(mGame, Vector2(offsetX, offsetY)));
+    for (int i = 0; i < 25; i++) {
+        const float offsetX = Random::GetFloatRange(250, FIRST_SECOND_LEVEL_WIDTH * TILE_SIZE - 250);
+        const float offsetY = Random::GetFloatRange(250, FIRST_SECOND_LEVEL_HEIGHT * TILE_SIZE - 250);
+        mGame->AddEnemy(new Golem(mGame, Vector2(offsetX, offsetY)));
 
+        // mGame->AddEnemy(new Skeleton(mGame, Vector2(offsetX, offsetY)));
+
+    }
+
+    new Sword(
+        mGame,
+        "Sword",
+        "../Assets/Sprites/Weapons/Sword/sword.png",
+        "../Assets/Sprites/Weapons/Sword/sword_inv.png",
+        "../Assets/Sprites/Weapons/Sword/sword.json",
+        Vector2(350.0f, 350.0f) ,
+        1
+    );
+
+
+    BuildPauseMenu();
+    mMainMusicHandle = mAudio->PlaySound("level1.wav", true);
+}
+
+void SceneManagerSystem::BuildSecondLevel() {
+    mGame->SetBackgroundImage(
+        "../Assets/Levels/Level-2/level_2.png",
+        Vector2::Zero,
+        Vector2(TILE_SIZE * FIRST_SECOND_LEVEL_WIDTH, TILE_SIZE * FIRST_SECOND_LEVEL_HEIGHT)
+    );
+
+    mGame->BuildSpatialHashing();
+    mGame->BuildPlayer(Vector2(200.0f, 200.0f));
+
+    for (int i = 0; i < 25; i++) {
+        const float offsetX = Random::GetFloatRange(250, FIRST_SECOND_LEVEL_WIDTH * TILE_SIZE - 250);
+        const float offsetY = Random::GetFloatRange(250, FIRST_SECOND_LEVEL_HEIGHT * TILE_SIZE - 250);
+        mGame->AddEnemy(new Ghost(mGame, Vector2(offsetX, offsetY)));
+    }
+
+    new Sword(
+        mGame,
+        "Sword",
+        "../Assets/Sprites/Weapons/Sword/sword.png",
+        "../Assets/Sprites/Weapons/Sword/sword_inv.png",
+        "../Assets/Sprites/Weapons/Sword/sword.json",
+        Vector2(300.0f, 300.0f) ,
+        1
+    );
+
+    BuildPauseMenu();
+
+    mMainMusicHandle = mAudio->PlaySound("level2.wav", true);
+}
+
+void SceneManagerSystem::BuildThirdLevel() {
+    mGame->SetBackgroundImage(
+        "../Assets/Levels/Level-3/level_3_short.png",
+        Vector2::Zero,
+        Vector2(TILE_SIZE * THIRD_LEVEL_WIDTH, TILE_SIZE * FIRST_SECOND_LEVEL_HEIGHT)
+    );
+
+    mGame->BuildSpatialHashing();
+
+    mGame->BuildPlayer(Vector2(200.0f, 200.0f));
+
+    for (int i = 0; i < 1; i++) {
+        const float offsetX = Random::GetFloatRange(250, THIRD_LEVEL_WIDTH * TILE_SIZE - 250);
+        const float offsetY = Random::GetFloatRange(250, THIRD_LEVEL_HEIGHT * TILE_SIZE - 250);
         mGame->AddEnemy(new Skeleton(mGame, Vector2(offsetX, offsetY)));
     }
 
@@ -200,7 +272,8 @@ void SceneManagerSystem::BuildFirstLevel() {
     );
 
     BuildPauseMenu();
-    mMainMusicHandle = mAudio->PlaySound("level1.wav", true);
+
+    mMainMusicHandle = mAudio->PlaySound("level3.wav", true);
 }
 
 void SceneManagerSystem::BuildWinScreen() {
@@ -242,8 +315,10 @@ void SceneManagerSystem::BuildLoseScreen() {
 }
 
 std::pair<int, int> SceneManagerSystem::GetLevelSize() const {
-    if (mGameScene == GameScene::Level1 || mNextScene == GameScene::Level1) {
-        return {FIRST_LEVEL_WIDTH, FIRST_LEVEL_HEIGHT};
+    if (mGameScene == GameScene::Level1 || mNextScene == GameScene::Level1 || mGameScene == GameScene::Level2 || mNextScene == GameScene::Level2) {
+        return {FIRST_SECOND_LEVEL_WIDTH, FIRST_SECOND_LEVEL_HEIGHT};
+    } else if (mGameScene == GameScene::Level3 || mNextScene == GameScene::Level3) {
+        return {THIRD_LEVEL_WIDTH, THIRD_LEVEL_HEIGHT};
     }
 
     return {0, 0};

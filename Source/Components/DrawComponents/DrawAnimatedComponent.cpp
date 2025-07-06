@@ -8,11 +8,9 @@ DrawAnimatedComponent::DrawAnimatedComponent(
     Actor *owner,
     const std::string &spriteSheetPath,
     const std::string &spriteSheetData,
-    const float rotationDegrees,
     const int drawOrder
 ) : DrawSpriteComponent(owner, spriteSheetPath, 0, 0, drawOrder) {
     LoadSpriteSheet(spriteSheetPath, spriteSheetData);
-    mRotationDegrees = rotationDegrees;
 }
 
 DrawAnimatedComponent::~DrawAnimatedComponent() {
@@ -70,7 +68,7 @@ void DrawAnimatedComponent::Draw(SDL_Renderer *renderer) {
         mSpriteSheetSurface,
         mSpriteSheetData[spriteIdx],
         &screenRegion,
-        mRotationDegrees,
+        mRotation, // Alterado de 0 para mRotation
         nullptr,
         flip
     );
@@ -80,8 +78,14 @@ void DrawAnimatedComponent::Update(const float deltaTime) {
     if (mIsPaused) return;
 
     mAnimTimer += deltaTime * mAnimFPS;
-    while (static_cast<int>(mAnimTimer) >= mAnimations[mAnimName].size())
-        mAnimTimer -= static_cast<float>(mAnimations[mAnimName].size());
+    if (static_cast<int>(mAnimTimer) >= mAnimations[mAnimName].size()) {
+        if (mLooping) {
+            mAnimTimer -= static_cast<float>(mAnimations[mAnimName].size());
+        } else {
+            mAnimTimer = static_cast<float>(mAnimations[mAnimName].size() - 1); // Stay on last frame
+            mIsPaused = true;
+        }
+    }
 }
 
 void DrawAnimatedComponent::SetAnimation(const std::string &name) {

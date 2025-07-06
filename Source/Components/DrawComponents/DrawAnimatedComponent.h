@@ -11,7 +11,6 @@ class DrawAnimatedComponent : public DrawSpriteComponent {
             Actor* owner,
             const std::string &spriteSheetPath,
             const std::string &spriteSheetData,
-            const float rotationDegrees = 0.0f,
             int drawOrder = 100
         );
         ~DrawAnimatedComponent() override;
@@ -28,6 +27,8 @@ class DrawAnimatedComponent : public DrawSpriteComponent {
         // Use to pause/unpause the animation
         void SetIsPaused(bool pause) { mIsPaused = pause; }
 
+        void SetAnimTimer(float timer) {mAnimTimer = timer;}
+
         // Add an animation of the corresponding name to the animation map
         void AddAnimation(const std::string &name, const std::vector<int> &images);
 
@@ -37,6 +38,11 @@ class DrawAnimatedComponent : public DrawSpriteComponent {
         }
 
         void SetRotation(float angle) { mRotation = angle; }
+        // Control animation looping
+        void SetLooping(bool looping) { mLooping = looping; }
+
+        // Get if animation is paused
+        bool GetIsPaused() const { return mIsPaused; }
 
     private:
         void LoadSpriteSheet(const std::string &texturePath, const std::string &dataPath);
@@ -58,7 +64,8 @@ class DrawAnimatedComponent : public DrawSpriteComponent {
 
         // Whether the animation is paused (defaults to false)
         bool mIsPaused = false;
+        // Whether the animation should loop (defaults to true)
+        bool mLooping = true;
 
         float mRotation = 0.0f;
-        float mRotationDegrees = 0.0f;
 };

@@ -11,7 +11,8 @@ Inventory::~Inventory() {
 
 int Inventory::ReturnWeaponIndex() {
     for (size_t i = 0; i < mItems.size(); ++i) {
-        if (mItems[i] != nullptr && mItems[i]->GetType() == Item::ItemType::Weapon) {
+        if (mItems[i] != nullptr && 
+            (mItems[i]->GetType() == Item::ItemType::Weapon || mItems[i]->GetType() == Item::ItemType::RangedWeapon)){
               return i;
         }
     }
@@ -19,14 +20,39 @@ int Inventory::ReturnWeaponIndex() {
     return -1;
 }
 
-void Inventory::AddItem(Item* newItem) {
+Item* Inventory::AddItem(Item* newItem) {
     if (newItem == nullptr) {
-        return;
+        return nullptr;
     }
 
-    auto it = std::find(mItems.begin(), mItems.end(), nullptr);
-    if (it != mItems.end()) {
-        *it = newItem;
+    Item* droppedItem = nullptr;
+
+    // Se o novo item for uma arma (ou arma de longo alcance)
+    if (newItem->GetType() == Item::ItemType::Weapon || newItem->GetType() == Item::ItemType::RangedWeapon) {
+        // Verifica se o slot 0 já está ocupado
+        if (mItems[0] != nullptr) {
+            droppedItem = mItems[0]; // Armazena o item atual no slot 0 para ser dropado
+            mItems[0] = nullptr;     // Limpa o slot
+        }
+        mItems[0] = newItem; // Coloca a nova arma no slot 0
+        return droppedItem;  // Retorna o item que foi dropado (pode ser nullptr)
+    } else { // Novo item NÃO é uma arma (consumível, etc.)
+        // Tenta adicionar em qualquer slot EXCETO o slot 0
+        size_t firstEmptySlot = mMaxItems; // Inicializa com um valor fora dos limites
+        for (size_t i = 1; i < mMaxItems; ++i) { // Começa a procurar a partir do índice 1
+            if (mItems[i] == nullptr) {
+                firstEmptySlot = i;
+                break;
+            }
+        }
+
+        if (firstEmptySlot < mMaxItems) {
+            mItems[firstEmptySlot] = newItem;
+            return nullptr; // Nenhum item foi dropado
+        } else {
+            // Inventário cheio para itens não-arma (slots 1 a mMaxItems-1 estão cheios)
+            return nullptr; // Nenhum item foi adicionado, nenhum item foi dropado
+        }
     }
 }
 
@@ -45,13 +71,14 @@ bool Inventory::RemoveItem(const std::string& itemName) {
     return false;
 }
 
-bool Inventory::RemoveItemAtIndex(size_t index) {
+Item* Inventory::RemoveItemAtIndex(size_t index) {
     if (index >= mItems.size() || mItems[index] == nullptr) {
-        return false;
+        return nullptr; // Índice inválido ou slot vazio, nada para remover
     }
 
-    mItems[index] = nullptr;
-    return true;
+    Item* removedItem = mItems[index]; // Armazena o item a ser retornado
+    mItems[index] = nullptr;           // Limpa o slot
+    return removedItem;                // Retorna o item removido
 }
 
 bool Inventory::InventoryFull() const {

@@ -31,6 +31,7 @@ Game::Game() {
     mAudio = nullptr;
     mEnemies.clear();
     mSceneManager = nullptr;
+    mMagicTokenInWorld = false;
 }
 
 bool Game::Initialize() {
@@ -239,7 +240,15 @@ void Game::UpdateActors(const float deltaTime) {
             }
         }
         if (defeatedEnemies == mEnemies.size()) {
-            Win();
+            SDL_Log("All enemies defeated, player wins!");
+            mGameState = GameState::PAUSED;
+            if (mSceneManager->GetCurrentScene() == SceneManagerSystem::GameScene::Level1) {
+                mSceneManager->SetGameScene(SceneManagerSystem::GameScene::Level2);
+            } else if (mSceneManager->GetCurrentScene() == SceneManagerSystem::GameScene::Level2) {
+                mSceneManager->SetGameScene(SceneManagerSystem::GameScene::Level3);
+            } else if (mSceneManager->GetCurrentScene() == SceneManagerSystem::GameScene::Level3) {
+                mSceneManager->SetGameScene(SceneManagerSystem::GameScene::Win);
+            }
         }
     }
 
@@ -420,11 +429,14 @@ std::pair<int, int> Game::GetEnemiesCount() const {
 }
 
 void Game::BuildPlayer(const Vector2 position) {
+    SDL_Log("Building player at position (%f, %f)", position.x, position.y);
     if (mPlayer) {
         mPlayer->SetPosition(position);
+        SDL_Log("Player position updated.");
     } else {
         mPlayer = new Player(this);
         mPlayer->SetPosition(position);
+        SDL_Log("Player created and positioned.");
     }
 }
 

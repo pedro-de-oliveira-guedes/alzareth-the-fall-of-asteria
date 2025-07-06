@@ -8,7 +8,8 @@ class Item : public Actor {
         enum class ItemType {
             None,
             Weapon,
-            Consumable
+            Consumable,
+            RangedWeapon
         };
 
         explicit Item(
@@ -43,5 +44,5 @@ class Item : public Actor {
         std::string mInventoryTexturePath;
         std::string mSpriteSheetData;
         int mQuantity;
-        int mMaxQuantity = 5;
+        int mMaxQuantity = 6;
 };
