@@ -14,30 +14,45 @@ find_package(SDL2_mixer REQUIRED)
 add_executable(${PROJECT_NAME}
         Source/Actors/Actor.cpp
         Source/Actors/Actor.h
-        Source/Actors/Enemy.h
-        Source/Actors/Enemy.cpp
+
         Source/Actors/Items/Item.h
         Source/Actors/Items/Item.cpp
         Source/Actors/Items/Weapons/Weapon.h
         Source/Actors/Items/Weapons/Weapons.cpp
         Source/Actors/Items/Weapons/Melee/Sword.h
         Source/Actors/Items/Weapons/Melee/Sword.cpp
+        Source/Actors/Items/Weapons/Ranged/MagicToken.h
+        Source/Actors/Items/Weapons/Ranged/MagicToken.cpp
         Source/Actors/Items/Collectible/CollectibleItem.cpp
         Source/Actors/Items/Collectible/CollectibleItem.h
+
         Source/Actors/Player/Player.cpp
         Source/Actors/Player/Player.h
-        Source/Actors/Golem/Golem.h
-        Source/Actors/Golem/Golem.cpp
-        Source/Actors/Skeleton/Skeleton.h
-        Source/Actors/Skeleton/Skeleton.cpp
+
+        Source/Actors/Alzareth/Alzareth.cpp
+        Source/Actors/Alzareth/Alzareth.h
+        Source/Actors/Alzareth/Attacks/DeathRay.cpp
+        Source/Actors/Alzareth/Attacks/DeathRay.h
+
+        Source/Actors/Enemies/Enemy.h
+        Source/Actors/Enemies/Enemy.cpp
+        Source/Actors/Enemies/Golem/Golem.h
+        Source/Actors/Enemies/Golem/Golem.cpp
+        Source/Actors/Enemies/Golem2/Golem2.h
+        Source/Actors/Enemies/Golem2/Golem2.cpp
+        Source/Actors/Enemies/Skeleton/Skeleton.h
+        Source/Actors/Enemies/Skeleton/Skeleton.cpp
+        Source/Actors/Enemies/Ghost/Ghost.h
+        Source/Actors/Enemies/Ghost/Ghost.cpp
+
         Source/Actors/Projectile/Projectile.h
         Source/Actors/Projectile/Projectile.cpp
         Source/Actors/Projectile/Fireball/Fireball.h
         Source/Actors/Projectile/Fireball/Fireball.cpp
         Source/Actors/Projectile/BallAttackToken/BallAttackToken.h
         Source/Actors/Projectile/BallAttackToken/BallAttackToken.cpp
-        Source/Actors/Items/Weapons/Ranged/MagicToken.h
-        Source/Actors/Items/Weapons/Ranged/MagicToken.cpp
+        Source/Actors/Projectile/GhostAttack/GhostAttack.h
+        Source/Actors/Projectile/GhostAttack/GhostAttack.cpp
 
         Source/Utils/CSV.h
         Source/Utils/Json.h

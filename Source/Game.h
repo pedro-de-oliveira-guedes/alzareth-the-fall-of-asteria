@@ -1,10 +1,10 @@
 #pragma once
-#include <SDL2/SDL.h>
+#include <SDL.h>
 #include <string>
 #include <unordered_map>
 #include <vector>
 
-#include "Actors/Enemy.h"
+#include "Actors/Enemies/Enemy.h"
 #include "Actors/Player/Player.h"
 #include "Systems/Audio/AudioSystem.h"
 #include "UIElements/UIScreen.h"
@@ -75,7 +75,7 @@ public:
     void BuildPlayer(Vector2 position);
     void BuildSpatialHashing();
     void AddEnemy(Enemy* enemy) { mEnemies.emplace_back(enemy); }
-    void ClearGameScene();
+    void ClearGameScene(bool shouldDeletePlayer = false);
 
     bool GetMagicTokenInWorld() const { return mMagicTokenInWorld; }
     void SetMagicTokenInWorld(bool inWorld) { mMagicTokenInWorld = inWorld; }

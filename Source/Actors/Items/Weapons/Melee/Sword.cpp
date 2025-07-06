@@ -1,4 +1,3 @@
-// Conteúdo do arquivo: Source/Actors/Items/Weapons/Melee/Sword.cpp
 #include "Sword.h"
 #include "../../../Player/Player.h"
 
@@ -14,10 +13,14 @@ const std::string NORTH_WEST = "north_west";
 const std::string NORTH = "north";
 const std::string NORTH_EAST = "north_east";
 
-Sword::Sword(Game* game, const std::string& name,
-               const std::string& texturePath, const std::string& textureInventoryPath, const std::string& spriteSheetData, const Vector2& position, int quantity)
-    : Item(game, name, ItemType::Weapon, texturePath, textureInventoryPath, spriteSheetData, quantity) {
-
+Sword::Sword(
+    Game* game,
+    const std::string& name,
+    const std::string& texturePath,
+    const std::string& textureInventoryPath,
+    const std::string& spriteSheetData,
+    const Vector2& position, int quantity
+) : Item(game, name, ItemType::Weapon, texturePath, textureInventoryPath, spriteSheetData, quantity) {
     mDamage = 30;
 
     SetPosition(position);
@@ -73,21 +76,8 @@ int Sword::GetDamage() const {
 }
 
 void Sword::OnUpdate(float deltaTime) {
-    // Remova a lógica do mTimeAttack
-    // if (mIsAttacking) {
-    //     mTimeAttack -= deltaTime;
-    //     if (mTimeAttack <= 0.0f) {
-    //         mDrawComponent->SetIsVisible(false);
-    //         mIsAttacking = false;
-    //         mHasHitThisAttack = false;
-    //         mDrawComponent->SetIsPaused(true);
-    //     }
-    // }
-    
-    // Atualiza o componente de desenho (incluindo o temporizador da animação)
     mDrawComponent->Update(deltaTime);
 
-    // Verifica se a animação terminou e pausa
     if (mIsAttacking && mDrawComponent->GetIsPaused()) {
         mDrawComponent->SetIsVisible(false);
         mIsAttacking = false;
@@ -98,14 +88,12 @@ void Sword::OnUpdate(float deltaTime) {
 void Sword::DrawForAttack() {
     mIsAttacking = true;
     mDrawComponent->SetIsVisible(true);
-    mDrawComponent->SetAnimation(ATTACK_SWORD_ANIMATION); // Define a animação de ataque
-    mDrawComponent->SetAnimFPS(35.0f); // Ajuste o FPS para uma animação mais suave ou rápida/lenta
-    mDrawComponent->SetIsPaused(false); // Garante que a animação não está pausada
-    mDrawComponent->SetAnimTimer(0.0f); // Reinicia a animação do início
-    mDrawComponent->SetLooping(false); // Define para não repetir
-    // mTimeAttack = 1.0f; // Remova esta linha
-    UpdateDirection(); // Isso ainda orientará a espada e definirá sua posição
-    // mTimeAttack já foi definido no construtor e será gerenciado por OnUpdate
+    mDrawComponent->SetAnimation(ATTACK_SWORD_ANIMATION);
+    mDrawComponent->SetAnimFPS(35.0f);
+    mDrawComponent->SetIsPaused(false);
+    mDrawComponent->SetAnimTimer(0.0f);
+    mDrawComponent->SetLooping(false);
+    UpdateDirection();
 }
 
 void Sword::Collect() {
@@ -120,10 +108,10 @@ void Sword::SetRotation(float angle) {
     }
 }
 void Sword::UpdateDirection() {
-    Vector2 direction = mMousePos - mPlayerPos;
+    const Vector2 direction = mMousePos - mPlayerPos;
     
     // get angle in radians using Atan2
-    float angle = Math::Atan2(direction.y, direction.x);
+    const float angle = Math::Atan2(direction.y, direction.x);
     
     // convert to degrees
     float degrees = Math::ToDegrees(angle);
@@ -133,7 +121,7 @@ void Sword::UpdateDirection() {
         degrees += 360.0f;
     }
     
-    std::string newDirection; // Esta variável ainda é usada para UpdateSwordPosition
+    std::string newDirection;
     
     if (degrees >= 337.5f || degrees < 22.5f) {
         newDirection = EAST;           
@@ -153,13 +141,9 @@ void Sword::UpdateDirection() {
         newDirection = NORTH_EAST;     
     }
 
-    // Define a rotação do componente de desenho para o ângulo calculado
     if (mDrawComponent) {
         mDrawComponent->SetRotation(degrees);
     }
-
-    // Remova a linha abaixo, pois a animação agora é "attack" e não depende da direção
-    // mDrawComponent->SetAnimation(newDirection); 
     
     UpdateSwordPosition(newDirection);
 }

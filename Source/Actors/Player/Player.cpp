@@ -4,7 +4,7 @@
 #include "../../Components/PhysicsComponents/RigidBodyComponent.h"
 #include "../../Game.h"
 #include "../../Systems/SceneManager/SceneManagerSystem.h"
-#include "../Enemy.h"
+#include "../Enemies/Enemy.h"
 #include "../Items/Collectible/CollectibleItem.h"
 #include "../Items/Weapons/Ranged/MagicToken.h"
 
