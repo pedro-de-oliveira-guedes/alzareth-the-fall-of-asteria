@@ -155,8 +155,6 @@ void Player::HandleItemInput(const Uint8* keyState) {
                 ) {
                 auto* item = dynamic_cast<Item*>(otherCollider->GetOwner());
                 if (item) {
-                    SDL_Log("mInvetory.GetInventorySize(): %d, mInventory.GetMaxItems(): %d",
-                        mInventory.GetInventorySize(), mInventory.GetMaxItems());
                     if (mInventory.GetInventorySize() >= mInventory.GetMaxItems()) {
                         mGame->GetAudioSystem()->PlaySound("menu_click.ogg", false);
                         return;
@@ -214,12 +212,10 @@ void Player::UseItemAtIndex(int index) {
 
 void Player::HandleStatusEffects(float deltaTime) {
     if (mIsInvulnerable) {
-        SDL_Log("Invulnerabilidade ativa por %.2f segundos", mInvulnerabilityTime);
         mInvulnerabilityTime -= deltaTime;
         if (mInvulnerabilityTime <= 0.0f) {
             mIsInvulnerable = false;
             mInvulnerabilityTime = 0.0f;
-            SDL_Log("Invulnerabilidade desativada!");
         }
     }
 }
@@ -408,7 +404,6 @@ void Player::ManageAnimations() {
 
 void Player::TakeDamage(const float damage) {
     if (mIsInvulnerable) {
-        SDL_Log("Jogador invulnerável, dano não aplicado.");
         return;
     }
 

@@ -239,7 +239,6 @@ void SceneManagerSystem::BuildSecondLevel() {
         const float offsetX = Random::GetFloatRange(450, FIRST_SECOND_LEVEL_WIDTH * TILE_SIZE - 450);
         const float offsetY = Random::GetFloatRange(450, FIRST_SECOND_LEVEL_HEIGHT * TILE_SIZE - 450);
         mGame->AddEnemy(new Golem2(mGame, Vector2(offsetX, offsetY)));
-        SDL_Log("Enemy added at position (%f, %f)", offsetX, offsetY);
     }
 
     for (int i = 0; i < 5; i++) {
