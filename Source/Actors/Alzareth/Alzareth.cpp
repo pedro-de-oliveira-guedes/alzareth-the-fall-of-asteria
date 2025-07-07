@@ -69,7 +69,8 @@ Alzareth::Alzareth(Game *game) : Actor(game) {
         this,
         "../Assets/Sprites/Alzareth/Shield/Alzareth_shield.png",
         "../Assets/Sprites/Alzareth/Shield/Alzareth_shield.json",
-        101
+        101,
+        100.f
     );
     mDrawComponentShield->AddAnimation(SHIELD_BUILDING_ANIMATION, { 0, 1, 2 });
     mDrawComponentShield->AddAnimation(SHIELD_DESTRUCTION_ANIMATION, { 3, 4, 5 });
