@@ -16,11 +16,13 @@ DeathRay::DeathRay(
     const float xOffset = std::abs(end_position.x - start_position.x);
     const float yOffset = std::abs(end_position.y - start_position.y);
     if (xOffset > yOffset) {
-        mVelocity = Vector2(1.0f, 0.f) * mSpeed;
+        const bool leftward = end_position.x < start_position.x;
+        mVelocity = Vector2(1.0f, 0.f) * mSpeed * (leftward ? -1.f : 1.f);
         mSize = Vector2(BASE_WIDTH, mGame->GetSceneManager()->GetLevelSize().second * SceneManagerSystem::TILE_SIZE);
         sprites = { 2, 3 };
     } else {
-        mVelocity = Vector2(0.f, 1.f) * mSpeed;
+        const bool upward = end_position.y < start_position.y;
+        mVelocity = Vector2(0.f, 1.f) * mSpeed * (upward ? -1.f : 1.f);
         mSize = Vector2(mGame->GetSceneManager()->GetLevelSize().first * SceneManagerSystem::TILE_SIZE, BASE_WIDTH);
         sprites = { 0, 1 };
     }
