@@ -201,7 +201,7 @@
       }
     },
     {
-      "filename": "walking-0.png",
+      "filename": "walk-0.png",
       "frame": {
         "x": 200,
         "y": 100,
@@ -226,7 +226,7 @@
       }
     },
     {
-      "filename": "walking-1.png",
+      "filename": "walk-1.png",
       "frame": {
         "x": 300,
         "y": 0,
@@ -251,7 +251,7 @@
       }
     },
     {
-      "filename": "walking-2.png",
+      "filename": "walk-2.png",
       "frame": {
         "x": 0,
         "y": 400,
@@ -276,7 +276,7 @@
       }
     },
     {
-      "filename": "walking-3.png",
+      "filename": "walk-3.png",
       "frame": {
         "x": 100,
         "y": 300,
@@ -304,7 +304,7 @@
   "meta": {
     "app": "http://free-tex-packer.com",
     "version": "0.6.7",
-    "image": "main_character.png",
+    "image": "Main_Character.png",
     "format": "RGBA8888",
     "size": {
       "w": 400,
