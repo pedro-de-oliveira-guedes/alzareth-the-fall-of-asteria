@@ -69,8 +69,8 @@ Alzareth::Alzareth(Game *game) : Actor(game) {
 
     mDrawComponentShield = new DrawAnimatedComponent(
         this,
-        "../Assets/Sprites/Alzareth/Shield/Alzareth_shield.png",
-        "../Assets/Sprites/Alzareth/Shield/Alzareth_shield.json",
+        "../Assets/Sprites/Alzareth/Shield/Alzareth_Shield.png",
+        "../Assets/Sprites/Alzareth/Shield/Alzareth_Shield.json",
         101,
         100.f
     );
