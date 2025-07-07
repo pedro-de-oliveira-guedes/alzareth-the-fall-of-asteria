@@ -7,6 +7,10 @@
 #include "../Enemies/Skeleton/Skeleton.h"
 
 Alzareth::Alzareth(Game *game) : Actor(game) {
+    const float levelWidth = static_cast<float>(mGame->GetSceneManager()->GetLevelSize().first * SceneManagerSystem::TILE_SIZE);
+    const float levelHeight = static_cast<float>(mGame->GetSceneManager()->GetLevelSize().second * SceneManagerSystem::TILE_SIZE);
+    SetPosition(Vector2(levelWidth / 2, 1.f/4 * levelHeight));
+
     mMaxHealth = 1000.0f;
     mCurrentHealth = mMaxHealth;
     mCurrentStage = BossStage::SPAWNING;
@@ -20,11 +24,11 @@ Alzareth::Alzareth(Game *game) : Actor(game) {
     mIsFalling = false;
     mFallAnimationTimer = FALL_ANIMATION_DURATION;
 
-    mIsRising = true;
+    mIsRising = false;
     mRiseAnimationTimer = RISE_ANIMATION_DURATION;
 
-    mIsVulnerable = false;
-    mVulnerabilityTimer = VULNERABILITY_DURATION;
+    mIsVulnerable = true;
+    mVulnerabilityTimer = 1.f;
 
     mIsCasting = false;
     mCastingTimer = CASTING_DURATION;
@@ -34,8 +38,8 @@ Alzareth::Alzareth(Game *game) : Actor(game) {
         this,
         0,
         0,
-        Game::SPRITE_SIZE * 2,
-        Game::SPRITE_SIZE * 2,
+        Game::SPRITE_SIZE,
+        Game::SPRITE_SIZE,
         ColliderLayer::Enemy
     );
 
@@ -51,6 +55,7 @@ Alzareth::Alzareth(Game *game) : Actor(game) {
     mDrawComponentAlzareth->AddAnimation(VULNERABLE_ANIMATION, { 9, 10 });
     mDrawComponentAlzareth->AddAnimation(RISING_ANIMATION, { 13, 12, 11 });
     mDrawComponentAlzareth->SetAnimFPS(10.f);
+    mDrawComponentAlzareth->SetAnimation(VULNERABLE_ANIMATION);
 
     mIsShieldBuilding = false;
     mShieldBuildingTimer = BUILDING_SHIELD_DURATION;
