@@ -9,9 +9,11 @@ class Alzareth : public Actor {
     public:
         enum class BossStage {
             SPAWNING,
-            ENEMIES_SUMMONING,
+            BASIC_ENEMIES_SUMMONING,
+            ADVANCED_ENEMIES_SUMMONING,
             DEATH_RAYS_SUMMONING,
-            ENEMIES_AND_DEATH_RAYS_SUMMONING,
+            ALL_ENEMIES_SUMMONING,
+            ALL_ENEMIES_AND_DEATH_RAYS_SUMMONING,
         };
 
         explicit Alzareth(Game *game);
@@ -31,18 +33,28 @@ class Alzareth : public Actor {
         void BuildStage();
         bool CurrentStageCleared() const;
 
-        bool mFirstStageBuilt;
-        void BuildFirstStage();
-        static constexpr int ENEMIES_IN_FIRST_STAGE = 15;
         std::vector<Enemy*> mSummonedEnemies;
-
-        bool mSecondStageBuilt;
-        void BuildSecondStage();
         std::vector<DeathRay*> mDeathRays;
 
+        Vector2 GenerateRandomPosition() const;
 
-        bool mFinalStageBuilt;
-        void BuildFinalStage();
+        bool mBasicEnemiesStageBuilt;
+        void BuildBasicEnemiesStage();
+        static constexpr int BASIC_ENEMIES_AMOUNT = 10;
+
+        bool mAdvancedEnemiesStageBuilt;
+        void BuildAdvancedEnemiesStage();
+        static constexpr int ADVANCED_ENEMIES_AMOUNT = 15;
+
+        bool mDeathRaysStageBuilt;
+        void BuildDeathRaysStage();
+
+        bool mAllEnemiesStageBuilt;
+        void BuildAllEnemiesStage();
+        static constexpr int ALL_ENEMIES_AMOUNT = 20;
+
+        bool mAllEnemiesAndDeathRaysStageBuilt;
+        void BuildAllEnemiesAndDeathRaysStage();
 
         bool mIsIdle;
 
@@ -54,7 +66,7 @@ class Alzareth : public Actor {
         float mRiseAnimationTimer;
         bool mIsRising;
 
-        static constexpr float VULNERABILITY_DURATION = 10.0f;
+        static constexpr float VULNERABILITY_DURATION = 4.0f;
         float mVulnerabilityTimer;
         bool mIsVulnerable;
 

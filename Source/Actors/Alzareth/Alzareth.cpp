@@ -4,7 +4,9 @@
 #include "../../Systems/SceneManager/SceneManagerSystem.h"
 #include "../../Utils/Random.h"
 #include "../Enemies/Golem/Golem.h"
+#include "../Enemies/Golem2/Golem2.h"
 #include "../Enemies/Skeleton/Skeleton.h"
+#include "../Enemies/Ghost/Ghost.h"
 
 Alzareth::Alzareth(Game *game) : Actor(game) {
     const float levelWidth = static_cast<float>(mGame->GetSceneManager()->GetLevelSize().first * SceneManagerSystem::TILE_SIZE);
@@ -15,9 +17,9 @@ Alzareth::Alzareth(Game *game) : Actor(game) {
     mCurrentHealth = mMaxHealth;
     mCurrentStage = BossStage::SPAWNING;
 
-    mFirstStageBuilt = false;
-    mSecondStageBuilt = false;
-    mFinalStageBuilt = false;
+    mBasicEnemiesStageBuilt = false;
+    mDeathRaysStageBuilt = false;
+    mAllEnemiesAndDeathRaysStageBuilt = false;
 
     mIsIdle = false;
 
@@ -45,8 +47,8 @@ Alzareth::Alzareth(Game *game) : Actor(game) {
 
     mDrawComponentAlzareth = new DrawAnimatedComponent(
         this,
-        "../Assets/Sprites/Alzareth/Wizard/alzareth.png",
-        "../Assets/Sprites/Alzareth/Wizard/alzareth.json",
+        "../Assets/Sprites/Alzareth/Wizard/Alzareth.png",
+        "../Assets/Sprites/Alzareth/Wizard/Alzareth.json",
         100
     );
     mDrawComponentAlzareth->AddAnimation(IDLE_ANIMATION, { 0, 1 });
@@ -54,7 +56,7 @@ Alzareth::Alzareth(Game *game) : Actor(game) {
     mDrawComponentAlzareth->AddAnimation(FALLING_ANIMATION, { 6, 7, 8 });
     mDrawComponentAlzareth->AddAnimation(VULNERABLE_ANIMATION, { 9, 10 });
     mDrawComponentAlzareth->AddAnimation(RISING_ANIMATION, { 13, 12, 11 });
-    mDrawComponentAlzareth->SetAnimFPS(10.f);
+    mDrawComponentAlzareth->SetAnimFPS(2.f);
     mDrawComponentAlzareth->SetAnimation(VULNERABLE_ANIMATION);
 
     mIsShieldBuilding = false;
@@ -75,7 +77,7 @@ Alzareth::Alzareth(Game *game) : Actor(game) {
     mDrawComponentShield->AddAnimation(SHIELD_BUILDING_ANIMATION, { 0, 1, 2 });
     mDrawComponentShield->AddAnimation(SHIELD_DESTRUCTION_ANIMATION, { 3, 4, 5 });
     mDrawComponentShield->AddAnimation(SHIELD_ACTIVE_ANIMATION, { 6, 7, 8, 9 });
-    mDrawComponentShield->SetAnimFPS(10.f);
+    mDrawComponentShield->SetAnimFPS(3.f);
     mDrawComponentShield->SetEnabled(false);
 }
 
@@ -88,43 +90,90 @@ void Alzareth::NextStage() {
     if (!CurrentStageCleared()) return;
 
     if (mCurrentStage == BossStage::SPAWNING) {
-        mCurrentStage = BossStage::ENEMIES_SUMMONING;
+        mCurrentStage = BossStage::BASIC_ENEMIES_SUMMONING;
     }
-    else if (mCurrentStage == BossStage::ENEMIES_SUMMONING) {
-        if (mCurrentHealth <= 2.f/3 * mMaxHealth) {
+    else if (mCurrentStage == BossStage::BASIC_ENEMIES_SUMMONING) {
+        if (mCurrentHealth <= 4.f/5 * mMaxHealth) {
+            mCurrentStage = BossStage::ADVANCED_ENEMIES_SUMMONING;
+        } else {
+            mBasicEnemiesStageBuilt = false;
+        }
+    }
+    else if (mCurrentStage == BossStage::ADVANCED_ENEMIES_SUMMONING) {
+        if (mCurrentHealth <= 3.f/5 * mMaxHealth) {
             mCurrentStage = BossStage::DEATH_RAYS_SUMMONING;
         } else {
-            mFirstStageBuilt = false;
+            mDeathRaysStageBuilt = false;
         }
     }
     else if (mCurrentStage == BossStage::DEATH_RAYS_SUMMONING) {
-        if (mCurrentHealth <= 1.f/3 * mMaxHealth) {
-            mCurrentStage = BossStage::ENEMIES_AND_DEATH_RAYS_SUMMONING;
+        if (mCurrentHealth <= 2.f/5 * mMaxHealth) {
+            mCurrentStage = BossStage::ALL_ENEMIES_SUMMONING;
         } else {
-            mSecondStageBuilt = false;
+            mAdvancedEnemiesStageBuilt = false;
+        }
+    }
+    else if (mCurrentStage == BossStage::ALL_ENEMIES_SUMMONING) {
+        if (mCurrentHealth <= 1.f/5 * mMaxHealth) {
+            mCurrentStage = BossStage::ALL_ENEMIES_AND_DEATH_RAYS_SUMMONING;
+        } else {
+            mAllEnemiesStageBuilt = false;
         }
     }
 }
 
-void Alzareth::BuildFirstStage() {
+Vector2 Alzareth::GenerateRandomPosition() const {
+    const float levelWidth = mGame->GetSceneManager()->GetLevelSize().first * SceneManagerSystem::TILE_SIZE;
+    const float levelHeight = mGame->GetSceneManager()->GetLevelSize().second * SceneManagerSystem::TILE_SIZE;
+
+    int x = Random::GetIntRange(100, levelWidth - 100);
+    int y = Random::GetIntRange(50, levelHeight - 50);
+
+    if (
+        x > GetPosition().x && x < GetPosition().x + Game::SPRITE_SIZE &&
+        y > GetPosition().y && y < GetPosition().y + Game::SPRITE_SIZE
+    ) {
+        const bool negativeX = Random::GetIntRange(0, 1) == 0;
+        x += Random::GetIntRange(Game::SPRITE_SIZE, 2*Game::SPRITE_SIZE) * (negativeX ? -1 : 1);
+
+        const bool negativeY = Random::GetIntRange(0, 1) == 0;
+        y += Random::GetIntRange(Game::SPRITE_SIZE, 2*Game::SPRITE_SIZE) * (negativeY ? -1 : 1);
+    }
+
+    return Vector2(x, y);
+}
+
+void Alzareth::BuildBasicEnemiesStage() {
     mSummonedEnemies.clear();
 
-    for (int i = 0; i < ENEMIES_IN_FIRST_STAGE; i++) {
-        const float levelWidth = mGame->GetSceneManager()->GetLevelSize().first * SceneManagerSystem::TILE_SIZE;
-        const float levelHeight = mGame->GetSceneManager()->GetLevelSize().second * SceneManagerSystem::TILE_SIZE;
+    for (int i = 0; i < BASIC_ENEMIES_AMOUNT; i++) {
+        const Vector2 position = GenerateRandomPosition();
 
-        const int x = Random::GetIntRange(100, levelWidth - 100);
-        const int y = Random::GetIntRange(50, levelHeight - 50);
         if (Random::GetIntRange(0, 100) < 60) {
-            mSummonedEnemies.push_back(new Golem(mGame, Vector2(x, y)));
+            mSummonedEnemies.push_back(new Golem(mGame, position));
         }
         else {
-            mSummonedEnemies.push_back(new Skeleton(mGame, Vector2(x, y)));
+            mSummonedEnemies.push_back(new Skeleton(mGame, position));
         }
     }
 }
 
-void Alzareth::BuildSecondStage() {
+void Alzareth::BuildAdvancedEnemiesStage() {
+    mSummonedEnemies.clear();
+
+    for (int i = 0; i < ADVANCED_ENEMIES_AMOUNT; i++) {
+        const Vector2 position = GenerateRandomPosition();
+
+        if (Random::GetIntRange(0, 100) < 60) {
+            mSummonedEnemies.push_back(new Golem2(mGame, position));
+        }
+        else {
+            mSummonedEnemies.push_back(new Ghost(mGame, position));
+        }
+    }
+}
+
+void Alzareth::BuildDeathRaysStage() {
     mDeathRays.clear();
 
     const int sceneWidth = mGame->GetSceneManager()->GetLevelSize().first * SceneManagerSystem::TILE_SIZE;
@@ -147,39 +196,64 @@ void Alzareth::BuildSecondStage() {
         mGame,
         Vector2(0.f, 50.f),
         Vector2(0.f, sceneHeight / 2.f - 75.f),
-        5.0f
+        3.0f
     ));
     mDeathRays.push_back(new DeathRay(
         mGame,
         Vector2(0.f, sceneHeight - 50.f),
         Vector2(0.f, sceneHeight / 2.f + 75.f),
-        5.0f
+        3.0f
     ));
 
     // Left death ray sweeping the screen
     mDeathRays.push_back(new DeathRay(
         mGame,
         Vector2(50.f, 0.f),
-        Vector2(sceneWidth / 2.f - 75.f, 0.f),
-        10.0f
+        Vector2(sceneWidth - 75.f, 0.f),
+        6.0f
     ));
 
     // Top death ray sweeping the screen
     mDeathRays.push_back(new DeathRay(
         mGame,
         Vector2(0.f, 50.f),
-        Vector2(0.f, sceneHeight / 2.f - 75.f),
-        15.0f
+        Vector2(0.f, sceneHeight - 75.f),
+        9.0f
     ));
 }
 
-void Alzareth::BuildFinalStage() {
-    BuildFirstStage();
-    BuildSecondStage();
+void Alzareth::BuildAllEnemiesStage() {
+    mSummonedEnemies.clear();
+
+    for (int i = 0; i < ALL_ENEMIES_AMOUNT; i++) {
+        const Vector2 position = GenerateRandomPosition();
+
+        if (Random::GetIntRange(0, 100) < 30) {
+            mSummonedEnemies.push_back(new Golem(mGame, position));
+        }
+        else if (Random::GetIntRange(0, 100) < 60) {
+            mSummonedEnemies.push_back(new Skeleton(mGame, position));
+        }
+        else if (Random::GetIntRange(0, 100) < 80) {
+            mSummonedEnemies.push_back(new Golem2(mGame, position));
+        }
+        else {
+            mSummonedEnemies.push_back(new Ghost(mGame, position));
+        }
+    }
+}
+
+void Alzareth::BuildAllEnemiesAndDeathRaysStage() {
+    BuildAllEnemiesStage();
+    BuildDeathRaysStage();
 }
 
 bool Alzareth::CurrentStageCleared() const {
-    if (mCurrentStage == BossStage::ENEMIES_SUMMONING) {
+    if (
+        mCurrentStage == BossStage::BASIC_ENEMIES_SUMMONING ||
+        mCurrentStage == BossStage::ADVANCED_ENEMIES_SUMMONING ||
+        mCurrentStage == BossStage::ALL_ENEMIES_SUMMONING
+    ) {
         for (const auto& enemy : mSummonedEnemies) {
             if (enemy->GetCurrentHealth() > 0.0f) {
                 return false;
@@ -197,7 +271,7 @@ bool Alzareth::CurrentStageCleared() const {
         return true;
     }
 
-    if (mCurrentStage == BossStage::ENEMIES_AND_DEATH_RAYS_SUMMONING) {
+    if (mCurrentStage == BossStage::ALL_ENEMIES_AND_DEATH_RAYS_SUMMONING) {
         for (const auto& enemy : mSummonedEnemies) {
             if (enemy->GetCurrentHealth() > 0.0f) {
                 return false;
@@ -215,17 +289,25 @@ bool Alzareth::CurrentStageCleared() const {
 }
 
 void Alzareth::BuildStage() {
-    if (!mFirstStageBuilt && mCurrentStage == BossStage::ENEMIES_SUMMONING) {
-        BuildFirstStage();
-        mFirstStageBuilt = true;
+    if (!mBasicEnemiesStageBuilt && mCurrentStage == BossStage::BASIC_ENEMIES_SUMMONING) {
+        BuildBasicEnemiesStage();
+        mBasicEnemiesStageBuilt = true;
     }
-    else if (!mSecondStageBuilt && mCurrentStage == BossStage::DEATH_RAYS_SUMMONING) {
-        BuildSecondStage();
-        mSecondStageBuilt = true;
+    else if (!mAdvancedEnemiesStageBuilt && mCurrentStage == BossStage::ADVANCED_ENEMIES_SUMMONING) {
+        BuildAdvancedEnemiesStage();
+        mAdvancedEnemiesStageBuilt = true;
     }
-    else if (!mFinalStageBuilt && mCurrentStage == BossStage::ENEMIES_AND_DEATH_RAYS_SUMMONING) {
-        BuildFinalStage();
-        mFinalStageBuilt = true;
+    else if (!mDeathRaysStageBuilt && mCurrentStage == BossStage::DEATH_RAYS_SUMMONING) {
+        BuildDeathRaysStage();
+        mDeathRaysStageBuilt = true;
+    }
+    else if (!mAllEnemiesStageBuilt && mCurrentStage == BossStage::ALL_ENEMIES_SUMMONING) {
+        BuildAllEnemiesStage();
+        mAllEnemiesStageBuilt = true;
+    }
+    else if (!mAllEnemiesAndDeathRaysStageBuilt && mCurrentStage == BossStage::ALL_ENEMIES_AND_DEATH_RAYS_SUMMONING) {
+        BuildAllEnemiesAndDeathRaysStage();
+        mAllEnemiesAndDeathRaysStageBuilt = true;
     }
 }
 
@@ -277,10 +359,6 @@ void Alzareth::HandleAlzarethState(const float deltaTime) {
     if (mIsFalling) {
         mFallAnimationTimer -= deltaTime;
         if (mFallAnimationTimer <= 0.0f) {
-            if (mCurrentStage == BossStage::ENEMIES_AND_DEATH_RAYS_SUMMONING) {
-                mGame->GetSceneManager()->SetGameScene(SceneManagerSystem::GameScene::Win);
-            }
-
             mIsFalling = false;
             mIsVulnerable = true;
             mVulnerabilityTimer = VULNERABILITY_DURATION;;
@@ -343,18 +421,25 @@ void Alzareth::OnTakeDamage(const float damage) {
 
     mCurrentHealth -= damage;
     mCurrentHealth = Math::Max(mCurrentHealth, 0.0f);
-    mGame->GetAudioSystem()->PlaySound("boss_damage.wav", false);
+    mGame->GetAudioSystem()->PlaySound("enemy_damage.mp3", false);
 
-    if (mCurrentStage == BossStage::ENEMIES_SUMMONING && mCurrentHealth <= 2.f/3 * mMaxHealth) {
+    if (mCurrentStage == BossStage::BASIC_ENEMIES_SUMMONING && mCurrentHealth <= 4.f/5 * mMaxHealth) {
         mVulnerabilityTimer = -1.0f;
-        mCurrentHealth = 2.f/3 * mMaxHealth;
+        mCurrentHealth = 4.f/5 * mMaxHealth;
     }
-    else if (mCurrentStage == BossStage::DEATH_RAYS_SUMMONING && mCurrentHealth <= 1.f/3 * mMaxHealth) {
+    else if (mCurrentStage == BossStage::ADVANCED_ENEMIES_SUMMONING && mCurrentHealth <= 3.f/5 * mMaxHealth) {
         mVulnerabilityTimer = -1.0f;
-        mCurrentHealth = 1.f/3 * mMaxHealth;
+        mCurrentHealth = 3.f/5 * mMaxHealth;
     }
-    else if (mCurrentStage == BossStage::ENEMIES_AND_DEATH_RAYS_SUMMONING && mCurrentHealth <= 0.0f) {
+    else if (mCurrentStage == BossStage::DEATH_RAYS_SUMMONING && mCurrentHealth <= 2.f/5 * mMaxHealth) {
         mVulnerabilityTimer = -1.0f;
-        mCurrentHealth = 0.0f;
+        mCurrentHealth = 2.f/5 * mMaxHealth;
+    }
+    else if (mCurrentStage == BossStage::ALL_ENEMIES_SUMMONING && mCurrentHealth <= 1.f/5 * mMaxHealth) {
+        mVulnerabilityTimer = -1.0f;
+        mCurrentHealth = 1.f/5 * mMaxHealth;
+    }
+    else if (mCurrentStage == BossStage::ALL_ENEMIES_AND_DEATH_RAYS_SUMMONING && mCurrentHealth <= 0.0f) {
+        mGame->GetSceneManager()->SetGameScene(SceneManagerSystem::GameScene::Win);
     }
 }
