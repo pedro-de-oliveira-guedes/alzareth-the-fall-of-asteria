@@ -20,7 +20,7 @@ class Enemy : public Actor {
 
         float GetDamageAttack() const { return mDamageAttack; }
 
-        void TakeDamage(float damage);
+        void OnTakeDamage(float damage) override;
 
     protected:
 

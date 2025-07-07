@@ -58,6 +58,8 @@ class Actor {
         // Any actor-specific collision code (overridable)
         virtual void OnCollision(float minOverlap, AABBColliderComponent *other);
         virtual void Kill();
+        void TakeDamage(float damage);
+        virtual void OnTakeDamage(float damage) {};
         bool IsAlive() const { return !mIsDead; }
 
     protected:

@@ -43,6 +43,10 @@ void Actor::OnCollision(const float minOverlap, AABBColliderComponent *other) {}
 
 void Actor::Kill() {}
 
+void Actor::TakeDamage(const float damage) {
+    OnTakeDamage(damage);
+}
+
 void Actor::ProcessInput(const Uint8 *keyState) {
     if (mState == ActorState::Active) {
         for (const auto comp : mComponents)
