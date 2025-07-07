@@ -38,6 +38,7 @@ class SceneManagerSystem {
 
         void DrawSceneTransition(SDL_Renderer *renderer) const;
         DrawAnimatedComponent* GetAlzarethShieldDrawComponent() const;
+        std::pair<int, int> GetBossHealth() const;
 
         GameScene GetCurrentScene() const { return mGameScene; }
 

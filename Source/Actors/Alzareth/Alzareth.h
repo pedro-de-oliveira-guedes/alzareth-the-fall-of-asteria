@@ -20,6 +20,8 @@ class Alzareth : public Actor {
         ~Alzareth() override;
 
         DrawAnimatedComponent* GetDrawComponentShield() const { return mDrawComponentShield; }
+        float GetMaxHealth() const { return mMaxHealth; }
+        float GetCurrentHealth() const { return mCurrentHealth; }
 
         void OnUpdate(float deltaTime) override;
         void OnTakeDamage(float damage) override;

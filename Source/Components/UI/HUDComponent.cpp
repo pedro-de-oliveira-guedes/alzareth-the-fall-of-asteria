@@ -19,17 +19,30 @@ HUDComponent::HUDComponent(
 
     mHealthColor = { 255, 0, 0, 255 }; // Red
     mEnergyColor = { 255, 255, 0, 255 }; // Yellow
+    mBossColor = { 0, 0, 255, 255 }; // Blue
 
+    const int windowWidth = mOwner->GetGame()->GetWindowWidth();
     const int windowHeight = mOwner->GetGame()->GetWindowHeight();
 
     mInventoryImage = new UIImage(
         "../Assets/Sprites/HUD/Inventory.png",
-        Vector2(100.0f, static_cast<float>(windowHeight) - 144.0f - 40.0f),
+        Vector2(static_cast<float>(windowWidth) - 300.0f - 40.0f, -40.f),
         Vector2(300.0f, 244.0f)
     );
 
     mHealthBarOutlineImage = new UIImage("../Assets/Sprites/HUD/HealthBar.png", Vector2::Zero, Vector2::Zero);
     mEnergyBarOutlineImage = new UIImage("../Assets/Sprites/HUD/EnergyBar.png", Vector2::Zero, Vector2::Zero);
+
+    mBossHealthBarOutlineImage = new UIImage(
+        "../Assets/Sprites/HUD/BossHealthBar.png",
+        Vector2((windowWidth - 900) / 2, windowHeight - 40.f - 20.f),
+        Vector2(900.0f, 40.0f)
+    );
+    mBossHealthBarStagesTicksImage = new UIImage(
+        "../Assets/Sprites/HUD/BossHealthBarTicks.png",
+        Vector2((windowWidth - 900) / 2, windowHeight - 40.f - 20.f),
+        Vector2(900.0f, 40.0f)
+    );
 }
 
 void HUDComponent::UpdateStats(
@@ -113,12 +126,33 @@ void HUDComponent::DrawInventory(SDL_Renderer* renderer) const {
     }
 }
 
+void HUDComponent::DrawBossHealthBar(SDL_Renderer *renderer) const {
+    mBossHealthBarOutlineImage->Draw(renderer, Vector2::Zero);
+
+    const auto [currentHealth, maxHealth] = mOwner->GetGame()->GetSceneManager()->GetBossHealth();
+    const float healthPercentage = static_cast<float>(currentHealth) / maxHealth;
+    const Vector2 outlinePos = mBossHealthBarOutlineImage->GetPosition();
+    const Vector2 outlineSize = mBossHealthBarOutlineImage->GetSize();
+    const SDL_Rect healthBarRect = {
+        static_cast<int>(outlinePos.x + 10.f),
+        static_cast<int>(outlinePos.y + 7.f),
+        static_cast<int>((outlineSize.x - 20.f) * healthPercentage),
+        static_cast<int>(outlineSize.y - 14.f)
+    };
+    SDL_SetRenderDrawColor(renderer, mBossColor.r, mBossColor.g, mBossColor.b, mBossColor.a);
+    SDL_RenderFillRect(renderer, &healthBarRect);
+
+    mBossHealthBarStagesTicksImage->Draw(renderer, Vector2::Zero);
+}
+
 void HUDComponent::Draw(SDL_Renderer* renderer) {
     DrawHealthBar(renderer);
     DrawEnergyBar(renderer);
 
     DrawInventoryImage(renderer);
     DrawInventory(renderer);
+
+    DrawBossHealthBar(renderer);
 }
 
 void HUDComponent::UpdateInventoryDisplay() {

@@ -362,3 +362,9 @@ DrawAnimatedComponent* SceneManagerSystem::GetAlzarethShieldDrawComponent() cons
     }
     return nullptr;
 }
+
+std::pair<int, int> SceneManagerSystem::GetBossHealth() const {
+    if (!mAlzareth) return {0, 0};
+
+    return { mAlzareth->GetCurrentHealth(), mAlzareth->GetMaxHealth() };
+}
