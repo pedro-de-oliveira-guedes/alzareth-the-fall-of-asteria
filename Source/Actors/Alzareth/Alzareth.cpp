@@ -222,7 +222,7 @@ bool Alzareth::CurrentStageCleared() const {
         return true;
     }
 
-    return false;
+    return true;
 }
 
 void Alzareth::BuildStage() {
