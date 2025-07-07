@@ -290,7 +290,7 @@ void Player::Attack(const Uint8* keyState, Uint32 mouseButtonState) {
                             std::abs(otherPos.x - attackPosition.x) <= rangeX &&
                             std::abs(otherPos.y - attackPosition.y) <= rangeY
                             ) {
-                            auto* enemy = dynamic_cast<Enemy*>(otherCollider->GetOwner());
+                            auto* enemy = otherCollider->GetOwner();
                             if (enemy && !sword->GetHasHitThisAttack()) {
                                 enemy->TakeDamage(sword->GetDamage());
                                 sword->SetHasHitThisAttack(true);
