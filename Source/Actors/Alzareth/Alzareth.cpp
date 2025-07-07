@@ -253,6 +253,7 @@ void Alzareth::HandleAlzarethState(const float deltaTime) {
             mCastingTimer = CASTING_DURATION;
         } else {
             mDrawComponentAlzareth->SetAnimation(RISING_ANIMATION);
+            mAABBColliderComponent->SetEnabled(true);
         }
     }
 
@@ -307,6 +308,7 @@ void Alzareth::HandleAlzarethState(const float deltaTime) {
             mRiseAnimationTimer = RISE_ANIMATION_DURATION;
         } else {
             mDrawComponentAlzareth->SetAnimation(VULNERABLE_ANIMATION);
+            mAABBColliderComponent->SetEnabled(false);
         }
     }
 }
@@ -320,12 +322,14 @@ void Alzareth::HandleShieldState(const float deltaTime) {
             mIsShieldActive = true;
         } else {
             mDrawComponentShield->SetAnimation(SHIELD_BUILDING_ANIMATION);
+            mDrawComponentShield->SetLooping(false);
         }
     }
 
     if (mIsShieldActive) {
         mDrawComponentShield->SetIsPaused(false);
         mDrawComponentShield->SetAnimation(SHIELD_ACTIVE_ANIMATION);
+        mDrawComponentShield->SetLooping(true);
     }
 
     if (mIsShieldDestroying) {
@@ -337,10 +341,10 @@ void Alzareth::HandleShieldState(const float deltaTime) {
             mDrawComponentShield->SetIsPaused(true);
         } else {
             mDrawComponentShield->SetAnimation(SHIELD_DESTRUCTION_ANIMATION);
+            mDrawComponentShield->SetLooping(false);
         }
     }
 }
-
 
 void Alzareth::OnUpdate(const float deltaTime) {
     HandleAlzarethState(deltaTime);
@@ -368,4 +372,3 @@ void Alzareth::OnTakeDamage(const float damage) {
         mCurrentHealth = 0.0f;
     }
 }
-
