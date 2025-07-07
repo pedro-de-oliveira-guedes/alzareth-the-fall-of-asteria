@@ -5,20 +5,20 @@
       "frame": {
         "x": 0,
         "y": 0,
-        "w": 1100,
-        "h": 1100
+        "w": 175,
+        "h": 175
       },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 1100,
-        "h": 1100
+        "w": 175,
+        "h": 175
       },
       "sourceSize": {
-        "w": 1100,
-        "h": 1100
+        "w": 175,
+        "h": 175
       },
       "pivot": {
         "x": 0.5,
@@ -29,21 +29,21 @@
       "filename": "building-shield-1.png",
       "frame": {
         "x": 0,
-        "y": 1100,
-        "w": 1100,
-        "h": 1100
+        "y": 175,
+        "w": 175,
+        "h": 175
       },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 1100,
-        "h": 1100
+        "w": 175,
+        "h": 175
       },
       "sourceSize": {
-        "w": 1100,
-        "h": 1100
+        "w": 175,
+        "h": 175
       },
       "pivot": {
         "x": 0.5,
@@ -53,22 +53,22 @@
     {
       "filename": "building-shield-2.png",
       "frame": {
-        "x": 1100,
+        "x": 175,
         "y": 0,
-        "w": 1100,
-        "h": 1100
+        "w": 175,
+        "h": 175
       },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 1100,
-        "h": 1100
+        "w": 175,
+        "h": 175
       },
       "sourceSize": {
-        "w": 1100,
-        "h": 1100
+        "w": 175,
+        "h": 175
       },
       "pivot": {
         "x": 0.5,
@@ -79,21 +79,21 @@
       "filename": "destroying-shield-0.png",
       "frame": {
         "x": 0,
-        "y": 2200,
-        "w": 1100,
-        "h": 1100
+        "y": 350,
+        "w": 175,
+        "h": 175
       },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 1100,
-        "h": 1100
+        "w": 175,
+        "h": 175
       },
       "sourceSize": {
-        "w": 1100,
-        "h": 1100
+        "w": 175,
+        "h": 175
       },
       "pivot": {
         "x": 0.5,
@@ -103,22 +103,22 @@
     {
       "filename": "destroying-shield-1.png",
       "frame": {
-        "x": 1100,
-        "y": 1100,
-        "w": 1100,
-        "h": 1100
+        "x": 175,
+        "y": 175,
+        "w": 175,
+        "h": 175
       },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 1100,
-        "h": 1100
+        "w": 175,
+        "h": 175
       },
       "sourceSize": {
-        "w": 1100,
-        "h": 1100
+        "w": 175,
+        "h": 175
       },
       "pivot": {
         "x": 0.5,
@@ -128,22 +128,22 @@
     {
       "filename": "destroying-shield-2.png",
       "frame": {
-        "x": 2200,
+        "x": 350,
         "y": 0,
-        "w": 1100,
-        "h": 1100
+        "w": 175,
+        "h": 175
       },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 1100,
-        "h": 1100
+        "w": 175,
+        "h": 175
       },
       "sourceSize": {
-        "w": 1100,
-        "h": 1100
+        "w": 175,
+        "h": 175
       },
       "pivot": {
         "x": 0.5,
@@ -154,21 +154,21 @@
       "filename": "shield-0.png",
       "frame": {
         "x": 0,
-        "y": 3300,
-        "w": 1100,
-        "h": 1100
+        "y": 525,
+        "w": 175,
+        "h": 175
       },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 1100,
-        "h": 1100
+        "w": 175,
+        "h": 175
       },
       "sourceSize": {
-        "w": 1100,
-        "h": 1100
+        "w": 175,
+        "h": 175
       },
       "pivot": {
         "x": 0.5,
@@ -178,22 +178,22 @@
     {
       "filename": "shield-1.png",
       "frame": {
-        "x": 1100,
-        "y": 2200,
-        "w": 1100,
-        "h": 1100
+        "x": 175,
+        "y": 350,
+        "w": 175,
+        "h": 175
       },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 1100,
-        "h": 1100
+        "w": 175,
+        "h": 175
       },
       "sourceSize": {
-        "w": 1100,
-        "h": 1100
+        "w": 175,
+        "h": 175
       },
       "pivot": {
         "x": 0.5,
@@ -203,22 +203,22 @@
     {
       "filename": "shield-2.png",
       "frame": {
-        "x": 2200,
-        "y": 1100,
-        "w": 1100,
-        "h": 1100
+        "x": 350,
+        "y": 175,
+        "w": 175,
+        "h": 175
       },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 1100,
-        "h": 1100
+        "w": 175,
+        "h": 175
       },
       "sourceSize": {
-        "w": 1100,
-        "h": 1100
+        "w": 175,
+        "h": 175
       },
       "pivot": {
         "x": 0.5,
@@ -228,22 +228,22 @@
     {
       "filename": "shield-3.png",
       "frame": {
-        "x": 3300,
+        "x": 525,
         "y": 0,
-        "w": 1100,
-        "h": 1100
+        "w": 175,
+        "h": 175
       },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 1100,
-        "h": 1100
+        "w": 175,
+        "h": 175
       },
       "sourceSize": {
-        "w": 1100,
-        "h": 1100
+        "w": 175,
+        "h": 175
       },
       "pivot": {
         "x": 0.5,
@@ -257,8 +257,8 @@
     "image": "Alzareth_Shield.png",
     "format": "RGBA8888",
     "size": {
-      "w": 4400,
-      "h": 4400
+      "w": 700,
+      "h": 700
     },
     "scale": 1
   }

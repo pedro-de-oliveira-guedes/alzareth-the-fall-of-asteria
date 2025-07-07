@@ -5,20 +5,20 @@
       "frame": {
         "x": 0,
         "y": 0,
-        "w": 779,
-        "h": 996
+        "w": 117,
+        "h": 150
       },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 779,
-        "h": 996
+        "w": 117,
+        "h": 150
       },
       "sourceSize": {
-        "w": 779,
-        "h": 996
+        "w": 117,
+        "h": 150
       },
       "pivot": {
         "x": 0.5,
@@ -29,21 +29,21 @@
       "filename": "breathing-1.png",
       "frame": {
         "x": 0,
-        "y": 996,
-        "w": 779,
-        "h": 996
+        "y": 150,
+        "w": 117,
+        "h": 150
       },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 779,
-        "h": 996
+        "w": 117,
+        "h": 150
       },
       "sourceSize": {
-        "w": 779,
-        "h": 996
+        "w": 117,
+        "h": 150
       },
       "pivot": {
         "x": 0.5,
@@ -53,22 +53,22 @@
     {
       "filename": "casting-0.png",
       "frame": {
-        "x": 779,
+        "x": 117,
         "y": 0,
-        "w": 779,
-        "h": 996
+        "w": 117,
+        "h": 150
       },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 779,
-        "h": 996
+        "w": 117,
+        "h": 150
       },
       "sourceSize": {
-        "w": 779,
-        "h": 996
+        "w": 117,
+        "h": 150
       },
       "pivot": {
         "x": 0.5,
@@ -79,21 +79,21 @@
       "filename": "casting-1.png",
       "frame": {
         "x": 0,
-        "y": 1992,
-        "w": 779,
-        "h": 996
+        "y": 300,
+        "w": 117,
+        "h": 150
       },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 779,
-        "h": 996
+        "w": 117,
+        "h": 150
       },
       "sourceSize": {
-        "w": 779,
-        "h": 996
+        "w": 117,
+        "h": 150
       },
       "pivot": {
         "x": 0.5,
@@ -103,22 +103,22 @@
     {
       "filename": "casting-2.png",
       "frame": {
-        "x": 779,
-        "y": 996,
-        "w": 779,
-        "h": 996
+        "x": 117,
+        "y": 150,
+        "w": 117,
+        "h": 150
       },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 779,
-        "h": 996
+        "w": 117,
+        "h": 150
       },
       "sourceSize": {
-        "w": 779,
-        "h": 996
+        "w": 117,
+        "h": 150
       },
       "pivot": {
         "x": 0.5,
@@ -128,22 +128,22 @@
     {
       "filename": "casting-3.png",
       "frame": {
-        "x": 1558,
+        "x": 234,
         "y": 0,
-        "w": 779,
-        "h": 996
+        "w": 117,
+        "h": 150
       },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 779,
-        "h": 996
+        "w": 117,
+        "h": 150
       },
       "sourceSize": {
-        "w": 779,
-        "h": 996
+        "w": 117,
+        "h": 150
       },
       "pivot": {
         "x": 0.5,
@@ -154,21 +154,21 @@
       "filename": "falling-0.png",
       "frame": {
         "x": 0,
-        "y": 2988,
-        "w": 779,
-        "h": 996
+        "y": 450,
+        "w": 117,
+        "h": 150
       },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 779,
-        "h": 996
+        "w": 117,
+        "h": 150
       },
       "sourceSize": {
-        "w": 779,
-        "h": 996
+        "w": 117,
+        "h": 150
       },
       "pivot": {
         "x": 0.5,
@@ -178,22 +178,22 @@
     {
       "filename": "falling-1.png",
       "frame": {
-        "x": 779,
-        "y": 1992,
-        "w": 779,
-        "h": 996
+        "x": 117,
+        "y": 300,
+        "w": 117,
+        "h": 150
       },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 779,
-        "h": 996
+        "w": 117,
+        "h": 150
       },
       "sourceSize": {
-        "w": 779,
-        "h": 996
+        "w": 117,
+        "h": 150
       },
       "pivot": {
         "x": 0.5,
@@ -203,22 +203,22 @@
     {
       "filename": "falling-2.png",
       "frame": {
-        "x": 1558,
-        "y": 996,
-        "w": 779,
-        "h": 996
+        "x": 234,
+        "y": 150,
+        "w": 117,
+        "h": 150
       },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 779,
-        "h": 996
+        "w": 117,
+        "h": 150
       },
       "sourceSize": {
-        "w": 779,
-        "h": 996
+        "w": 117,
+        "h": 150
       },
       "pivot": {
         "x": 0.5,
@@ -228,22 +228,22 @@
     {
       "filename": "vulnerable-0.png",
       "frame": {
-        "x": 2337,
+        "x": 351,
         "y": 0,
-        "w": 779,
-        "h": 996
+        "w": 117,
+        "h": 150
       },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 779,
-        "h": 996
+        "w": 117,
+        "h": 150
       },
       "sourceSize": {
-        "w": 779,
-        "h": 996
+        "w": 117,
+        "h": 150
       },
       "pivot": {
         "x": 0.5,
@@ -254,21 +254,21 @@
       "filename": "vulnerable-1.png",
       "frame": {
         "x": 0,
-        "y": 3984,
-        "w": 779,
-        "h": 996
+        "y": 600,
+        "w": 117,
+        "h": 150
       },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 779,
-        "h": 996
+        "w": 117,
+        "h": 150
       },
       "sourceSize": {
-        "w": 779,
-        "h": 996
+        "w": 117,
+        "h": 150
       },
       "pivot": {
         "x": 0.5,
@@ -279,21 +279,21 @@
       "filename": "rising-2.png",
       "frame": {
         "x": 0,
-        "y": 2988,
-        "w": 779,
-        "h": 996
+        "y": 450,
+        "w": 117,
+        "h": 150
       },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 779,
-        "h": 996
+        "w": 117,
+        "h": 150
       },
       "sourceSize": {
-        "w": 779,
-        "h": 996
+        "w": 117,
+        "h": 150
       },
       "pivot": {
         "x": 0.5,
@@ -303,22 +303,22 @@
     {
       "filename": "rising-1.png",
       "frame": {
-        "x": 779,
-        "y": 1992,
-        "w": 779,
-        "h": 996
+        "x": 117,
+        "y": 300,
+        "w": 117,
+        "h": 150
       },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 779,
-        "h": 996
+        "w": 117,
+        "h": 150
       },
       "sourceSize": {
-        "w": 779,
-        "h": 996
+        "w": 117,
+        "h": 150
       },
       "pivot": {
         "x": 0.5,
@@ -328,22 +328,22 @@
     {
       "filename": "rising-0.png",
       "frame": {
-        "x": 1558,
-        "y": 996,
-        "w": 779,
-        "h": 996
+        "x": 234,
+        "y": 150,
+        "w": 117,
+        "h": 150
       },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 779,
-        "h": 996
+        "w": 117,
+        "h": 150
       },
       "sourceSize": {
-        "w": 779,
-        "h": 996
+        "w": 117,
+        "h": 150
       },
       "pivot": {
         "x": 0.5,
@@ -357,8 +357,8 @@
     "image": "Alzareth.png",
     "format": "RGBA8888",
     "size": {
-      "w": 3116,
-      "h": 4980
+      "w": 468,
+      "h": 750
     },
     "scale": 1
   }
