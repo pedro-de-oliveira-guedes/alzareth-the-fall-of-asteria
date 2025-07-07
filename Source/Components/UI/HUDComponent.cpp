@@ -120,7 +120,8 @@ void HUDComponent::DrawEnemiesCount(SDL_Renderer* renderer) const {
     const int screenWidth = mOwner->GetGame()->GetWindowWidth();
 
     mEnemiesBoardImage->SetPosition(Vector2(screenWidth - 180.0f, 20.0f));
-    mEnemiesBoardImage->SetSize(Vector2(175.0f, 60.0f));
+    // Alterado para diminuir o tamanho da plaquinha
+    mEnemiesBoardImage->SetSize(Vector2(120.0f, 50.0f)); // Valores reduzidos de 175.0f, 60.0f
     mEnemiesBoardImage->Draw(renderer, Vector2::Zero);
 
     mEnemiesCountImage->SetPosition(Vector2(screenWidth - 165.0f, 30.0f));
@@ -131,11 +132,7 @@ void HUDComponent::DrawEnemiesCount(SDL_Renderer* renderer) const {
     UIFont *font = mOwner->GetGame()->LoadFont("../Assets/Fonts/PixelifySans.ttf");
 
     std::string text;
-    if (std::to_string(defeated).size() == std::to_string(total).size()) {
-        text = std::to_string(defeated) + " / " + std::to_string(total);
-    } else {
-        text = "0" + std::to_string(defeated) + " / " + std::to_string(total);
-    }
+    text = std::to_string(total);
 
     const auto enemiesCountText = new UIText(
         text,
