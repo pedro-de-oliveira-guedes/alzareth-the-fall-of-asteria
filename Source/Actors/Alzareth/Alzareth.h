@@ -18,7 +18,7 @@ class Alzareth : public Actor {
         ~Alzareth() override;
 
         void OnUpdate(float deltaTime) override;
-        void TakeDamage(float damage);
+        void OnTakeDamage(float damage) override;
 
     private:
         float mMaxHealth;
