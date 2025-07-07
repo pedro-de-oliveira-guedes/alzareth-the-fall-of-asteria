@@ -60,8 +60,8 @@ class SceneManagerSystem {
 
         static constexpr int FIRST_SECOND_LEVEL_WIDTH = 115;
         static constexpr int FIRST_SECOND_LEVEL_HEIGHT = 32;
-        static constexpr int THIRD_LEVEL_WIDTH = 41;
-        static constexpr int THIRD_LEVEL_HEIGHT = 26;
+        static constexpr int THIRD_LEVEL_WIDTH = 40;
+        static constexpr int THIRD_LEVEL_HEIGHT = 22;
         void BuildFirstLevel();
         void BuildSecondLevel();
         void BuildThirdLevel();
