@@ -220,11 +220,16 @@ void Game::UpdateCamera() {
     cameraX = std::max({ cameraX, 0 }); // Locks camera to the left of the screen
     cameraX = std::min(cameraX, level_width * SceneManagerSystem::TILE_SIZE - mWindowWidth); // Locks camera to the right of the screen
 
+    int cameraYOffset = 0;
+    if (mSceneManager->GetCurrentScene() != SceneManagerSystem::GameScene::Level3) {
+        cameraYOffset = (mWindowHeight / 6); // Leaves some space above and below the screen for the HUD
+    }
+
     int cameraY = mPlayer->GetPosition().y - (mWindowHeight / 2);
-    cameraY = std::max(cameraY, -(mWindowHeight / 6)); // Leaves some space above the screen for the HUD
+    cameraY = std::max(cameraY, -cameraYOffset);
     cameraY = std::min(
         cameraY,
-        (level_height * SceneManagerSystem::TILE_SIZE - mWindowHeight) + (mWindowHeight / 6) // Leaves some space below the screen for the HUD
+        (level_height * SceneManagerSystem::TILE_SIZE - mWindowHeight) + cameraYOffset
     );
 
     SetCameraPos(Vector2(cameraX, cameraY));
