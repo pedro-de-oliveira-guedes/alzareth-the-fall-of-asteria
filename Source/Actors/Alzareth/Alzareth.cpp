@@ -76,7 +76,7 @@ Alzareth::Alzareth(Game *game) : Actor(game) {
     mDrawComponentShield->AddAnimation(SHIELD_DESTRUCTION_ANIMATION, { 3, 4, 5 });
     mDrawComponentShield->AddAnimation(SHIELD_ACTIVE_ANIMATION, { 6, 7, 8, 9 });
     mDrawComponentShield->SetAnimFPS(10.f);
-    mDrawComponentShield->SetIsPaused(true);
+    mDrawComponentShield->SetEnabled(false);
 }
 
 Alzareth::~Alzareth() {
@@ -316,33 +316,30 @@ void Alzareth::HandleAlzarethState(const float deltaTime) {
 
 void Alzareth::HandleShieldState(const float deltaTime) {
     if (mIsShieldBuilding) {
-        mDrawComponentShield->SetIsPaused(false);
+        mDrawComponentShield->SetEnabled(true);
         mShieldBuildingTimer -= deltaTime;
         if (mShieldBuildingTimer <= 0.0f) {
             mIsShieldBuilding = false;
             mIsShieldActive = true;
         } else {
             mDrawComponentShield->SetAnimation(SHIELD_BUILDING_ANIMATION);
-            mDrawComponentShield->SetLooping(false);
         }
     }
 
     if (mIsShieldActive) {
-        mDrawComponentShield->SetIsPaused(false);
+        mDrawComponentShield->SetEnabled(true);
         mDrawComponentShield->SetAnimation(SHIELD_ACTIVE_ANIMATION);
-        mDrawComponentShield->SetLooping(true);
     }
 
     if (mIsShieldDestroying) {
-        mDrawComponentShield->SetIsPaused(false);
+        mDrawComponentShield->SetEnabled(true);
         mShieldDestructionTimer -= deltaTime;
         if (mShieldDestructionTimer <= 0.0f) {
             mIsShieldDestroying = false;
             mIsShieldActive = false;
-            mDrawComponentShield->SetIsPaused(true);
+            mDrawComponentShield->SetEnabled(false);
         } else {
             mDrawComponentShield->SetAnimation(SHIELD_DESTRUCTION_ANIMATION);
-            mDrawComponentShield->SetLooping(false);
         }
     }
 }
