@@ -339,12 +339,13 @@ void Game::GenerateOutput() const {
     SDL_RenderPresent(mRenderer);
 }
 
-SDL_Texture* Game::LoadTexture(const std::string& texturePath) {
+SDL_Texture* Game::LoadTexture(const std::string& texturePath, const float alphaChannel) const {
     SDL_Surface* surface = IMG_Load(texturePath.c_str());
     if (!surface) {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, SDL_GetError());
         return nullptr;
     }
+    SDL_SetSurfaceAlphaMod(surface, alphaChannel);
 
     SDL_Texture* texture = SDL_CreateTextureFromSurface(mRenderer, surface);
     SDL_FreeSurface(surface);

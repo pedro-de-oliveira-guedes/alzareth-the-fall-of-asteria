@@ -11,7 +11,8 @@ class DrawAnimatedComponent : public DrawSpriteComponent {
             Actor* owner,
             const std::string &spriteSheetPath,
             const std::string &spriteSheetData,
-            int drawOrder = 100
+            int drawOrder = 100,
+            float alphaChannel = 255.0f
         );
         ~DrawAnimatedComponent() override;
 
@@ -45,7 +46,7 @@ class DrawAnimatedComponent : public DrawSpriteComponent {
         bool GetIsPaused() const { return mIsPaused; }
 
     private:
-        void LoadSpriteSheet(const std::string &texturePath, const std::string &dataPath);
+        void LoadSpriteSheet(const std::string &texturePath, const std::string &dataPath, float alphaChannel = 255.0f);
 
         // Vector of sprites
         std::vector<SDL_Rect*> mSpriteSheetData;

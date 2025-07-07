@@ -61,8 +61,8 @@ public:
     const std::vector<class UIScreen*>& GetUIStack() { return mUIStack; }
 
     // Loading functions
-    class UIFont* LoadFont(const std::string& fileName);
-    SDL_Texture* LoadTexture(const std::string& texturePath);
+    UIFont* LoadFont(const std::string& fileName);
+    SDL_Texture* LoadTexture(const std::string& texturePath, float alphaChannel = 255.f) const;
 
     // Getters
     Player* GetPlayer() { return mPlayer; }
