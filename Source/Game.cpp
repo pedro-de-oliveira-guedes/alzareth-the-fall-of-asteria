@@ -309,7 +309,13 @@ void Game::GenerateOutput() const {
     if (mSpatialHashing && mGameState != GameState::QUITTING) {
         std::vector<DrawComponent*> drawComponents;
 
-        const std::vector<Actor*> actorsOnCamera = mSpatialHashing->QueryOnCamera(mCameraPos, mWindowWidth, mWindowHeight);
+        std::vector<Actor*> actorsOnCamera;
+        if (mSceneManager->GetCurrentScene() != SceneManagerSystem::GameScene::Level3) {
+            actorsOnCamera = mSpatialHashing->QueryOnCamera(mCameraPos, mWindowWidth, mWindowHeight);
+        } else {
+            actorsOnCamera = mSpatialHashing->Query(mPlayer->GetPosition(), 1000);
+        }
+
         for (const auto actor : actorsOnCamera) {
             const auto drawable = actor->GetComponent<DrawComponent>();
             if (drawable && drawable->IsVisible()) {
