@@ -45,7 +45,7 @@ class SceneManagerSystem {
         Game *mGame;
         AudioSystem *mAudio;
 
-        UIScreen *mPauseMenu;
+        UIScreen *mPauseMenu = nullptr;
         SoundHandle mMainMusicHandle;
 
         SceneManagerState mSceneManagerState;
@@ -58,12 +58,12 @@ class SceneManagerSystem {
 
         void BuildPauseMenu();
 
-        static constexpr int FIRST_SECOND_LEVEL_WIDTH = 115;
-        static constexpr int FIRST_SECOND_LEVEL_HEIGHT = 32;
+        // static constexpr int FIRST_SECOND_LEVEL_WIDTH = 115;
+        // static constexpr int FIRST_SECOND_LEVEL_HEIGHT = 32;
         static constexpr int THIRD_LEVEL_WIDTH = 40;
         static constexpr int THIRD_LEVEL_HEIGHT = 22;
-        void BuildFirstLevel();
-        void BuildSecondLevel();
+        // void BuildFirstLevel();
+        // void BuildSecondLevel();
         void BuildThirdLevel();
         Alzareth *mAlzareth = nullptr;
 
