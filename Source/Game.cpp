@@ -5,9 +5,9 @@
 #include "UIElements/UIScreen.h"
 #include "Systems/SceneManager/SceneManagerSystem.h"
 
-#include <SDL2/SDL_image.h>
-#include <SDL2/SDL_mixer.h>
-#include <SDL2/SDL_ttf.h>
+#include <SDL_image.h>
+#include <SDL_mixer.h>
+#include <SDL_ttf.h>
 #include <algorithm>
 #include <fstream>
 #include <iostream>
@@ -129,14 +129,14 @@ void Game::HandleKeyPressActors(const int key, const bool isPressed) const {
 }
 
 void Game::ProcessInputActors() {
-    if(mGameState == GameState::PLAYING) {
+    if (mGameState == GameState::PLAYING) {
         // Get actors on camera
-        const std::vector<Actor*> actorsOnCamera = mSpatialHashing->QueryOnCamera(mCameraPos,mWindowWidth,mWindowHeight);
+        const std::vector<Actor*> actorsOnCamera = mSpatialHashing->QueryOnCamera(mCameraPos, mWindowWidth, mWindowHeight);
 
         const Uint8* state = SDL_GetKeyboardState(nullptr);
 
         bool isMarioOnCamera = false;
-        for (const auto actor: actorsOnCamera) {
+        for (const auto actor : actorsOnCamera) {
             actor->ProcessInput(state);
 
             if (actor == mPlayer) {
@@ -155,21 +155,21 @@ void Game::ProcessInput() {
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
         switch (event.type) {
-            case SDL_QUIT:
-                Quit();
-                break;
-            case SDL_KEYDOWN:
-                if (!mUIStack.empty()) {
-                    mUIStack.back()->HandleKeyPress(event.key.keysym.sym);
-                }
+        case SDL_QUIT:
+            Quit();
+            break;
+        case SDL_KEYDOWN:
+            if (!mUIStack.empty()) {
+                mUIStack.back()->HandleKeyPress(event.key.keysym.sym);
+            }
 
-                HandleKeyPressActors(event.key.keysym.sym, event.key.repeat == 0);
+            HandleKeyPressActors(event.key.keysym.sym, event.key.repeat == 0);
 
-                if (event.key.keysym.sym == SDLK_ESCAPE) {
-                    mSceneManager->TogglePause();
-                }
-                break;
-            default: ;
+            if (event.key.keysym.sym == SDLK_ESCAPE) {
+                mSceneManager->TogglePause();
+            }
+            break;
+        default:;
         }
     }
 
@@ -191,7 +191,7 @@ void Game::UpdateGame() {
 
     mAudio->Update(deltaTime);
 
-    for (const auto ui: mUIStack) {
+    for (const auto ui : mUIStack) {
         if (ui->GetState() == UIScreen::UIState::Active) {
             ui->Update(deltaTime);
         }
@@ -200,9 +200,10 @@ void Game::UpdateGame() {
     auto iter = mUIStack.begin();
     while (iter != mUIStack.end()) {
         if ((*iter)->GetState() == UIScreen::UIState::Closing) {
-            delete *iter;
+            delete* iter;
             iter = mUIStack.erase(iter);
-        } else {
+        }
+        else {
             ++iter;
         }
     }
@@ -214,7 +215,7 @@ void Game::UpdateGame() {
 void Game::UpdateCamera() {
     if (!mPlayer || mGameState != GameState::PLAYING) return;
 
-    const auto[level_width, level_height] = mSceneManager->GetLevelSize();
+    const auto [level_width, level_height] = mSceneManager->GetLevelSize();
 
     int cameraX = mPlayer->GetPosition().x - (mWindowWidth / 2);
     cameraX = std::max({ cameraX, 0 }); // Locks camera to the left of the screen
@@ -231,22 +232,16 @@ void Game::UpdateCamera() {
 }
 
 void Game::UpdateActors(const float deltaTime) {
-    if (mEnemies.size() > 0) {
-        int defeatedEnemies = 0;
-        for (const auto enemy : mEnemies) {
-            if (!enemy->IsAlive()) {
-                defeatedEnemies++;
-            }
+    if (mEnemies.size() == 0) {
+        mGameState = GameState::PAUSED;
+        if (mSceneManager->GetCurrentScene() == SceneManagerSystem::GameScene::Level1) {
+            mSceneManager->SetGameScene(SceneManagerSystem::GameScene::Level2);
         }
-        if (defeatedEnemies == mEnemies.size()) {
-            mGameState = GameState::PAUSED;
-            if (mSceneManager->GetCurrentScene() == SceneManagerSystem::GameScene::Level1) {
-                mSceneManager->SetGameScene(SceneManagerSystem::GameScene::Level2);
-            } else if (mSceneManager->GetCurrentScene() == SceneManagerSystem::GameScene::Level2) {
-                mSceneManager->SetGameScene(SceneManagerSystem::GameScene::Level3);
-            } else if (mSceneManager->GetCurrentScene() == SceneManagerSystem::GameScene::Level3) {
-                mSceneManager->SetGameScene(SceneManagerSystem::GameScene::Win);
-            }
+        else if (mSceneManager->GetCurrentScene() == SceneManagerSystem::GameScene::Level2) {
+            mSceneManager->SetGameScene(SceneManagerSystem::GameScene::Level3);
+        }
+        else if (mSceneManager->GetCurrentScene() == SceneManagerSystem::GameScene::Level3) {
+            mSceneManager->SetGameScene(SceneManagerSystem::GameScene::Win);
         }
     }
 
@@ -280,7 +275,15 @@ void Game::AddActor(Actor* actor) {
 }
 
 void Game::RemoveActor(Actor* actor) {
+    // Remove do spatial hashing
     mSpatialHashing->Remove(actor);
+
+    // Se o ator for um Inimigo, remova-o do vetor mEnemies
+    Enemy* enemy_ptr = dynamic_cast<Enemy*>(actor);
+    if (enemy_ptr) {
+        auto it = std::remove(mEnemies.begin(), mEnemies.end(), enemy_ptr);
+        mEnemies.erase(it, mEnemies.end());
+    }
 }
 
 void Game::ReinsertActor(Actor* actor) {
@@ -353,7 +356,7 @@ UIFont* Game::LoadFont(const std::string& fileName) {
         return mFonts[fileName];
     }
 
-    auto *font = new UIFont(mRenderer);
+    auto* font = new UIFont(mRenderer);
     if (font->Load(fileName)) {
         mFonts[fileName] = font;
         return font;
@@ -378,14 +381,14 @@ void Game::ClearGameScene(const bool shouldDeletePlayer) {
     if (mSpatialHashing) {
         const std::vector<Actor*> allActors = mSpatialHashing->Query(mPlayer->GetPosition(), 1000);
         const std::vector<Item*> inventoryItems = mPlayer->GetInventory().GetItems();
-        for (auto *actor : allActors) {
+        for (auto* actor : allActors) {
             if (actor != mPlayer && std::find(inventoryItems.begin(), inventoryItems.end(), actor) == inventoryItems.end()) {
                 delete actor;
             }
         }
 
         if (shouldDeletePlayer) {
-            for (const auto *item : mPlayer->GetInventory().GetItems()) {
+            for (const auto* item : mPlayer->GetInventory().GetItems()) {
                 delete item;
             }
 
@@ -405,7 +408,7 @@ void Game::ClearGameScene(const bool shouldDeletePlayer) {
 void Game::Shutdown() {
     ClearGameScene(true);
 
-    for (const auto &font : mFonts) {
+    for (const auto& font : mFonts) {
         font.second->Unload();
         delete font.second;
     }
@@ -436,10 +439,12 @@ std::pair<int, int> Game::GetEnemiesCount() const {
     for (const auto enemy : mEnemies) {
         if (!enemy->IsAlive()) {
             defeatedEnemies++;
+
         }
     }
 
-    return {defeatedEnemies, mEnemies.size()};
+    SDL_Log("count enemies: %d", defeatedEnemies);
+    return { defeatedEnemies, mEnemies.size() };
 }
 
 void Game::BuildPlayer(const Vector2 position) {
@@ -447,7 +452,8 @@ void Game::BuildPlayer(const Vector2 position) {
         mPlayer->SetCurrentHealth(mPlayer->GetMaxHealth());
         mPlayer->SetCurrentEnergy(mPlayer->GetMaxEnergy());
         mPlayer->SetPosition(position);
-    } else {
+    }
+    else {
         mPlayer = new Player(this);
         mPlayer->SetPosition(position);
     }
