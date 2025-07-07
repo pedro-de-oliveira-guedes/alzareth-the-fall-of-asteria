@@ -23,7 +23,7 @@ class DeathRay : public Actor {
         float mTimeUntilActive;
 
         Vector2 mVelocity;
-        float mSpeed = 100.0f;
+        float mSpeed = 200.0f;
 
         static constexpr float BASE_WIDTH = 100.0f;
         Vector2 mSize;
