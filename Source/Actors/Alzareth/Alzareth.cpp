@@ -80,19 +80,7 @@ Alzareth::Alzareth(Game *game) : Actor(game) {
 }
 
 Alzareth::~Alzareth() {
-    delete mDrawComponentAlzareth;
-    delete mDrawComponentShield;
-    delete mRigidBodyComponent;
-    delete mAABBColliderComponent;
-
-    for (const auto enemy : mSummonedEnemies) {
-        delete enemy;
-    }
     mSummonedEnemies.clear();
-
-    for (const auto deathRay : mDeathRays) {
-        delete deathRay;
-    }
     mDeathRays.clear();
 }
 
