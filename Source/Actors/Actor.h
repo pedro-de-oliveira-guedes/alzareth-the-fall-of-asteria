@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-#include <SDL2/SDL_stdinc.h>
+#include <SDL_stdinc.h>
 #include "../Components/ColliderComponents/AABBColliderComponent.h"
 
 enum class ActorState {
@@ -58,6 +58,9 @@ class Actor {
         // Any actor-specific collision code (overridable)
         virtual void OnCollision(float minOverlap, AABBColliderComponent *other);
         virtual void Kill();
+        void TakeDamage(float damage);
+        virtual void OnTakeDamage(float damage) {};
+        bool IsAlive() const { return !mIsDead; }
 
     protected:
         class Game *mGame;
@@ -69,6 +72,7 @@ class Actor {
 
         // Actor's state
         ActorState mState;
+        bool mIsDead = false;
 
         // Transform
         Vector2 mPosition;

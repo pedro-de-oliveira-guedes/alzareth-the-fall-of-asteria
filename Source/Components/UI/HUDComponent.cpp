@@ -19,20 +19,30 @@ HUDComponent::HUDComponent(
 
     mHealthColor = { 255, 0, 0, 255 }; // Red
     mEnergyColor = { 255, 255, 0, 255 }; // Yellow
+    mBossColor = { 0, 0, 255, 255 }; // Blue
 
+    const int windowWidth = mOwner->GetGame()->GetWindowWidth();
     const int windowHeight = mOwner->GetGame()->GetWindowHeight();
 
     mInventoryImage = new UIImage(
         "../Assets/Sprites/HUD/Inventory.png",
-        Vector2(100.0f, static_cast<float>(windowHeight) - 144.0f - 40.0f),
+        Vector2(static_cast<float>(windowWidth) - 300.0f - 40.0f, -40.f),
         Vector2(300.0f, 244.0f)
     );
 
     mHealthBarOutlineImage = new UIImage("../Assets/Sprites/HUD/HealthBar.png", Vector2::Zero, Vector2::Zero);
     mEnergyBarOutlineImage = new UIImage("../Assets/Sprites/HUD/EnergyBar.png", Vector2::Zero, Vector2::Zero);
 
-    mEnemiesCountImage = new UIImage("../Assets/Sprites/Golem/BaseGolem.png", Vector2::Zero, Vector2::Zero);
-    mEnemiesBoardImage = new UIImage("../Assets/Sprites/HUD/EnemiesBoard.png", Vector2::Zero, Vector2::Zero);
+    mBossHealthBarOutlineImage = new UIImage(
+        "../Assets/Sprites/HUD/BossHealthBar.png",
+        Vector2((windowWidth - 900) / 2, windowHeight - 40.f - 20.f),
+        Vector2(900.0f, 40.0f)
+    );
+    mBossHealthBarStagesTicksImage = new UIImage(
+        "../Assets/Sprites/HUD/BossHealthBarTicks.png",
+        Vector2((windowWidth - 900) / 2, windowHeight - 40.f - 20.f),
+        Vector2(900.0f, 40.0f)
+    );
 }
 
 void HUDComponent::UpdateStats(
@@ -116,36 +126,23 @@ void HUDComponent::DrawInventory(SDL_Renderer* renderer) const {
     }
 }
 
-void HUDComponent::DrawEnemiesCount(SDL_Renderer* renderer) const {
-    const int screenWidth = mOwner->GetGame()->GetWindowWidth();
+void HUDComponent::DrawBossHealthBar(SDL_Renderer *renderer) const {
+    mBossHealthBarOutlineImage->Draw(renderer, Vector2::Zero);
 
-    mEnemiesBoardImage->SetPosition(Vector2(screenWidth - 180.0f, 20.0f));
-    mEnemiesBoardImage->SetSize(Vector2(175.0f, 60.0f));
-    mEnemiesBoardImage->Draw(renderer, Vector2::Zero);
+    const auto [currentHealth, maxHealth] = mOwner->GetGame()->GetSceneManager()->GetBossHealth();
+    const float healthPercentage = static_cast<float>(currentHealth) / maxHealth;
+    const Vector2 outlinePos = mBossHealthBarOutlineImage->GetPosition();
+    const Vector2 outlineSize = mBossHealthBarOutlineImage->GetSize();
+    const SDL_Rect healthBarRect = {
+        static_cast<int>(outlinePos.x + 10.f),
+        static_cast<int>(outlinePos.y + 7.f),
+        static_cast<int>((outlineSize.x - 20.f) * healthPercentage),
+        static_cast<int>(outlineSize.y - 14.f)
+    };
+    SDL_SetRenderDrawColor(renderer, mBossColor.r, mBossColor.g, mBossColor.b, mBossColor.a);
+    SDL_RenderFillRect(renderer, &healthBarRect);
 
-    mEnemiesCountImage->SetPosition(Vector2(screenWidth - 165.0f, 30.0f));
-    mEnemiesCountImage->SetSize(Vector2(SceneManagerSystem::TILE_SIZE, SceneManagerSystem::TILE_SIZE));
-    mEnemiesCountImage->Draw(renderer, Vector2::Zero);
-
-    const auto [defeated, total] = mOwner->GetGame()->GetEnemiesCount();
-    UIFont *font = mOwner->GetGame()->LoadFont("../Assets/Fonts/PixelifySans.ttf");
-
-    std::string text;
-    if (std::to_string(defeated).size() == std::to_string(total).size()) {
-        text = std::to_string(defeated) + " / " + std::to_string(total);
-    } else {
-        text = "0" + std::to_string(defeated) + " / " + std::to_string(total);
-    }
-
-    const auto enemiesCountText = new UIText(
-        text,
-        font,
-        24,
-        0,
-        Vector2(screenWidth - 165.0f + SceneManagerSystem::TILE_SIZE + 10.0f, 35.0f),
-        Vector2(text.size() * 24.f * 0.6f, 24.f)
-    );
-    enemiesCountText->Draw(renderer, Vector2::Zero);
+    mBossHealthBarStagesTicksImage->Draw(renderer, Vector2::Zero);
 }
 
 void HUDComponent::Draw(SDL_Renderer* renderer) {
@@ -155,7 +152,7 @@ void HUDComponent::Draw(SDL_Renderer* renderer) {
     DrawInventoryImage(renderer);
     DrawInventory(renderer);
 
-    DrawEnemiesCount(renderer);
+    DrawBossHealthBar(renderer);
 }
 
 void HUDComponent::UpdateInventoryDisplay() {

@@ -1,10 +1,11 @@
 #include "SceneManagerSystem.h"
-#include "../../Utils/Random.h"
+
+#include "../../Actors/Alzareth/Alzareth.h"
+#include "../../Actors/Enemies/Ghost/Ghost.h"
 #include "../../Actors/Enemies/Golem/Golem.h"
 #include "../../Actors/Enemies/Golem2/Golem2.h"
 #include "../../Actors/Enemies/Skeleton/Skeleton.h"
-#include "../../Actors/Enemies/Ghost/Ghost.h"
-#include "../../Actors/Items/Weapons/Ranged/MagicToken.h"
+#include "../../Utils/Random.h"
 
 SceneManagerSystem::SceneManagerSystem(Game *game, AudioSystem *audioSystem) {
     mGame = game;
@@ -53,16 +54,16 @@ void SceneManagerSystem::ChangeScene() {
         BuildMainMenu();
         mGame->SetGameState(Game::GameState::PAUSED);
     }
-    else if (mNextScene == GameScene::Level1) {
-        BuildFirstLevel();
-        mGame->SetGameState(Game::GameState::PLAYING);
-    } else if (mNextScene == GameScene::Level2) {
-        BuildSecondLevel();
-        mGame->SetGameState(Game::GameState::PLAYING);
-    }
+    // else if (mNextScene == GameScene::Level1) {
+    //     BuildFirstLevel();
+    //     mGame->SetGameState(Game::GameState::PLAYING);
+    // } else if (mNextScene == GameScene::Level2) {
+    //     BuildSecondLevel();
+    //     mGame->SetGameState(Game::GameState::PLAYING);
+    // }
     else if (mNextScene == GameScene::Level3) {
-        mGame->SetGameState(Game::GameState::PLAYING);
         BuildThirdLevel();
+        mGame->SetGameState(Game::GameState::PLAYING);
     }
     else if (mNextScene == GameScene::Win) {
         BuildWinScreen();
@@ -113,7 +114,7 @@ void SceneManagerSystem::BuildMainMenu() {
         "Novo Jogo",
         Vector2(mGame->GetWindowWidth() / 2.0f - 120.0f, mGame->GetWindowHeight() / 2.0f + 50.0f),
         Vector2(240.0f, 50.0f),
-        [this]() { SetGameScene(GameScene::Level1); }
+        [this]() { SetGameScene(GameScene::Level3); }
     );
 
     mainMenu->AddButton(
@@ -185,100 +186,96 @@ void SceneManagerSystem::BuildPauseMenu() {
     mPauseMenu = pauseMenu;
 }
 
-void SceneManagerSystem::BuildFirstLevel() {
-    mGame->SetBackgroundImage(
-        "../Assets/Levels/Level-1/level_1_no_border.png",
-        Vector2::Zero,
-        Vector2(TILE_SIZE * FIRST_SECOND_LEVEL_WIDTH, TILE_SIZE * FIRST_SECOND_LEVEL_HEIGHT)
-    );
-
-    mGame->BuildSpatialHashing();
-    mGame->BuildPlayer(Vector2(200.0f, 200.0f));
-
-    for (int i = 0; i < 20; i++) {
-        const float offsetX = Random::GetFloatRange(450, FIRST_SECOND_LEVEL_WIDTH * TILE_SIZE - 450);
-        const float offsetY = Random::GetFloatRange(450, FIRST_SECOND_LEVEL_HEIGHT * TILE_SIZE - 450);
-        mGame->AddEnemy(new Golem(mGame, Vector2(offsetX, offsetY)));
-
-
-    }
-
-    for (int i = 0; i < 5; i++) {
-        const float offsetX = Random::GetFloatRange(450, FIRST_SECOND_LEVEL_WIDTH * TILE_SIZE - 450);
-        const float offsetY = Random::GetFloatRange(450, FIRST_SECOND_LEVEL_HEIGHT * TILE_SIZE - 450);
-
-        mGame->AddEnemy(new Skeleton(mGame, Vector2(offsetX, offsetY)));
-
-    }
-
-    new Sword(
-        mGame,
-        "Sword",
-        "../Assets/Sprites/Weapons/Sword/sword.png",
-        "../Assets/Sprites/Weapons/Sword/sword_inv.png",
-        "../Assets/Sprites/Weapons/Sword/sword.json",
-        Vector2(350.0f, 350.0f) ,
-        1
-    );
-
-    BuildPauseMenu();
-    mMainMusicHandle = mAudio->PlaySound("level1.wav", true);
-}
-
-void SceneManagerSystem::BuildSecondLevel() {
-    mGame->SetBackgroundImage(
-        "../Assets/Levels/Level-2/level_2.png",
-        Vector2::Zero,
-        Vector2(TILE_SIZE * FIRST_SECOND_LEVEL_WIDTH, TILE_SIZE * FIRST_SECOND_LEVEL_HEIGHT)
-    );
-
-    mGame->BuildSpatialHashing();
-    mGame->BuildPlayer(Vector2(200.0f, 200.0f));
-
-    for (int i = 0; i < 20; i++) {
-        const float offsetX = Random::GetFloatRange(450, FIRST_SECOND_LEVEL_WIDTH * TILE_SIZE - 450);
-        const float offsetY = Random::GetFloatRange(450, FIRST_SECOND_LEVEL_HEIGHT * TILE_SIZE - 450);
-        mGame->AddEnemy(new Golem2(mGame, Vector2(offsetX, offsetY)));
-        SDL_Log("Enemy added at position (%f, %f)", offsetX, offsetY);
-    }
-
-    for (int i = 0; i < 5; i++) {
-        const float offsetX = Random::GetFloatRange(450, FIRST_SECOND_LEVEL_WIDTH * TILE_SIZE - 450);
-        const float offsetY = Random::GetFloatRange(450, FIRST_SECOND_LEVEL_HEIGHT * TILE_SIZE - 450);
-        mGame->AddEnemy(new Ghost(mGame, Vector2(offsetX, offsetY)));
-    }
-
-    new Sword(
-        mGame,
-        "Sword",
-        "../Assets/Sprites/Weapons/Sword/sword.png",
-        "../Assets/Sprites/Weapons/Sword/sword_inv.png",
-        "../Assets/Sprites/Weapons/Sword/sword.json",
-        Vector2(300.0f, 300.0f) ,
-        1
-    );
-
-    BuildPauseMenu();
-
-    mMainMusicHandle = mAudio->PlaySound("level2.wav", true);
-}
+// void SceneManagerSystem::BuildFirstLevel() {
+//     mGame->SetBackgroundImage(
+//         "../Assets/Levels/Level-1/level_1_no_border.png",
+//         Vector2::Zero,
+//         Vector2(TILE_SIZE * FIRST_SECOND_LEVEL_WIDTH, TILE_SIZE * FIRST_SECOND_LEVEL_HEIGHT)
+//     );
+//
+//     mGame->BuildSpatialHashing();
+//     mGame->BuildPlayer(Vector2(200.0f, 200.0f));
+//
+//     for (int i = 0; i < 2; i++) {
+//         const float offsetX = Random::GetFloatRange(450, FIRST_SECOND_LEVEL_WIDTH * TILE_SIZE - 450);
+//         const float offsetY = Random::GetFloatRange(450, FIRST_SECOND_LEVEL_HEIGHT * TILE_SIZE - 450);
+//
+//         mGame->AddEnemy(new Golem(mGame, Vector2(offsetX, offsetY)));
+//     }
+//
+//     for (int i = 0; i < 3; i++) {
+//         const float offsetX = Random::GetFloatRange(450, FIRST_SECOND_LEVEL_WIDTH * TILE_SIZE - 450);
+//         const float offsetY = Random::GetFloatRange(450, FIRST_SECOND_LEVEL_HEIGHT * TILE_SIZE - 450);
+//
+//         mGame->AddEnemy(new Skeleton(mGame, Vector2(offsetX, offsetY)));
+//     }
+//
+//     new Sword(
+//         mGame,
+//         "Sword",
+//         "../Assets/Sprites/Weapons/Sword/sword.png",
+//         "../Assets/Sprites/Weapons/Sword/sword_inv.png",
+//         "../Assets/Sprites/Weapons/Sword/sword.json",
+//         Vector2(350.0f, 350.0f) ,
+//         1
+//     );
+//
+//     BuildPauseMenu();
+//     mMainMusicHandle = mAudio->PlaySound("level1.wav", true);
+// }
+//
+// void SceneManagerSystem::BuildSecondLevel() {
+//     mGame->SetBackgroundImage(
+//         "../Assets/Levels/Level-2/level_2.png",
+//         Vector2::Zero,
+//         Vector2(TILE_SIZE * FIRST_SECOND_LEVEL_WIDTH, TILE_SIZE * FIRST_SECOND_LEVEL_HEIGHT)
+//     );
+//
+//     mGame->BuildSpatialHashing();
+//     mGame->BuildPlayer(Vector2(200.0f, 200.0f));
+//
+//     for (int i = 0; i < 2; i++) {
+//         const float offsetX = Random::GetFloatRange(450, FIRST_SECOND_LEVEL_WIDTH * TILE_SIZE - 450);
+//         const float offsetY = Random::GetFloatRange(450, FIRST_SECOND_LEVEL_HEIGHT * TILE_SIZE - 450);
+//
+//         mGame->AddEnemy(new Golem2(mGame, Vector2(offsetX, offsetY)));
+//     }
+//
+//     for (int i = 0; i < 3; i++) {
+//         const float offsetX = Random::GetFloatRange(450, FIRST_SECOND_LEVEL_WIDTH * TILE_SIZE - 450);
+//         const float offsetY = Random::GetFloatRange(450, FIRST_SECOND_LEVEL_HEIGHT * TILE_SIZE - 450);
+//
+//         mGame->AddEnemy(new Ghost(mGame, Vector2(offsetX, offsetY)));
+//     }
+//
+//     new Sword(
+//         mGame,
+//         "Sword",
+//         "../Assets/Sprites/Weapons/Sword/sword.png",
+//         "../Assets/Sprites/Weapons/Sword/sword_inv.png",
+//         "../Assets/Sprites/Weapons/Sword/sword.json",
+//         Vector2(300.0f, 300.0f) ,
+//         1
+//     );
+//
+//     BuildPauseMenu();
+//
+//     mMainMusicHandle = mAudio->PlaySound("level2.wav", true);
+// }
 
 void SceneManagerSystem::BuildThirdLevel() {
     mGame->SetBackgroundImage(
         "../Assets/Levels/Level-3/level_3_short.png",
         Vector2::Zero,
-        Vector2(TILE_SIZE * THIRD_LEVEL_WIDTH, TILE_SIZE * FIRST_SECOND_LEVEL_HEIGHT)
+        Vector2(TILE_SIZE * THIRD_LEVEL_WIDTH, TILE_SIZE * THIRD_LEVEL_HEIGHT)
     );
 
     mGame->BuildSpatialHashing();
 
     mGame->BuildPlayer(Vector2(200.0f, 200.0f));
 
-    for (int i = 0; i < 1; i++) {
-        const float offsetX = Random::GetFloatRange(250, THIRD_LEVEL_WIDTH * TILE_SIZE - 250);
-        const float offsetY = Random::GetFloatRange(250, THIRD_LEVEL_HEIGHT * TILE_SIZE - 250);
-        mGame->AddEnemy(new Skeleton(mGame, Vector2(offsetX, offsetY)));
-    }
+    mAlzareth = new Alzareth(mGame);
+    mGame->AddEnemy(mAlzareth);
 
     new Sword(
         mGame,
@@ -286,7 +283,7 @@ void SceneManagerSystem::BuildThirdLevel() {
         "../Assets/Sprites/Weapons/Sword/sword.png",
         "../Assets/Sprites/Weapons/Sword/sword_inv.png",
         "../Assets/Sprites/Weapons/Sword/sword.json",
-        Vector2(300.0f, 300.0f) ,
+        Vector2(300.0f, 300.0f),
         1
     );
 
@@ -334,9 +331,9 @@ void SceneManagerSystem::BuildLoseScreen() {
 }
 
 std::pair<int, int> SceneManagerSystem::GetLevelSize() const {
-    if (mGameScene == GameScene::Level1 || mNextScene == GameScene::Level1 || mGameScene == GameScene::Level2 || mNextScene == GameScene::Level2) {
-        return {FIRST_SECOND_LEVEL_WIDTH, FIRST_SECOND_LEVEL_HEIGHT};
-    }
+    // if (mGameScene == GameScene::Level1 || mNextScene == GameScene::Level1 || mGameScene == GameScene::Level2 || mNextScene == GameScene::Level2) {
+    //     return {FIRST_SECOND_LEVEL_WIDTH, FIRST_SECOND_LEVEL_HEIGHT};
+    // }
 
     if (mGameScene == GameScene::Level3 || mNextScene == GameScene::Level3) {
         return {THIRD_LEVEL_WIDTH, THIRD_LEVEL_HEIGHT};
@@ -357,4 +354,17 @@ void SceneManagerSystem::DrawSceneTransition(SDL_Renderer *renderer) const {
         const SDL_Rect rect = { 0, 0, mGame->GetWindowWidth(), mGame->GetWindowHeight() };
         SDL_RenderFillRect(renderer, &rect);
     }
+}
+
+DrawAnimatedComponent* SceneManagerSystem::GetAlzarethShieldDrawComponent() const {
+    if (mAlzareth) {
+        return mAlzareth->GetDrawComponentShield();
+    }
+    return nullptr;
+}
+
+std::pair<int, int> SceneManagerSystem::GetBossHealth() const {
+    if (!mAlzareth) return {0, 0};
+
+    return { mAlzareth->GetCurrentHealth(), mAlzareth->GetMaxHealth() };
 }

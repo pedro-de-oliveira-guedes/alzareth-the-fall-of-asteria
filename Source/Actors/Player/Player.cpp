@@ -155,8 +155,6 @@ void Player::HandleItemInput(const Uint8* keyState) {
                 ) {
                 auto* item = dynamic_cast<Item*>(otherCollider->GetOwner());
                 if (item) {
-                    SDL_Log("mInvetory.GetInventorySize(): %d, mInventory.GetMaxItems(): %d",
-                        mInventory.GetInventorySize(), mInventory.GetMaxItems());
                     if (mInventory.GetInventorySize() >= mInventory.GetMaxItems()) {
                         mGame->GetAudioSystem()->PlaySound("menu_click.ogg", false);
                         return;
@@ -214,12 +212,10 @@ void Player::UseItemAtIndex(int index) {
 
 void Player::HandleStatusEffects(float deltaTime) {
     if (mIsInvulnerable) {
-        SDL_Log("Invulnerabilidade ativa por %.2f segundos", mInvulnerabilityTime);
         mInvulnerabilityTime -= deltaTime;
         if (mInvulnerabilityTime <= 0.0f) {
             mIsInvulnerable = false;
             mInvulnerabilityTime = 0.0f;
-            SDL_Log("Invulnerabilidade desativada!");
         }
     }
 }
@@ -294,7 +290,7 @@ void Player::Attack(const Uint8* keyState, Uint32 mouseButtonState) {
                             std::abs(otherPos.x - attackPosition.x) <= rangeX &&
                             std::abs(otherPos.y - attackPosition.y) <= rangeY
                             ) {
-                            auto* enemy = dynamic_cast<Enemy*>(otherCollider->GetOwner());
+                            auto* enemy = otherCollider->GetOwner();
                             if (enemy && !sword->GetHasHitThisAttack()) {
                                 enemy->TakeDamage(sword->GetDamage());
                                 sword->SetHasHitThisAttack(true);
@@ -315,7 +311,8 @@ void Player::Attack(const Uint8* keyState, Uint32 mouseButtonState) {
             for (const AABBColliderComponent* otherCollider : colliders) {
                 if (otherCollider->GetLayer() == ColliderLayer::Enemy) {
                     auto* enemy = dynamic_cast<Enemy*>(otherCollider->GetOwner());
-                    enemy->TakeDamage(magicToken->GetDamage());
+                    if (enemy)
+                        enemy->TakeDamage(magicToken->GetDamage());
                 }
              }
             }
@@ -408,7 +405,6 @@ void Player::ManageAnimations() {
 
 void Player::TakeDamage(const float damage) {
     if (mIsInvulnerable) {
-        SDL_Log("Jogador invulnerável, dano não aplicado.");
         return;
     }
 

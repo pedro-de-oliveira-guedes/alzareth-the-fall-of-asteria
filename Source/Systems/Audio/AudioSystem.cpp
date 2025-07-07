@@ -1,6 +1,6 @@
 #include "AudioSystem.h"
-#include "SDL2/SDL.h"
-#include "SDL2/SDL_mixer.h"
+#include "SDL.h"
+#include "SDL_mixer.h"
 #include <filesystem>
 
 SoundHandle SoundHandle::Invalid;
@@ -55,7 +55,6 @@ SoundHandle AudioSystem::PlaySound(const std::string& soundName, bool looping) {
 		for (const auto& [handle, info] : mHandleMap) {
 			if (info.mSoundName == soundName) {
 				availableChannel = info.mChannel;
-				SDL_Log("[AudioSystem] Stopping sound %s on channel %d", soundName.c_str(), availableChannel);
 				StopSound(handle);
 				break;
 			}
@@ -66,7 +65,6 @@ SoundHandle AudioSystem::PlaySound(const std::string& soundName, bool looping) {
 		for (const auto& [handle, info] : mHandleMap) {
 			if (info.mIsLooping) {
 				availableChannel = info.mChannel;
-				SDL_Log("[AudioSystem] Stopping looping sound %s on channel %d", info.mSoundName.c_str(), availableChannel);
 				StopSound(handle);
 				break;
 			}
@@ -76,7 +74,6 @@ SoundHandle AudioSystem::PlaySound(const std::string& soundName, bool looping) {
 	if (availableChannel == -1) {
 		const HandleInfo info = mHandleMap.begin()->second;
 		availableChannel = info.mChannel;
-		SDL_Log("[AudioSystem] Stopping oldest sound %s on channel %d", info.mSoundName.c_str(), availableChannel);
 		StopSound(mHandleMap.begin()->first);
 	}
 

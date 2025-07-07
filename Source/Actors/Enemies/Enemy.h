@@ -17,11 +17,10 @@ class Enemy : public Actor {
         virtual void OnUpdate(float deltaTime);
         void OnCollision(float minOverlap, AABBColliderComponent *other) override;
         void Kill() override;
-        bool IsAlive() const { return !mIsDead; }
 
         float GetDamageAttack() const { return mDamageAttack; }
 
-        void TakeDamage(float damage);
+        void OnTakeDamage(float damage) override;
 
     protected:
 
@@ -37,7 +36,6 @@ class Enemy : public Actor {
 
         bool mIsAttacking = false;
         bool mIsWalking;
-        bool mIsDead;
         SoundHandle mDamageSound;
 
         RigidBodyComponent *mRigidBodyComponent;

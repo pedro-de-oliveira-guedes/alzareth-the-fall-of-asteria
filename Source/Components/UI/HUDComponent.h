@@ -22,7 +22,7 @@ class HUDComponent : public DrawComponent {
         void DrawEnergyBar(SDL_Renderer *renderer)const;
         void DrawInventoryImage(SDL_Renderer *renderer)const;
         void DrawInventory(SDL_Renderer *renderer)const;
-        void DrawEnemiesCount(SDL_Renderer *renderer)const;
+        void DrawBossHealthBar(SDL_Renderer *renderer) const;
 
         float mMaxHealth;
         float mCurrentHealth;
@@ -38,6 +38,7 @@ class HUDComponent : public DrawComponent {
         UIImage* mInventoryImage;
         std::vector<UIImage*> mInventoryItems;
 
-        UIImage *mEnemiesCountImage;
-        UIImage *mEnemiesBoardImage;
+        UIImage *mBossHealthBarOutlineImage;
+        UIImage *mBossHealthBarStagesTicksImage;
+        SDL_Color mBossColor{};
 };

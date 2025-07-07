@@ -1,24 +1,74 @@
 {
   "frames": [
     {
-      "filename": "death-ray-0.png",
+      "filename": "death-ray-horizontal-0.png",
       "frame": {
         "x": 0,
         "y": 0,
-        "w": 816,
-        "h": 2048
+        "w": 1300,
+        "h": 100
       },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 816,
-        "h": 2048
+        "w": 1300,
+        "h": 100
       },
       "sourceSize": {
-        "w": 816,
-        "h": 2048
+        "w": 1300,
+        "h": 100
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "death-ray-horizontal-1.png",
+      "frame": {
+        "x": 0,
+        "y": 100,
+        "w": 1300,
+        "h": 100
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 1300,
+        "h": 100
+      },
+      "sourceSize": {
+        "w": 1300,
+        "h": 100
+      },
+      "pivot": {
+        "x": 0.5,
+        "y": 0.5
+      }
+    },
+    {
+      "filename": "death-ray-0.png",
+      "frame": {
+        "x": 1300,
+        "y": 0,
+        "w": 100,
+        "h": 750
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 100,
+        "h": 750
+      },
+      "sourceSize": {
+        "w": 100,
+        "h": 750
       },
       "pivot": {
         "x": 0.5,
@@ -28,22 +78,22 @@
     {
       "filename": "death-ray-1.png",
       "frame": {
-        "x": 0,
-        "y": 2048,
-        "w": 816,
-        "h": 2048
+        "x": 1400,
+        "y": 0,
+        "w": 100,
+        "h": 750
       },
       "rotated": false,
       "trimmed": false,
       "spriteSourceSize": {
         "x": 0,
         "y": 0,
-        "w": 816,
-        "h": 2048
+        "w": 100,
+        "h": 750
       },
       "sourceSize": {
-        "w": 816,
-        "h": 2048
+        "w": 100,
+        "h": 750
       },
       "pivot": {
         "x": 0.5,
@@ -57,8 +107,8 @@
     "image": "Alzareth_Death_Ray.png",
     "format": "RGBA8888",
     "size": {
-      "w": 816,
-      "h": 4096
+      "w": 1500,
+      "h": 750
     },
     "scale": 1
   }

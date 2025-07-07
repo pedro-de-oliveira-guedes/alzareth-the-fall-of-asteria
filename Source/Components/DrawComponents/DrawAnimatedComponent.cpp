@@ -8,9 +8,10 @@ DrawAnimatedComponent::DrawAnimatedComponent(
     Actor *owner,
     const std::string &spriteSheetPath,
     const std::string &spriteSheetData,
-    const int drawOrder
+    const int drawOrder,
+    const float alphaChannel
 ) : DrawSpriteComponent(owner, spriteSheetPath, 0, 0, drawOrder) {
-    LoadSpriteSheet(spriteSheetPath, spriteSheetData);
+    LoadSpriteSheet(spriteSheetPath, spriteSheetData, alphaChannel);
 }
 
 DrawAnimatedComponent::~DrawAnimatedComponent() {
@@ -20,9 +21,13 @@ DrawAnimatedComponent::~DrawAnimatedComponent() {
     mSpriteSheetData.clear();
 }
 
-void DrawAnimatedComponent::LoadSpriteSheet(const std::string &texturePath, const std::string &dataPath) {
+void DrawAnimatedComponent::LoadSpriteSheet(
+    const std::string &texturePath,
+    const std::string &dataPath,
+    const float alphaChannel
+) {
     // Load sprite sheet texture
-    mSpriteSheetSurface = mOwner->GetGame()->LoadTexture(texturePath);
+    mSpriteSheetSurface = mOwner->GetGame()->LoadTexture(texturePath, alphaChannel);
 
     if (!mSpriteSheetSurface) {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Failed to load sprite sheet texture: %s", texturePath.c_str());

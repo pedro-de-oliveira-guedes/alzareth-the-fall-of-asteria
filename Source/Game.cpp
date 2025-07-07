@@ -5,9 +5,9 @@
 #include "UIElements/UIScreen.h"
 #include "Systems/SceneManager/SceneManagerSystem.h"
 
-#include <SDL2/SDL_image.h>
-#include <SDL2/SDL_mixer.h>
-#include <SDL2/SDL_ttf.h>
+#include <SDL_image.h>
+#include <SDL_mixer.h>
+#include <SDL_ttf.h>
 #include <algorithm>
 #include <fstream>
 #include <iostream>
@@ -220,11 +220,12 @@ void Game::UpdateCamera() {
     cameraX = std::max({ cameraX, 0 }); // Locks camera to the left of the screen
     cameraX = std::min(cameraX, level_width * SceneManagerSystem::TILE_SIZE - mWindowWidth); // Locks camera to the right of the screen
 
+    const int cameraYOffset = (mWindowHeight / 6); // Leaves some space above and below the screen for the HUD
     int cameraY = mPlayer->GetPosition().y - (mWindowHeight / 2);
-    cameraY = std::max(cameraY, -(mWindowHeight / 6)); // Leaves some space above the screen for the HUD
+    cameraY = std::max(cameraY, -cameraYOffset);
     cameraY = std::min(
         cameraY,
-        (level_height * SceneManagerSystem::TILE_SIZE - mWindowHeight) + (mWindowHeight / 6) // Leaves some space below the screen for the HUD
+        (level_height * SceneManagerSystem::TILE_SIZE - mWindowHeight) + cameraYOffset
     );
 
     SetCameraPos(Vector2(cameraX, cameraY));
@@ -304,13 +305,23 @@ void Game::GenerateOutput() const {
     if (mSpatialHashing && mGameState != GameState::QUITTING) {
         std::vector<DrawComponent*> drawComponents;
 
-        const std::vector<Actor*> actorsOnCamera = mSpatialHashing->QueryOnCamera(mCameraPos, mWindowWidth, mWindowHeight);
+        std::vector<Actor*> actorsOnCamera;
+        if (mSceneManager->GetCurrentScene() != SceneManagerSystem::GameScene::Level3) {
+            actorsOnCamera = mSpatialHashing->QueryOnCamera(mCameraPos, mWindowWidth, mWindowHeight);
+        } else {
+            actorsOnCamera = mSpatialHashing->Query(mPlayer->GetPosition(), 1000);
+        }
+
         for (const auto actor : actorsOnCamera) {
             const auto drawable = actor->GetComponent<DrawComponent>();
             if (drawable && drawable->IsVisible()) {
                 drawComponents.emplace_back(drawable);
             }
         }
+
+        if (mSceneManager->GetAlzarethShieldDrawComponent())
+            drawComponents.emplace_back(mSceneManager->GetAlzarethShieldDrawComponent());
+
         drawComponents.emplace_back(mPlayer->GetHUDComponent());
 
         std::sort(
@@ -335,12 +346,13 @@ void Game::GenerateOutput() const {
     SDL_RenderPresent(mRenderer);
 }
 
-SDL_Texture* Game::LoadTexture(const std::string& texturePath) {
+SDL_Texture* Game::LoadTexture(const std::string& texturePath, const float alphaChannel) const {
     SDL_Surface* surface = IMG_Load(texturePath.c_str());
     if (!surface) {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, SDL_GetError());
         return nullptr;
     }
+    SDL_SetSurfaceAlphaMod(surface, alphaChannel);
 
     SDL_Texture* texture = SDL_CreateTextureFromSurface(mRenderer, surface);
     SDL_FreeSurface(surface);

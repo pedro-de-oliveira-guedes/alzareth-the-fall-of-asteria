@@ -1,4 +1,5 @@
 #pragma once
+#include "../../Actors/Alzareth/Alzareth.h"
 #include "../../Game.h"
 
 class SceneManagerSystem {
@@ -36,6 +37,8 @@ class SceneManagerSystem {
         std::pair<int, int> GetLevelSize() const;
 
         void DrawSceneTransition(SDL_Renderer *renderer) const;
+        DrawAnimatedComponent* GetAlzarethShieldDrawComponent() const;
+        std::pair<int, int> GetBossHealth() const;
 
         GameScene GetCurrentScene() const { return mGameScene; }
 
@@ -43,7 +46,7 @@ class SceneManagerSystem {
         Game *mGame;
         AudioSystem *mAudio;
 
-        UIScreen *mPauseMenu;
+        UIScreen *mPauseMenu = nullptr;
         SoundHandle mMainMusicHandle;
 
         SceneManagerState mSceneManagerState;
@@ -56,13 +59,14 @@ class SceneManagerSystem {
 
         void BuildPauseMenu();
 
-        static constexpr int FIRST_SECOND_LEVEL_WIDTH = 115;
-        static constexpr int FIRST_SECOND_LEVEL_HEIGHT = 32;
-        static constexpr int THIRD_LEVEL_WIDTH = 41;
-        static constexpr int THIRD_LEVEL_HEIGHT = 26;
-        void BuildFirstLevel();
-        void BuildSecondLevel();
+        // static constexpr int FIRST_SECOND_LEVEL_WIDTH = 115;
+        // static constexpr int FIRST_SECOND_LEVEL_HEIGHT = 32;
+        static constexpr int THIRD_LEVEL_WIDTH = 40;
+        static constexpr int THIRD_LEVEL_HEIGHT = 22;
+        // void BuildFirstLevel();
+        // void BuildSecondLevel();
         void BuildThirdLevel();
+        Alzareth *mAlzareth = nullptr;
 
         void BuildWinScreen();
 
