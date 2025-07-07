@@ -58,6 +58,7 @@ class Actor {
         // Any actor-specific collision code (overridable)
         virtual void OnCollision(float minOverlap, AABBColliderComponent *other);
         virtual void Kill();
+        bool IsAlive() const { return !mIsDead; }
 
     protected:
         class Game *mGame;
@@ -69,6 +70,7 @@ class Actor {
 
         // Actor's state
         ActorState mState;
+        bool mIsDead = false;
 
         // Transform
         Vector2 mPosition;
