@@ -311,6 +311,10 @@ void Game::GenerateOutput() const {
                 drawComponents.emplace_back(drawable);
             }
         }
+
+        if (mSceneManager->GetAlzarethShieldDrawComponent())
+            drawComponents.emplace_back(mSceneManager->GetAlzarethShieldDrawComponent());
+
         drawComponents.emplace_back(mPlayer->GetHUDComponent());
 
         std::sort(

@@ -1,4 +1,5 @@
 #pragma once
+#include "../../Actors/Alzareth/Alzareth.h"
 #include "../../Game.h"
 
 class SceneManagerSystem {
@@ -36,6 +37,7 @@ class SceneManagerSystem {
         std::pair<int, int> GetLevelSize() const;
 
         void DrawSceneTransition(SDL_Renderer *renderer) const;
+        DrawAnimatedComponent* GetAlzarethShieldDrawComponent() const;
 
         GameScene GetCurrentScene() const { return mGameScene; }
 
@@ -63,6 +65,7 @@ class SceneManagerSystem {
         void BuildFirstLevel();
         void BuildSecondLevel();
         void BuildThirdLevel();
+        Alzareth *mAlzareth = nullptr;
 
         void BuildWinScreen();
 

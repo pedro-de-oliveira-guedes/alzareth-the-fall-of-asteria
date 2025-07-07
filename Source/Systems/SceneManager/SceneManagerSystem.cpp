@@ -357,3 +357,10 @@ void SceneManagerSystem::DrawSceneTransition(SDL_Renderer *renderer) const {
         SDL_RenderFillRect(renderer, &rect);
     }
 }
+
+DrawAnimatedComponent* SceneManagerSystem::GetAlzarethShieldDrawComponent() const {
+    if (mAlzareth) {
+        return mAlzareth->GetDrawComponentShield();
+    }
+    return nullptr;
+}
