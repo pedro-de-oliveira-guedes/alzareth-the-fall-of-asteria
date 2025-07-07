@@ -16,21 +16,17 @@ Menu principal:
 
 ![Menu Principal](https://github.com/user-attachments/assets/32f67da5-2dab-401d-9fb5-b55844b23fc5)
 
-Inimigos e inventário:
+Tela principal e inventário:
 
-![Inimigos e Inventário](https://github.com/user-attachments/assets/19c08b17-d8a9-4378-b364-46f87e2f2c13)
+!![Principal](image.png)
 
 Itens e armas:
 
-![itens e armas](https://github.com/user-attachments/assets/5f10d25e-7e68-438e-bacb-daa6e927fe91)
+![Itens e armas](image-1.png)
 
 Indicadores de energia e vida:
 
-![Barra de energia e vida](https://github.com/user-attachments/assets/c143175a-4332-4cb9-b021-0a48e9f21719)
-
-Indicador de objetivos:
-
-![Indicador de objetivos](https://github.com/user-attachments/assets/d1766965-9fba-4d6c-85a5-c2c46307a742)
+![Energia e vida](image-2.png)
 
 Menu de Pausa:
 
