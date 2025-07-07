@@ -311,7 +311,8 @@ void Player::Attack(const Uint8* keyState, Uint32 mouseButtonState) {
             for (const AABBColliderComponent* otherCollider : colliders) {
                 if (otherCollider->GetLayer() == ColliderLayer::Enemy) {
                     auto* enemy = dynamic_cast<Enemy*>(otherCollider->GetOwner());
-                    enemy->TakeDamage(magicToken->GetDamage());
+                    if (enemy)
+                        enemy->TakeDamage(magicToken->GetDamage());
                 }
              }
             }
