@@ -17,6 +17,8 @@ class Alzareth : public Actor {
         explicit Alzareth(Game *game);
         ~Alzareth() override;
 
+        DrawAnimatedComponent* GetDrawComponentShield() const { return mDrawComponentShield; }
+
         void OnUpdate(float deltaTime) override;
         void OnTakeDamage(float damage) override;
 
