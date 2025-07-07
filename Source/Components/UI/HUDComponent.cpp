@@ -121,7 +121,7 @@ void HUDComponent::DrawEnemiesCount(SDL_Renderer* renderer) const {
 
     mEnemiesBoardImage->SetPosition(Vector2(screenWidth - 180.0f, 20.0f));
     // Alterado para diminuir o tamanho da plaquinha
-    mEnemiesBoardImage->SetSize(Vector2(120.0f, 50.0f)); // Valores reduzidos de 175.0f, 60.0f
+    mEnemiesBoardImage->SetSize(Vector2(120.0f, 50.0f)); 
     mEnemiesBoardImage->Draw(renderer, Vector2::Zero);
 
     mEnemiesCountImage->SetPosition(Vector2(screenWidth - 165.0f, 30.0f));

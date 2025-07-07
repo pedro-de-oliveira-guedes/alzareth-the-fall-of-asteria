@@ -232,13 +232,6 @@ void Game::UpdateCamera() {
 }
 
 void Game::UpdateActors(const float deltaTime) {
-    // if (mEnemies.size() > 0) {
-    //     int defeatedEnemies = 0;
-    //     for (const auto enemy : mEnemies) {
-    //         if (!enemy->IsAlive()) {
-    //             defeatedEnemies++;
-    //         }
-    //     }
     if (mEnemies.size() == 0) {
         mGameState = GameState::PAUSED;
         if (mSceneManager->GetCurrentScene() == SceneManagerSystem::GameScene::Level1) {
@@ -251,7 +244,6 @@ void Game::UpdateActors(const float deltaTime) {
             mSceneManager->SetGameScene(SceneManagerSystem::GameScene::Win);
         }
     }
-    // }
 
     const std::vector<Actor*> allActors = mSpatialHashing->Query(mPlayer->GetPosition(), 1000);
 
