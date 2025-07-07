@@ -98,12 +98,23 @@ Alzareth::~Alzareth() {
 void Alzareth::NextStage() {
     if (!CurrentStageCleared()) return;
 
-    if (mCurrentStage == BossStage::SPAWNING)
+    if (mCurrentStage == BossStage::SPAWNING) {
         mCurrentStage = BossStage::ENEMIES_SUMMONING;
-    else if (mCurrentStage == BossStage::ENEMIES_SUMMONING && mCurrentHealth <= 2/3 * mMaxHealth)
-        mCurrentStage = BossStage::DEATH_RAYS_SUMMONING;
-    else if (mCurrentStage == BossStage::DEATH_RAYS_SUMMONING && mCurrentHealth <= 1/3 * mMaxHealth)
-        mCurrentStage = BossStage::ENEMIES_AND_DEATH_RAYS_SUMMONING;
+    }
+    else if (mCurrentStage == BossStage::ENEMIES_SUMMONING) {
+        if (mCurrentHealth <= 2.f/3 * mMaxHealth) {
+            mCurrentStage = BossStage::DEATH_RAYS_SUMMONING;
+        } else {
+            mFirstStageBuilt = false;
+        }
+    }
+    else if (mCurrentStage == BossStage::DEATH_RAYS_SUMMONING) {
+        if (mCurrentHealth <= 1.f/3 * mMaxHealth) {
+            mCurrentStage = BossStage::ENEMIES_AND_DEATH_RAYS_SUMMONING;
+        } else {
+            mSecondStageBuilt = false;
+        }
+    }
 }
 
 void Alzareth::BuildFirstStage() {
