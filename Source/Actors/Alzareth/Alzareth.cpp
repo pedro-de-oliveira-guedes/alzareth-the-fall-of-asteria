@@ -118,6 +118,8 @@ void Alzareth::NextStage() {
 }
 
 void Alzareth::BuildFirstStage() {
+    mSummonedEnemies.clear();
+
     for (int i = 0; i < ENEMIES_IN_FIRST_STAGE; i++) {
         const float levelWidth = mGame->GetSceneManager()->GetLevelSize().first * SceneManagerSystem::TILE_SIZE;
         const float levelHeight = mGame->GetSceneManager()->GetLevelSize().second * SceneManagerSystem::TILE_SIZE;
@@ -134,6 +136,8 @@ void Alzareth::BuildFirstStage() {
 }
 
 void Alzareth::BuildSecondStage() {
+    mDeathRays.clear();
+
     const int sceneWidth = mGame->GetSceneManager()->GetLevelSize().first * SceneManagerSystem::TILE_SIZE;
     const int sceneHeight = mGame->GetSceneManager()->GetLevelSize().second * SceneManagerSystem::TILE_SIZE;
 
