@@ -328,20 +328,20 @@ void Alzareth::OnUpdate(const float deltaTime) {
     HandleShieldState(deltaTime);
 }
 
-void Alzareth::TakeDamage(const float damage) {
+void Alzareth::OnTakeDamage(const float damage) {
     if (!mIsVulnerable) return;
 
     mCurrentHealth -= damage;
     mCurrentHealth = Math::Max(mCurrentHealth, 0.0f);
     mGame->GetAudioSystem()->PlaySound("boss_damage.wav", false);
 
-    if (mCurrentStage == BossStage::ENEMIES_SUMMONING && mCurrentHealth <= 2/3 * mMaxHealth) {
+    if (mCurrentStage == BossStage::ENEMIES_SUMMONING && mCurrentHealth <= 2.f/3 * mMaxHealth) {
         mVulnerabilityTimer = -1.0f;
-        mCurrentHealth = 2/3 * mMaxHealth;
+        mCurrentHealth = 2.f/3 * mMaxHealth;
     }
-    else if (mCurrentStage == BossStage::DEATH_RAYS_SUMMONING && mCurrentHealth <= 1/3 * mMaxHealth) {
+    else if (mCurrentStage == BossStage::DEATH_RAYS_SUMMONING && mCurrentHealth <= 1.f/3 * mMaxHealth) {
         mVulnerabilityTimer = -1.0f;
-        mCurrentHealth = 1/3 * mMaxHealth;
+        mCurrentHealth = 1.f/3 * mMaxHealth;
     }
     else if (mCurrentStage == BossStage::ENEMIES_AND_DEATH_RAYS_SUMMONING && mCurrentHealth <= 0.0f) {
         mVulnerabilityTimer = -1.0f;
