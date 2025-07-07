@@ -74,7 +74,7 @@ public:
     class SceneManagerSystem* GetSceneManager() const { return mSceneManager; }
     void BuildPlayer(Vector2 position);
     void BuildSpatialHashing();
-    void AddEnemy(Enemy* enemy) { mEnemies.emplace_back(enemy); }
+    void AddEnemy(Actor* enemy) { mEnemies.emplace_back(enemy); }
     void ClearGameScene(bool shouldDeletePlayer = false);
 
     bool GetMagicTokenInWorld() const { return mMagicTokenInWorld; }
@@ -93,7 +93,7 @@ private:
     // Game-specific
     GameState mGameState;
     Player* mPlayer;
-    std::vector<Enemy*> mEnemies;
+    std::vector<Actor*> mEnemies;
 
     // All the draw components
     SDL_Texture *mBackgroundTexture;
